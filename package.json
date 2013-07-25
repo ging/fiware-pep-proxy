@@ -1,0 +1,23 @@
+{
+  "name": "fi-ware-pep-proxy",
+  "version": "0.1.0",
+  "description": "PEP oauth2 authentication proxy for FI-ware GE services",
+  "author": "GING DIT UPM",
+  "dependencies": {
+    "express": "3.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ging/fi-ware-pep-proxy"
+  },
+  "contributors": [
+    {
+      "name": "Alvaro Alonso",
+      "email": "aalonsog@dit.upm.es"
+    },
+    {
+      "name": "Javier Cerviño",
+      "email": "jcervino@dit.upm.es"
+    }
+  ]
+}
