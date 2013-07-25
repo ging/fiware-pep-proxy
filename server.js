@@ -1,8 +1,8 @@
 var config = require('./config'),
-    proxy = require('./HTTPClient.js');
+    proxy = require('./lib/HTTPClient.js');
 
 var express = require('express'),
-    XMLHttpRequest = require("./xmlhttprequest").XMLHttpRequest;
+    XMLHttpRequest = require("./lib/xmlhttprequest").XMLHttpRequest;
 
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err);
