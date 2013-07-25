@@ -30,7 +30,7 @@ config.app_port = '80';            // Port where the HTTP server is running
 </pre>
 
 - Start proxy server
-- 
+
 <pre>
 sudo node server
 </pre>
