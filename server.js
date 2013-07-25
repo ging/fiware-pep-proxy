@@ -75,7 +75,7 @@ var checkToken = function(token, callback, callbackError) {
         port: config.keystone_port,
         path: '/v2.0/access-tokens/' + token,
         method: 'GET',
-        headers: {'X-Auth-Token': myToken}
+        headers: {'X-Auth-Token': myToken, 'Accept': 'application/json'}
     };
     proxy.sendData('http', options, undefined, undefined, callback, function (status, e) {
         if (status === 401) {
@@ -102,13 +102,16 @@ app.all('/*', function(req, res) {
 
 	if (req.headers['x-auth-token'] === undefined) {
         console.log('Auth-token not found in request header');
+        res.set('WWW-Authenticate', 'IDM uri = https://idm.lab.fi-ware.eu');
 		res.send(401, 'Auth-token not found in request header');
 	} else {
 		checkToken(req.headers['x-auth-token'], function (status, resp) {
 
-            console.log('Access-token OK. Redirecting to app. User info: ', resp);
+            var userInfo = JSON.parse(resp);
+            console.log('Access-token OK. Redirecting to app. User info: ', userInfo);
 
-            // rellenar cabeceras con user info
+            req.headers['X-Nick-Name'] = userInfo.nickName;
+            req.headers['X-Display-Name'] = userInfo.displayName;
 
 			var options = {
 		        host: config.app_host,
