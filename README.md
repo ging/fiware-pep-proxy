@@ -9,8 +9,13 @@ PEP oauth2 authentication proxy for FI-ware GE services
 	+ npm
 	Note: Both can be installed from (http://nodejs.org/download/)
 
-- Install the dependencies: 
+- Clone Proxy repository:
 
+	git clone https://github.com/ging/fi-ware-pep-proxy.git
+
+- Install the dependencies:
+
+	cd fi-ware-pep-proxy/
 	npm install
 
 - Configure app host in config.js file. 
