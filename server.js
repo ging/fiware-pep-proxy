@@ -1,4 +1,5 @@
 var config = require('./config'),
+    atob = require('atob'),
     proxy = require('./lib/HTTPClient.js');
 
 var express = require('express'),
@@ -100,8 +101,11 @@ var checkToken = function(token, callback, callbackError) {
 
 app.all('/*', function(req, res) {
 	
-	var auth_token = req.headers['x-auth-token'] || req.headers['Authorization'].split(' ')[1];
-	
+	var auth_token = req.headers['x-auth-token'];
+
+    if (auth_token === undefined && req.headers['authorization'] !== undefined) {
+        auth_token = atob(req.headers['authorization'].split(' ')[1]);
+    }
 
 	if (auth_token === undefined) {
         console.log('Auth-token not found in request header');
@@ -111,7 +115,7 @@ app.all('/*', function(req, res) {
 		checkToken(auth_token, function (status, resp) {
 
             var userInfo = JSON.parse(resp);
-            console.log('Access-token OK. Redirecting to app. User info: ', userInfo);
+            console.log('Access-token OK. Redirecting to app.');
 
             req.headers['X-Nick-Name'] = userInfo.nickName;
             req.headers['X-Display-Name'] = userInfo.displayName;
