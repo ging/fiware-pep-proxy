@@ -39,7 +39,7 @@ app.use(function (req, res, next) {
     "use strict";
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'HEAD, POST, GET, OPTIONS, DELETE');
-    res.header('Access-Control-Allow-Headers', 'origin, content-type, X-Auth-Token, Tenant-ID');
+    res.header('Access-Control-Allow-Headers', 'origin, content-type, X-Auth-Token, Tenant-ID, Authorization');
     //console.log("New Request: ", req.method);
     if (req.method == 'OPTIONS') {
         console.log("CORS request");
@@ -99,13 +99,16 @@ var checkToken = function(token, callback, callbackError) {
 };
 
 app.all('/*', function(req, res) {
+	
+	var auth_token = req.headers['x-auth-token'] || req.headers['Authorization'].split(' ')[1];
+	
 
-	if (req.headers['x-auth-token'] === undefined) {
+	if (auth_token === undefined) {
         console.log('Auth-token not found in request header');
         res.set('WWW-Authenticate', 'IDM uri = https://account.lab.fi-ware.eu');
 		res.send(401, 'Auth-token not found in request header');
 	} else {
-		checkToken(req.headers['x-auth-token'], function (status, resp) {
+		checkToken(auth_token, function (status, resp) {
 
             var userInfo = JSON.parse(resp);
             console.log('Access-token OK. Redirecting to app. User info: ', userInfo);
