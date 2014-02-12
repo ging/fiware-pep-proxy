@@ -102,7 +102,8 @@ app.all('/*', function(req, res) {
 
 	if (req.headers['x-auth-token'] === undefined) {
         console.log('Auth-token not found in request header');
-        res.set('WWW-Authenticate', 'IDM uri = https://idm.lab.fi-ware.eu');
+        var auth_header = 'IDM uri = ' + config.account_host;
+        res.set('WWW-Authenticate', auth_header);
 		res.send(401, 'Auth-token not found in request header');
 	} else {
 		checkToken(req.headers['x-auth-token'], function (status, resp) {

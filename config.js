@@ -1,6 +1,8 @@
-var config = {}
+var config = {};
 
-config.keystone_host = '130.206.80.62';
+config.account_host = 'https://account.lab.fi-ware.org';
+
+config.keystone_host = 'cloud.lab.fi-ware.org';
 config.keystone_port = 4731;
 
 config.app_host = 'www.google.es';
