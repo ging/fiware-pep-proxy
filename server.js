@@ -53,6 +53,7 @@ app.use(function (req, res, next) {
         next();
     }
 });
+app.set('port', process.env.PORT || 80);
 
 var myToken = undefined;
 
@@ -151,7 +152,7 @@ authenticate (function (status, resp) {
     myToken = JSON.parse(resp).access.token.id;
 
     console.log('Success authenticating PEP proxy. Proxy Auth-token: ', myToken);
-    app.listen(80);
+    app.listen(app.get('port'));
 
 }, function (status, e) {
     console.log('Error in keystone communication', e);
