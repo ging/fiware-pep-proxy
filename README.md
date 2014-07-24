@@ -22,7 +22,7 @@ cd fi-ware-pep-proxy/
 npm install
 </pre>
 
-- Configure app host in config.js file. 
+- Duplicate config.template in config.js and configure app host there. 
 
 <pre>
 config.app_host = 'www.google.es'; // Hostname to forward authenticated requests
