@@ -58,8 +58,10 @@ curl --header "X-Auth-Token:z2zXk...ANOXvZrmvxvSg" http://proxy_host
 Once authenticated, the forwarded request will include additional HTTP headers with user info:
 
 <pre>
-X-Nick-Name: nickname of user in IDM
-X-Display-Name: display name in IDM
+X-Nick-Name: nickname of the user in IdM
+X-Display-Name: display name of user in IdM
+X-Roles: roles of the user in IdM
+X-Organizations: organizations in IdM
 </pre>
 
 ## License

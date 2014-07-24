@@ -117,10 +117,12 @@ app.all('/*', function(req, res) {
 		checkToken(auth_token, function (status, resp) {
 
             var userInfo = JSON.parse(resp);
-            console.log('Access-token OK. Redirecting to app.');
+            console.log('Access-token OK. Redirecting to app...');
 
             req.headers['X-Nick-Name'] = userInfo.nickName;
             req.headers['X-Display-Name'] = userInfo.displayName;
+            req.headers['X-Roles'] = userInfo.roles;
+            req.headers['X-Organizations'] = userInfo.organizations;
 
 			var options = {
 		        host: config.app_host,
