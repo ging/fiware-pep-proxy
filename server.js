@@ -70,7 +70,7 @@ var authenticate = function(callback, callbackError) {
     proxy.sendData('http', options, JSON.stringify(body), undefined, callback, callbackError);
 };
 
-var checkToken = function(token, callback, callbackError) {
+var checkToken = function(token, action, resource, callback, callbackError) {
 
     var options = {
         host: config.keystone_host,
@@ -79,6 +79,17 @@ var checkToken = function(token, callback, callbackError) {
         method: 'GET',
         headers: {'X-Auth-Token': myToken, 'Accept': 'application/json'}
     };
+    
+    if (action && resource) {
+        options.path = '/v2.0/access-tokens/authREST/' + token;
+        options.headers = { 
+            'X-Auth-Token': myToken,
+            'x-auth-action': action,
+            'x-auth-resource': resource,
+            'Accept': 'application/json'
+        };
+    }
+    
     proxy.sendData('http', options, undefined, undefined, callback, function (status, e) {
         if (status === 401) {
 
@@ -114,7 +125,17 @@ app.all('/*', function(req, res) {
         res.set('WWW-Authenticate', auth_header);
 		res.send(401, 'Auth-token not found in request header');
 	} else {
-		checkToken(auth_token, function (status, resp) {
+
+        var action, resource;
+
+        if (config.check_permissions) {
+            action = req.method;
+            resource = req.url.substring(1, req.url.length);
+            //console.log('Action: ', action);
+            //console.log('Resource: ', resource);
+        }
+
+		checkToken(auth_token, action, resource, function (status, resp) {
 
             var userInfo = JSON.parse(resp);
             console.log('Access-token OK. Redirecting to app...');

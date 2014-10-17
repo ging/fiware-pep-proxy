@@ -11,4 +11,6 @@ config.app_port = '80';
 config.username = 'pepProxy';
 config.password = 'pepProxy';
 
+config.check_permissions = false;
+
 module.exports = config;
