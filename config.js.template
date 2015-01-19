@@ -13,4 +13,6 @@ config.password = 'pepProxy';
 
 config.check_permissions = false;
 
+config.magic_key = undefined;
+
 module.exports = config;

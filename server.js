@@ -126,6 +126,19 @@ app.all('/*', function(req, res) {
 		res.send(401, 'Auth-token not found in request header');
 	} else {
 
+        if (config.magic_key && config.magic_key === auth_token) {
+            var options = {
+                host: config.app_host,
+                port: config.app_port,
+                path: req.url,
+                method: req.method,
+                headers: proxy.getClientIp(req, req.headers)
+            };
+            proxy.sendData('http', options, req.body, res);
+            return;
+
+        }
+
         var action, resource;
 
         if (config.check_permissions) {
