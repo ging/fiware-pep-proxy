@@ -75,13 +75,13 @@ var checkToken = function(token, action, resource, callback, callbackError) {
     var options = {
         host: config.keystone_host,
         port: config.keystone_port,
-        path: '/v2.0/access-tokens/' + token,
+        path: '/v2.0/access-tokens/' + encodeURIComponent(token),
         method: 'GET',
         headers: {'X-Auth-Token': myToken, 'Accept': 'application/json'}
     };
     
     if (action && resource) {
-        options.path = '/v2.0/access-tokens/authREST/' + token;
+        options.path = '/v2.0/access-tokens/authREST/' + encodeURIComponent(token);
         options.headers = { 
             'X-Auth-Token': myToken,
             'x-auth-action': action,
