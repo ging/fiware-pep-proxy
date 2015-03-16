@@ -1,6 +1,7 @@
 var config = require('./config'),
     atob = require('atob'),
-    proxy = require('./lib/HTTPClient.js');
+    Root = require('./controllers/root').Root,
+    IDM = require("./lib/idm.js").IDM;
 
 var express = require('express'),
     XMLHttpRequest = require("./lib/xmlhttprequest").XMLHttpRequest;
@@ -55,139 +56,13 @@ app.use(function (req, res, next) {
 });
 app.set('port', process.env.PORT || 80);
 
-var myToken = undefined;
-
-var authenticate = function(callback, callbackError) {
-
-    var options = {
-        host: config.keystone_host,
-        port: config.keystone_port,
-        path: '/v2.0/tokens',
-        method: 'POST',
-        headers: {}
-    };
-    var body = {auth: {passwordCredentials: {username: config.username, password: config.password}}}
-    proxy.sendData('http', options, JSON.stringify(body), undefined, callback, callbackError);
-};
-
-var checkToken = function(token, action, resource, callback, callbackError) {
-
-    var options = {
-        host: config.keystone_host,
-        port: config.keystone_port,
-        path: '/v2.0/access-tokens/' + encodeURIComponent(token),
-        method: 'GET',
-        headers: {'X-Auth-Token': myToken, 'Accept': 'application/json'}
-    };
-    
-    if (action && resource) {
-        options.path = '/v2.0/access-tokens/authREST/' + encodeURIComponent(token);
-        options.headers = { 
-            'X-Auth-Token': myToken,
-            'x-auth-action': action,
-            'x-auth-resource': resource,
-            'Accept': 'application/json'
-        };
-    }
-    
-    proxy.sendData('http', options, undefined, undefined, callback, function (status, e) {
-        if (status === 401) {
-
-            console.log('Error validating token. Proxy not authorized in keystone. Keystone authentication ...');   
-            authenticate (function (status, resp) {
-
-                myToken = JSON.parse(resp).access.token.id;
-
-                console.log('Success authenticating PEP proxy. Proxy Auth-token: ', myToken);
-                checkToken(token, callback, callbackError);
-
-            }, function (status, e) {
-                console.log('Error in IDM communication ', e);
-                callbackError(503, 'Error in IDM communication');
-            });
-        } else {
-            callbackError(status, e);
-        }
-    });
-};
-
-app.all('/*', function(req, res) {
-	
-	var auth_token = req.headers['x-auth-token'];
-
-    if (auth_token === undefined && req.headers['authorization'] !== undefined) {
-        auth_token = atob(req.headers['authorization'].split(' ')[1]);
-    }
-
-	if (auth_token === undefined) {
-        console.log('Auth-token not found in request header');
-        var auth_header = 'IDM uri = ' + config.account_host;
-        res.set('WWW-Authenticate', auth_header);
-		res.send(401, 'Auth-token not found in request header');
-	} else {
-
-        if (config.magic_key && config.magic_key === auth_token) {
-            var options = {
-                host: config.app_host,
-                port: config.app_port,
-                path: req.url,
-                method: req.method,
-                headers: proxy.getClientIp(req, req.headers)
-            };
-            proxy.sendData('http', options, req.body, res);
-            return;
-
-        }
-
-        var action, resource;
-
-        if (config.check_permissions) {
-            action = req.method;
-            resource = req.url.substring(1, req.url.length);
-            //console.log('Action: ', action);
-            //console.log('Resource: ', resource);
-        }
-
-		checkToken(auth_token, action, resource, function (status, resp) {
-
-            var userInfo = JSON.parse(resp);
-            console.log('Access-token OK. Redirecting to app...');
-
-            req.headers['X-Nick-Name'] = userInfo.nickName;
-            req.headers['X-Display-Name'] = userInfo.displayName;
-            req.headers['X-Roles'] = userInfo.roles;
-            req.headers['X-Organizations'] = userInfo.organizations;
-
-			var options = {
-		        host: config.app_host,
-		        port: config.app_port,
-		        path: req.url,
-		        method: req.method,
-		        headers: proxy.getClientIp(req, req.headers)
-		    };
-		    proxy.sendData('http', options, req.body, res);
-
-		}, function (status, e) {
-			if (status === 404) {
-                console.log('User access-token not authorized');
-                res.send(401, 'User token not authorized');
-            } else {
-                console.log('Error in IDM communication ', e);
-                res.send(503, 'Error in IDM communication');
-            }
-		});
-	}
-
-	
-});
+app.all('/*', Root.validate);
 
 console.log('Starting PEP proxy. Keystone authentication ...');
 
-authenticate (function (status, resp) {
+IDM.authenticate (function (token) {
 
-    myToken = JSON.parse(resp).access.token.id;
-
-    console.log('Success authenticating PEP proxy. Proxy Auth-token: ', myToken);
+    console.log('Success authenticating PEP proxy. Proxy Auth-token: ', token);
     app.listen(app.get('port'));
 
 }, function (status, e) {
