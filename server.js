@@ -56,7 +56,7 @@ app.use(function (req, res, next) {
 });
 app.set('port', process.env.PORT || 80);
 
-app.all('/*', Root.validate);
+app.all('/*', Root.pep);
 
 console.log('Starting PEP proxy. Keystone authentication ...');
 
