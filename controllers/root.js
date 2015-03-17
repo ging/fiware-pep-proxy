@@ -4,7 +4,7 @@ var config = require('./../config.js'),
 
 var Root = (function() {
 
-    var validate = function(req, res) {
+    var pep = function(req, res) {
     	
     	var auth_token = req.headers['x-auth-token'];
 
@@ -41,15 +41,12 @@ var Root = (function() {
                 //console.log('Resource: ', resource);
             }
 
-    		IDM.check_token(auth_token, action, resource, function (status, resp) {
+    		IDM.check_token(auth_token, action, resource, function (user_info) {
 
-                var userInfo = JSON.parse(resp);
-                console.log('Access-token OK. Redirecting to app...');
-
-                req.headers['X-Nick-Name'] = userInfo.nickName;
-                req.headers['X-Display-Name'] = userInfo.displayName;
-                req.headers['X-Roles'] = userInfo.roles;
-                req.headers['X-Organizations'] = userInfo.organizations;
+                req.headers['X-Nick-Name'] = user_info.nickName;
+                req.headers['X-Display-Name'] = user_info.displayName;
+                req.headers['X-Roles'] = user_info.roles;
+                req.headers['X-Organizations'] = user_info.organizations;
 
     			var options = {
     		        host: config.app_host,
@@ -75,7 +72,7 @@ var Root = (function() {
     }
 
     return {
-        validate: validate
+        pep: pep
     }
 })();
 
