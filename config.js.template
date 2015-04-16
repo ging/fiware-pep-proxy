@@ -1,5 +1,15 @@
 var config = {};
 
+config.pep_port = 80;
+
+// Set this var to undefined if you don't want the server to listen on HTTPS
+config.https = {
+    enabled: false,
+    cert_file: 'cert/cert.crt',
+    key_file: 'cert/key.key',
+    port: 443
+};
+
 config.account_host = 'https://account.lab.fiware.org';
 
 config.keystone_host = 'cloud.lab.fiware.org';

@@ -1,5 +1,7 @@
 var config = require('./config'),
     atob = require('atob'),
+    fs = require('fs'),
+    https = require('https'),
     Root = require('./controllers/root').Root,
     IDM = require("./lib/idm.js").IDM;
 
@@ -54,16 +56,31 @@ app.use(function (req, res, next) {
         next();
     }
 });
-app.set('port', process.env.PORT || 80);
+
+var port = config.pep_port || 80;
+if (config.https.enabled) port = config.https.port || 443;
+app.set('port', port);
 
 app.all('/*', Root.pep);
 
-console.log('Starting PEP proxy. Keystone authentication ...');
+console.log('Starting PEP proxy in port ' + port + '. Keystone authentication ...');
 
 IDM.authenticate (function (token) {
 
     console.log('Success authenticating PEP proxy. Proxy Auth-token: ', token);
-    app.listen(app.get('port'));
+
+    if (config.https.enabled === true) {
+        var options = {
+            key: fs.readFileSync(config.https.key_file),
+            cert: fs.readFileSync(config.https.cert_file)
+        };
+
+        https.createServer(options, function(req,res) {
+            app.handle(req, res);
+        }).listen(app.get('port'));
+    } else {
+        app.listen(app.get('port'));
+    }
 
 }, function (status, e) {
     console.log('Error in keystone communication', e);
