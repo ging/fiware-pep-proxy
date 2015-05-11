@@ -9,7 +9,8 @@ var Root = (function() {
     	var auth_token = req.headers['x-auth-token'];
 
         if (auth_token === undefined && req.headers['authorization'] !== undefined) {
-            auth_token = atob(req.headers['authorization'].split(' ')[1]);
+            var header_auth = req.headers['authorization'].split(' ')[1];
+            auth_token = new Buffer(header_auth, 'base64').toString();
         }
 
     	if (auth_token === undefined) {
