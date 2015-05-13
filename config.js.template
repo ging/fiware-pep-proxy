@@ -25,6 +25,9 @@ config.password = 'pepProxy';
 config.chache_time = 300;
 config.check_permissions = false;
 
+// options: oauth2/keystone
+config.tokens_engine = 'oauth2';
+
 config.magic_key = undefined;
 
 module.exports = config;
