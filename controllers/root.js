@@ -44,10 +44,17 @@ var Root = (function() {
 
     		IDM.check_token(auth_token, action, resource, function (user_info) {
 
-                req.headers['X-Nick-Name'] = user_info.nickName;
-                req.headers['X-Display-Name'] = user_info.displayName;
-                req.headers['X-Roles'] = user_info.roles;
-                req.headers['X-Organizations'] = user_info.organizations;
+                if (config.tokens_engine === 'keystone') {
+                    req.headers['X-Nick-Name'] = user_info.token.user.id;
+                    req.headers['X-Display-Name'] = user_info.token.user.id;
+                    req.headers['X-Roles'] = user_info.token.roles;
+                    req.headers['X-Organizations'] = user_info.token.project;
+                } else {
+                    req.headers['X-Nick-Name'] = user_info.id;
+                    req.headers['X-Display-Name'] = user_info.displayName;
+                    req.headers['X-Roles'] = user_info.roles;
+                    req.headers['X-Organizations'] = user_info.organizations;
+                }
 
     			var options = {
     		        host: config.app_host,
