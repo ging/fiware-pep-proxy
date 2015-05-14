@@ -23,7 +23,14 @@ config.password = 'pepProxy';
 
 // in seconds
 config.chache_time = 300;
-config.check_permissions = false;
+
+// if enabled PEP checks permissions with AuthZForce GE. 
+// only compatible with oauth2 tokens engine
+config.azf = {
+	enabled: false,
+    host: '',
+    path: '/authzforce/domains/[DOMAIN]/pdp'
+};
 
 // options: oauth2/keystone
 config.tokens_engine = 'oauth2';

@@ -1,9 +1,11 @@
 var config = require('./config'),
-    atob = require('atob'),
     fs = require('fs'),
     https = require('https'),
     Root = require('./controllers/root').Root,
     IDM = require("./lib/idm.js").IDM;
+
+config.azf = config.azf || {};
+config.https = config.https || {};
 
 var express = require('express'),
     XMLHttpRequest = require("./lib/xmlhttprequest").XMLHttpRequest;
@@ -62,6 +64,11 @@ if (config.https.enabled) port = config.https.port || 443;
 app.set('port', port);
 
 app.all('/*', Root.pep);
+
+if (config.tokens_engine === 'keystone' && config.azf.enabled === true) {
+    console.log('Keystone token engine is not compatible with AuthZForce. Please review configuration file.');
+    return;
+}
 
 console.log('Starting PEP proxy in port ' + port + '. Keystone authentication ...');
 

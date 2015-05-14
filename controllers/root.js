@@ -1,6 +1,7 @@
 var config = require('./../config.js'),
     proxy = require('./../lib/HTTPClient.js'),
-    IDM = require('./../lib/idm.js').IDM;
+    IDM = require('./../lib/idm.js').IDM,
+    AZF = require('./../lib/azf.js').AZF;
 
 var Root = (function() {
 
@@ -33,37 +34,41 @@ var Root = (function() {
 
             }
 
-            var action, resource;
+            
+            // if (action && resource) {
+            //     options.path = '/v2.0/access-tokens/authREST/' + encodeURIComponent(token);
+            //     options.headers = { 
+            //         'X-Auth-Token': my_token,
+            //         'x-auth-action': action,
+            //         'x-auth-resource': resource,
+            //         'Accept': 'application/json'
+            //     };
+            // }
 
-            if (config.check_permissions) {
-                action = req.method;
-                resource = req.url.substring(1, req.url.length);
-                //console.log('Action: ', action);
-                //console.log('Resource: ', resource);
-            }
+    		IDM.check_token(auth_token, function (user_info) {
 
-    		IDM.check_token(auth_token, action, resource, function (user_info) {
+                if (config.azf.enabled) {
+                    var action = req.method;
+                    var resource = req.url.substring(1, req.url.length);
 
-                if (config.tokens_engine === 'keystone') {
-                    req.headers['X-Nick-Name'] = user_info.token.user.id;
-                    req.headers['X-Display-Name'] = user_info.token.user.id;
-                    req.headers['X-Roles'] = user_info.token.roles;
-                    req.headers['X-Organizations'] = user_info.token.project;
+                    AZF.check_permissions(auth_token, user_info, resource, action, function () {
+
+                        redir_request(req, res, user_info);
+
+                    }, function (status, e) {
+                        if (status === 401) {
+                            console.log('User access-token not authorized');
+                            res.send(401, 'User token not authorized');
+                        } else {
+                            console.log('Error in AZF communication ', e);
+                            res.send(503, 'Error in AZF communication');
+                        }
+
+                    });
                 } else {
-                    req.headers['X-Nick-Name'] = user_info.id;
-                    req.headers['X-Display-Name'] = user_info.displayName;
-                    req.headers['X-Roles'] = user_info.roles;
-                    req.headers['X-Organizations'] = user_info.organizations;
+                    redir_request(req, res, user_info);
                 }
 
-    			var options = {
-    		        host: config.app_host,
-    		        port: config.app_port,
-    		        path: req.url,
-    		        method: req.method,
-    		        headers: proxy.getClientIp(req, req.headers)
-    		    };
-    		    proxy.sendData('http', options, req.body, res);
 
     		}, function (status, e) {
     			if (status === 404) {
@@ -74,10 +79,35 @@ var Root = (function() {
                     res.send(503, 'Error in IDM communication');
                 }
     		});
-    	}
+    	};	
+    };
 
-    	
-    }
+    var redir_request = function (req, res, user_info) {
+
+        console.log('[TOKEN] Access-token OK. Redirecting to app...');
+
+        if (config.tokens_engine === 'keystone') {
+            req.headers['X-Nick-Name'] = user_info.token.user.id;
+            req.headers['X-Display-Name'] = user_info.token.user.id;
+            req.headers['X-Roles'] = user_info.token.roles;
+            req.headers['X-Organizations'] = user_info.token.project;
+        } else {
+            req.headers['X-Nick-Name'] = user_info.id;
+            req.headers['X-Display-Name'] = user_info.displayName;
+            req.headers['X-Roles'] = user_info.roles;
+            req.headers['X-Organizations'] = user_info.organizations;
+        }
+
+        var options = {
+            host: config.app_host,
+            port: config.app_port,
+            path: req.url,
+            method: req.method,
+            headers: proxy.getClientIp(req, req.headers)
+        };
+        proxy.sendData('http', options, req.body, res);
+
+    };
 
     return {
         pep: pep
