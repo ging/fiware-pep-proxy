@@ -28,8 +28,9 @@ config.chache_time = 300;
 // only compatible with oauth2 tokens engine
 config.azf = {
 	enabled: false,
-    host: '',
-    path: '/authzforce/domains/[DOMAIN]/pdp'
+    host: '130.206.84.5',
+    port: 6017,
+    path: '/authzforce/domains/d698df7f-ffd4-11e4-a09d-ed06f24e1e78/pdp'
 };
 
 // options: oauth2/keystone

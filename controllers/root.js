@@ -34,17 +34,6 @@ var Root = (function() {
 
             }
 
-            
-            // if (action && resource) {
-            //     options.path = '/v2.0/access-tokens/authREST/' + encodeURIComponent(token);
-            //     options.headers = { 
-            //         'X-Auth-Token': my_token,
-            //         'x-auth-action': action,
-            //         'x-auth-resource': resource,
-            //         'Accept': 'application/json'
-            //     };
-            // }
-
     		IDM.check_token(auth_token, function (user_info) {
 
                 if (config.azf.enabled) {
@@ -57,7 +46,7 @@ var Root = (function() {
 
                     }, function (status, e) {
                         if (status === 401) {
-                            console.log('User access-token not authorized');
+                            console.log('User access-token not authorized: ', e);
                             res.send(401, 'User token not authorized');
                         } else {
                             console.log('Error in AZF communication ', e);
