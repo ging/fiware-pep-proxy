@@ -71,20 +71,29 @@ var Root = (function() {
     	};	
     };
 
+    var public = function(req, res) {
+        redir_request(req, res);
+    };
+
     var redir_request = function (req, res, user_info) {
 
-        console.log('[TOKEN] Access-token OK. Redirecting to app...');
+        if (user_info) {
 
-        if (config.tokens_engine === 'keystone') {
-            req.headers['X-Nick-Name'] = user_info.token.user.id;
-            req.headers['X-Display-Name'] = user_info.token.user.id;
-            req.headers['X-Roles'] = user_info.token.roles;
-            req.headers['X-Organizations'] = user_info.token.project;
+            console.log('[ROOT] Access-token OK. Redirecting to app...');
+
+            if (config.tokens_engine === 'keystone') {
+                req.headers['X-Nick-Name'] = user_info.token.user.id;
+                req.headers['X-Display-Name'] = user_info.token.user.id;
+                req.headers['X-Roles'] = user_info.token.roles;
+                req.headers['X-Organizations'] = user_info.token.project;
+            } else {
+                req.headers['X-Nick-Name'] = user_info.id;
+                req.headers['X-Display-Name'] = user_info.displayName;
+                req.headers['X-Roles'] = user_info.roles;
+                req.headers['X-Organizations'] = user_info.organizations;
+            }
         } else {
-            req.headers['X-Nick-Name'] = user_info.id;
-            req.headers['X-Display-Name'] = user_info.displayName;
-            req.headers['X-Roles'] = user_info.roles;
-            req.headers['X-Organizations'] = user_info.organizations;
+            console.log('[ROOT] Public path. Redirecting to app...');
         }
 
         var options = {
@@ -99,7 +108,8 @@ var Root = (function() {
     };
 
     return {
-        pep: pep
+        pep: pep,
+        public: public
     }
 })();
 

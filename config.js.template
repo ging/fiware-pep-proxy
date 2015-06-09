@@ -33,6 +33,10 @@ config.azf = {
     path: '/authzforce/domains/d698df7f-ffd4-11e4-a09d-ed06f24e1e78/pdp'
 };
 
+// list of paths that will not check authentication/authorization
+// example: ['/public/*', '/static/css/']
+config.public_paths = [];
+
 // options: oauth2/keystone
 config.tokens_engine = 'oauth2';
 

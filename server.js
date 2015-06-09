@@ -63,6 +63,11 @@ var port = config.pep_port || 80;
 if (config.https.enabled) port = config.https.port || 443;
 app.set('port', port);
 
+for (var p in config.public_paths) {
+    console.log(config.public_paths[p]);
+    app.all(config.public_paths[p], Root.public);
+}
+
 app.all('/*', Root.pep);
 
 if (config.tokens_engine === 'keystone' && config.azf.enabled === true) {
