@@ -13,6 +13,7 @@ var express = require('express'),
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err);
 });
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var app = express();
 
