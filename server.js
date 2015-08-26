@@ -7,11 +7,13 @@ var config = require('./config'),
 config.azf = config.azf || {};
 config.https = config.https || {};
 
+var log = require('./lib/logger').logger.getLogger("Server");
+
 var express = require('express'),
     XMLHttpRequest = require("./lib/xmlhttprequest").XMLHttpRequest;
 
 process.on('uncaughtException', function (err) {
-  console.log('Caught exception: ' + err);
+  log.error('Caught exception: ' + err);
 });
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -47,9 +49,9 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'HEAD, POST, GET, OPTIONS, DELETE');
     res.header('Access-Control-Allow-Headers', 'origin, content-type, X-Auth-Token, Tenant-ID, Authorization');
-    //console.log("New Request: ", req.method);
+    //log.debug("New Request: ", req.method);
     if (req.method == 'OPTIONS') {
-        console.log("CORS request");
+        log.debug("CORS request");
         res.statusCode = 200;
         res.header('Content-Length', '0');
         res.send();
@@ -65,22 +67,22 @@ if (config.https.enabled) port = config.https.port || 443;
 app.set('port', port);
 
 for (var p in config.public_paths) {
-    console.log(config.public_paths[p]);
+    log.debug('Public paths', config.public_paths[p]);
     app.all(config.public_paths[p], Root.public);
 }
 
 app.all('/*', Root.pep);
 
 if (config.tokens_engine === 'keystone' && config.azf.enabled === true) {
-    console.log('Keystone token engine is not compatible with AuthZForce. Please review configuration file.');
+    log.error('Keystone token engine is not compatible with AuthZForce. Please review configuration file.');
     return;
 }
 
-console.log('Starting PEP proxy in port ' + port + '. Keystone authentication ...');
+log.info('Starting PEP proxy in port ' + port + '. Keystone authentication ...');
 
 IDM.authenticate (function (token) {
 
-    console.log('Success authenticating PEP proxy. Proxy Auth-token: ', token);
+    log.info('Success authenticating PEP proxy. Proxy Auth-token: ', token);
 
     if (config.https.enabled === true) {
         var options = {
@@ -96,7 +98,7 @@ IDM.authenticate (function (token) {
     }
 
 }, function (status, e) {
-    console.log('Error in keystone communication', e);
+    log.error('Error in keystone communication', e);
 });
 
 

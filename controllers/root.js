@@ -3,6 +3,8 @@ var config = require('./../config.js'),
     IDM = require('./../lib/idm.js').IDM,
     AZF = require('./../lib/azf.js').AZF;
 
+var log = require('./../lib/logger').logger.getLogger("Root");
+
 var Root = (function() {
 
     var pep = function(req, res) {
@@ -15,7 +17,7 @@ var Root = (function() {
         }
 
     	if (auth_token === undefined) {
-            console.log('Auth-token not found in request header');
+            log.error('Auth-token not found in request header');
             var auth_header = 'IDM uri = ' + config.account_host;
             res.set('WWW-Authenticate', auth_header);
     		res.send(401, 'Auth-token not found in request header');
@@ -46,10 +48,10 @@ var Root = (function() {
 
                     }, function (status, e) {
                         if (status === 401) {
-                            console.log('User access-token not authorized: ', e);
+                            log.error('User access-token not authorized: ', e);
                             res.send(401, 'User token not authorized');
                         } else {
-                            console.log('Error in AZF communication ', e);
+                            log.error('Error in AZF communication ', e);
                             res.send(503, 'Error in AZF communication');
                         }
 
@@ -61,10 +63,10 @@ var Root = (function() {
 
     		}, function (status, e) {
     			if (status === 404) {
-                    console.log('User access-token not authorized');
+                    log.error('User access-token not authorized');
                     res.send(401, 'User token not authorized');
                 } else {
-                    console.log('Error in IDM communication ', e);
+                    log.error('Error in IDM communication ', e);
                     res.send(503, 'Error in IDM communication');
                 }
     		});
@@ -79,7 +81,7 @@ var Root = (function() {
 
         if (user_info) {
 
-            console.log('[ROOT] Access-token OK. Redirecting to app...');
+            log.info('Access-token OK. Redirecting to app...');
 
             if (config.tokens_engine === 'keystone') {
                 req.headers['X-Nick-Name'] = user_info.token.user.id;
@@ -93,7 +95,7 @@ var Root = (function() {
                 req.headers['X-Organizations'] = user_info.organizations;
             }
         } else {
-            console.log('[ROOT] Public path. Redirecting to app...');
+            log.info('Public path. Redirecting to app...');
         }
 
         var options = {

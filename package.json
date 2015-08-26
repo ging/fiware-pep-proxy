@@ -5,7 +5,8 @@
   "author": "GING DIT UPM",
   "dependencies": {
     "express": "3.x",
-    "xml2json": "0.4.0"
+    "xml2json": "0.4.0",
+    "log4js": "0.6.x"
   },
   "repository": {
     "type": "git",
