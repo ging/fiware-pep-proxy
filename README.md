@@ -88,6 +88,7 @@ X-Organizations: organizations in IdM
 - [User & Programmers Manual](https://github.com/ging/fi-ware-pep-proxy/tree/master/docs/)
 - [Installation & Administration Guide](https://github.com/ging/fi-ware-pep-proxy/tree/master/docs/)
 
+<a name="def-license"></a>
 ## License
 
 The MIT License
