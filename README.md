@@ -1,62 +1,24 @@
 #PEP Proxy - Wilma
 
-## [I. Introduction](#def-api-blueprint-language)
 + [Introduction](#def-introduction)
-+ [API Blueprint](#def-api-blueprint)
-+ [API Blueprint document](#def-api-blueprint-document)
-+ [Blueprint section](#def-blueprint-section)
-    + [Section types](#def-section-types)
-    + [Section structure](#def-section-structure)
-    + [Keywords](#def-keywords)
-    + [Identifier](#def-identifier)
-    + [Description](#def-description)
-    + [Nested sections](#def-nested-sections)
-
-## [II. Sections Reference](#def-sections-reference)
-
-### Abstract
-+ [Named section](#def-named-section)
-+ [Asset section](#def-asset-section)
-+ [Payload section](#def-payload-section)
-
-### Section Basics
-+ [Metadata section](#def-metadata-section)
-+ [API name & overview section](#def-api-name-section)
-+ [Resource group section](#def-resourcegroup-section)
-+ [Resource section](#def-resource-section)
-+ [Resource model section](#def-model-section)
-+ [Schema section](#def-schema-section)
-+ [Action section](#def-action-section)
-+ [Request section](#def-request-section)
-+ [Response section](#def-response-section)
-+ [URI parameters section](#def-uriparameters-section)
-+ [Attributes section](#def-attributes-section)
-+ [Headers section](#def-headers-section)
-+ [Body section](#def-body-section)
-
-### Going Further
-+ [Data Structures section](#def-data-structures)
-+ [Relation section](#def-relation-section)
-
-
-## [III. Appendix](#def-appendix)
-+ [URI Templates](#def-uri-templates)
++ [How to Build & Install](#def-build)
++ [API Overview](#def-api)
++ [Advanced documentation](#def-advanced)
++ [License](#def-license)
 
 ---
 
 <br>
-
-<a name="def-api-blueprint-language"></a>
-# I. API Blueprint Language
 
 <a name="def-introduction"></a>
 ## Introduction
 
 This project is part of [FIWARE](http://fiware.org). You will find more information abour this FIWARE GE [here](http://catalogue.fiware.org/enablers/pep-proxy-wilma).
 
-##Installation
+Thanks to this component and together with Identity Management and Authorization PDP GEs, you will add authentication and authorization security to your backend applications. Thus, only FIWARE users will be able to access your GEs or REST services. But you will be able also to manage specific permissions and policies to your resources allowing different access levels to your users.
 
-PEP oauth2 authentication proxy for FI-ware GE services
+<a name="def-build"></a>
+## How to Build & Install
 
 - Software requirements:
 
@@ -90,8 +52,8 @@ config.app_port = '80';            // Port where the HTTP server is running
 sudo node server
 </pre>
 
-How to use
-===================
+<a name="def-api"></a>
+## API Overview
 
 Requests to proxy should be made with a special HTTP Header: X-Auth-Token. 
 This header contains the OAuth access token obtained from FI-WARE IDM GE.
@@ -118,6 +80,13 @@ X-Display-Name: display name of user in IdM
 X-Roles: roles of the user in IdM
 X-Organizations: organizations in IdM
 </pre>
+
+<a name="def-api"></a>
+## Advanced Documentation
+
+- [How to run tests](https://github.com/ging/fi-ware-pep-proxy/tree/master/docs/)
+- [User & Programmers Manual](https://github.com/ging/fi-ware-pep-proxy/tree/master/docs/)
+- [Installation & Administration Guide](https://github.com/ging/fi-ware-pep-proxy/tree/master/docs/)
 
 ## License
 
