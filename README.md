@@ -1,5 +1,8 @@
-Installation
-===================
+#FIWARE Wilma PEP Proxy
+
+This project is part of [FIWARE](http://fiware.org). You will find more information abour this FIWARE GE [here](http://catalogue.fiware.org/enablers/pep-proxy-wilma).
+
+##Installation
 
 PEP oauth2 authentication proxy for FI-ware GE services
 
