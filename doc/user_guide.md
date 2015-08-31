@@ -4,9 +4,9 @@
 - [User Guide](#user-guide)
     - [Basic Use Case](#basic-use-case)
 - [Programmer Guide](#programmer-guide)
-    - [Level 1: Authentication](#)
-    - [Level 2: Basic Authorization](#)
-    - [Level 3: Advanced Authorization](#)
+    - [Level 1: Authentication](#level-1-authentication)
+    - [Level 2: Basic Authorization](#level-2-basic-authorization)
+    - [Level 3: Advanced Authorization](#level-3-advanced-authorization)
         
 
 ## Introduction
@@ -55,7 +55,7 @@ In order to be able to make these requests to Identity Management and Authorizat
 When the frontend part of the application (Web App) sends a REST request to the backend part (Back-end App) it has to include the OAuth2 token (access_token) of the user. So the first step is to create a user and an application in FIWARE Account. Please, see the User Guide of Identity Management in order to know how to proceed.
 
 <a name="def-fig1"></a>
-![](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/resources/Level 1- Authentication.png)
+![](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/resources/Level_1-_Authentication.png)
 <p align="center">Figure 1: Authentication</p>
 
 [Figure 1](#def-fig1) shows the architecture of this configuration. When PEP Proxy receives the request, it extracts the access_token from the HTTP header (X-Auth-Token) and sends a request to FIWARE Account server (Identity Management GE) in order to validate it. The URL of the server is set in "account_host" field of the config file.
@@ -68,7 +68,7 @@ Again the first step is to create a user and an application in FIWARE Account. I
 
 
 <a name="def-fig2"></a>
-![](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/resources/Level 2- Basic Authorization.png)
+![](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/resources/Level_2-_Basic_Authorization.png)
 <p align="center">Figure 2: Basic Authorization</p>
 
 
@@ -82,7 +82,7 @@ The first step is to create a user and an application in FIWARE Account. Then co
 
 
 <a name="def-fig3"></a>
-![](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/resources/Level 3- Advanced Authorization .png)
+![](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/resources/Level_3-_Advanced_Authorization_.png)
 <p align="center">Figure 3: Advanced Authorization</p>
 
 [Figure 3](#def-fig3) shows the architecture of this configuration. As this case is thought to check advanced parameters of the request such us the body or custom headers, it depends on the specific use case. So the programmer should modify the PEP Proxy source code in order to include the specific requirements.

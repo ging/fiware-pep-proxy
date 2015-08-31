@@ -84,9 +84,9 @@ X-Organizations: organizations in IdM
 <a name="def-api"></a>
 ## Advanced Documentation
 
-- [How to run tests](https://github.com/ging/fi-ware-pep-proxy/tree/master/doc/)
-- [User & Programmers Manual](https://github.com/ging/fi-ware-pep-proxy/tree/master/doc/)
-- [Installation & Administration Guide](https://github.com/ging/fi-ware-pep-proxy/tree/master/doc/)
+- [How to run tests](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/admin_guide.md#end-to-end-testing)
+- [User & Programmers Manual](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/user_guide.md)
+- [Installation & Administration Guide](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/admin_guide.md)
 
 <a name="def-license"></a>
 ## License

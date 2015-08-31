@@ -32,20 +32,20 @@ In order to execute the PEP Proxy GE, it is needed to have previously installed 
 
 The following steps need to be performed to get the PEP Proxy up and running:
 
-1. Download the software, using [[http://github.com/ging/fi-ware-cloud-portal GitHub]].
+- Download the software, using [GitHub](http://github.com/ging/fi-ware-pep-proxy).
 
 <pre>
  git clone https://github.com/ging/fi-ware-pep-proxy
 </pre>
 
-2. Install all required libraries using NPM.
+- Install all required libraries using NPM.
 
 <pre>
  cd fi-ware-pep-proxy
  npm install
 </pre>
 
-3. Configure the installation
+- Configure the installation
 
 To configure PEP Proxy you can copy the file named config.js.template to config.js and edit it with the corresponding info. Below you can see an example:
 
@@ -68,24 +68,25 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
  module.exports = config;
 </pre>
 
-4. Launch the executable by running the next command with administrative permissions as it is going to be run on TCP Port 80:
+- Launch the executable by running the next command with administrative permissions as it is going to be run on TCP Port 80:
 
 <pre>
  node server.js
 </pre>
 
-5. You can also install forever.js to run it in a production environment:
+- You can also install forever.js to run it in a production environment:
 
 <pre>
  sudo npm install forever -g
+</pre>
 
-6. And then run the server using forever:
+- And then run the server using forever:
 
 <pre>
  forever start server.js
 </pre>
 
-7. To know the status of the process you can run the next command:
+- To know the status of the process you can run the next command:
 
 <pre>
  forever status
