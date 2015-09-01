@@ -98,6 +98,8 @@ var Root = (function() {
             log.info('Public path. Redirecting to app...');
         }
 
+        var protocol = config.app_ssl ? 'https' : 'http';
+
         var options = {
             host: config.app_host,
             port: config.app_port,
@@ -105,8 +107,7 @@ var Root = (function() {
             method: req.method,
             headers: proxy.getClientIp(req, req.headers)
         };
-        proxy.sendData('http', options, req.body, res);
-
+        proxy.sendData(protocol, options, req.body, res);
     };
 
     return {
