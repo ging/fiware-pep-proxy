@@ -58,37 +58,3 @@ You can also run the container from the [image we provide](https://hub.docker.co
 
 > **Note**
 > If you do not specify a version you are pulling from `latest` by default.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-sudo docker build -t aalonsog/pep-proxy .
-
-sudo docker run -d --name pep-proxy -v /home/alvaro/Documentos/fi-ware/fi-ware-pep-proxy/config.js:/opt/fi-ware-pep-proxy/config.js -p 80:80 aalonsog/pep-proxy
-
-sudo docker logs -f pep-proxy
-
-sudo docker stop pep-proxy
