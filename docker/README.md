@@ -5,8 +5,6 @@ To run a Wima Docker container you have two options:
 1. You can build your own image using the Dockerfile we provide and then run the container from it or
 2. you can run the container directly from the image we provide in Docker Hub.
 
-The main difference is that using the option 1 you will run the last version of the code. And using the option 2 you will download the last stable version we have released.  
-
 Both options require that you have [docker](https://docs.docker.com/installation/) installed on your machine.
 
 ## 1. Build your own image and run the container from it
