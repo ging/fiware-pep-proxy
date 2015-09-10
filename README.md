@@ -59,7 +59,7 @@ sudo node server
 We also provide a Docker image to facilitate you the building of this GE.
 
 - [Here](https://github.com/ging/fi-ware-pep-proxy/tree/master/docker) you will find the Dockerfile and the documentation explaining how to use it.
-- In [Docker Hub](https://hub.docker.com/r/aalonsog/fi-ware-pep-proxy/) you will find the public image.
+- In [Docker Hub](https://hub.docker.com/r/ging/fi-ware-pep-proxy/) you will find the public image.
 
 <a name="def-api"></a>
 ## API Overview
