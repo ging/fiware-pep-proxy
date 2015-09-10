@@ -32,16 +32,16 @@ In order to execute the PEP Proxy GE, it is needed to have previously installed 
 
 The following steps need to be performed to get the PEP Proxy up and running:
 
-- Download the software, using [GitHub](http://github.com/ging/fi-ware-pep-proxy).
+- Download the software, using [GitHub](http://github.com/ging/fiware-pep-proxy).
 
 <pre>
- git clone https://github.com/ging/fi-ware-pep-proxy
+ git clone https://github.com/ging/fiware-pep-proxy
 </pre>
 
 - Install all required libraries using NPM.
 
 <pre>
- cd fi-ware-pep-proxy
+ cd fiware-pep-proxy
  npm install
 </pre>
 
@@ -52,9 +52,9 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
 <pre>
  var config = {};
 
- config.account_host = 'https://account.lab.fi-ware.org';
+ config.account_host = 'https://account.lab.fiware.org';
 
- config.keystone_host = 'cloud.lab.fi-ware.org';
+ config.keystone_host = 'cloud.lab.fiware.org';
  config.keystone_port = 4731;
 
  config.app_host = 'www.google.es';
@@ -102,7 +102,7 @@ The Sanity Check Procedures are the steps that a System Administrator will take 
 
 ### End to End testing
 
-Requests to proxy should be made with a special HTTP Header: X-Auth-Token. This header contains the OAuth access token obtained from FI-WARE IDM GE.
+Requests to proxy should be made with a special HTTP Header: X-Auth-Token. This header contains the OAuth access token obtained from FIWARE IDM GE.
 
 Example of request:
 

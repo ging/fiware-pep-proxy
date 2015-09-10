@@ -30,13 +30,13 @@ Thanks to this component and together with Identity Management and Authorization
 - Clone Proxy repository:
 
 <pre>
-git clone https://github.com/ging/fi-ware-pep-proxy.git
+git clone https://github.com/ging/fiware-pep-proxy.git
 </pre>
 
 - Install the dependencies:
 
 <pre>
-cd fi-ware-pep-proxy/
+cd fiware-pep-proxy/
 npm install
 </pre>
 
@@ -58,14 +58,14 @@ sudo node server
 
 We also provide a Docker image to facilitate you the building of this GE.
 
-- [Here](https://github.com/ging/fi-ware-pep-proxy/tree/master/docker) you will find the Dockerfile and the documentation explaining how to use it.
-- In [Docker Hub](https://hub.docker.com/r/ging/fi-ware-pep-proxy/) you will find the public image.
+- [Here](https://github.com/ging/fiware-pep-proxy/tree/master/docker) you will find the Dockerfile and the documentation explaining how to use it.
+- In [Docker Hub](https://hub.docker.com/r/ging/fiware-pep-proxy/) you will find the public image.
 
 <a name="def-api"></a>
 ## API Overview
 
 Requests to proxy should be made with a special HTTP Header: X-Auth-Token. 
-This header contains the OAuth access token obtained from FI-WARE IDM GE.
+This header contains the OAuth access token obtained from FIWARE IDM GE.
 
 Example of request:
 
@@ -93,11 +93,11 @@ X-Organizations: organizations in IdM
 <a name="def-advanced"></a>
 ## Advanced Documentation
 
-You can read this advanced documentation in [Read the Docs Wilma project](http://fi-ware-pep-proxy.readthedocs.org/) 
+You can read this advanced documentation in [Read the Docs Wilma project](http://fiware-pep-proxy.readthedocs.org/) 
 
-- [How to run tests](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/admin_guide.md#end-to-end-testing)
-- [User & Programmers Manual](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/user_guide.md)
-- [Installation & Administration Guide](https://github.com/ging/fi-ware-pep-proxy/blob/master/doc/admin_guide.md)
+- [How to run tests](https://github.com/ging/fiware-pep-proxy/blob/master/doc/admin_guide.md#end-to-end-testing)
+- [User & Programmers Manual](https://github.com/ging/fiware-pep-proxy/blob/master/doc/user_guide.md)
+- [Installation & Administration Guide](https://github.com/ging/fiware-pep-proxy/blob/master/doc/admin_guide.md)
 
 <a name="def-license"></a>
 ## License

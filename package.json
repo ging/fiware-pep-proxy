@@ -1,7 +1,7 @@
 {
-  "name": "fi-ware-pep-proxy",
+  "name": "fiware-pep-proxy",
   "version": "0.1.0",
-  "description": "PEP oauth2 authentication proxy for FI-ware GE services",
+  "description": "PEP oauth2 authentication proxy for FIWARE GE services",
   "author": "GING DIT UPM",
   "dependencies": {
     "express": "3.x",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ging/fi-ware-pep-proxy"
+    "url": "https://github.com/ging/fiware-pep-proxy"
   },
   "contributors": [
     {

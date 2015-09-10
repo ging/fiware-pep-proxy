@@ -12,10 +12,10 @@ RUN sudo apt-get update && \
 	sudo apt-get install nodejs git -y
 
 # Download latest version of the code and install npm dependencies
-RUN git clone https://github.com/ging/fi-ware-pep-proxy.git && \
-	cd fi-ware-pep-proxy && \
+RUN git clone https://github.com/ging/fiware-pep-proxy.git && \
+	cd fiware-pep-proxy && \
 	npm install
 
 # Run PEP Proxy
-WORKDIR /opt/fi-ware-pep-proxy
+WORKDIR /opt/fiware-pep-proxy
 CMD ["sudo", "node", "server.js"]

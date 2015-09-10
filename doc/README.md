@@ -6,7 +6,7 @@ You get the reference implementation of PEP Proxy Generic Enabler. Thanks to thi
 
 ## Source code
 
-You can find the source code of this project and the basic documentation in [GitHub](https://github.com/ging/fi-ware-pep-proxy)
+You can find the source code of this project and the basic documentation in [GitHub](https://github.com/ging/fiware-pep-proxy)
 
 ## Documentation  
 
