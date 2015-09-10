@@ -16,6 +16,9 @@
 
 This project is part of [FIWARE](http://fiware.org). You will find more information about this FIWARE GE [here](http://catalogue.fiware.org/enablers/pep-proxy-wilma).
 
+- You will find the source code of this project in GitHub [here](https://github.com/ging/fiware-pep-proxy)
+- You will find the documentation of this project in Read the Docs [here](http://fiware-pep-proxy.readthedocs.org/)
+
 Thanks to this component and together with Identity Management and Authorization PDP GEs, you will add authentication and authorization security to your backend applications. Thus, only FIWARE users will be able to access your GEs or REST services. But you will be able also to manage specific permissions and policies to your resources allowing different access levels to your users.
 
 <a name="def-build"></a>
@@ -93,11 +96,9 @@ X-Organizations: organizations in IdM
 <a name="def-advanced"></a>
 ## Advanced Documentation
 
-You can read this advanced documentation in [Read the Docs Wilma project](http://fiware-pep-proxy.readthedocs.org/) 
-
-- [How to run tests](https://github.com/ging/fiware-pep-proxy/blob/master/doc/admin_guide.md#end-to-end-testing)
-- [User & Programmers Manual](https://github.com/ging/fiware-pep-proxy/blob/master/doc/user_guide.md)
-- [Installation & Administration Guide](https://github.com/ging/fiware-pep-proxy/blob/master/doc/admin_guide.md)
+- [How to run tests](http://fiware-pep-proxy.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
+- [User & Programmers Manual](http://fiware-pep-proxy.readthedocs.org/en/latest/user_guide/)
+- [Installation & Administration Guide](http://fiware-pep-proxy.readthedocs.org/en/latest/admin_guide/)
 
 <a name="def-license"></a>
 ## License
