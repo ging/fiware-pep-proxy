@@ -84,21 +84,19 @@ IDM.authenticate (function (token) {
 
     log.info('Success authenticating PEP proxy. Proxy Auth-token: ', token);
 
-    if (config.https.enabled === true) {
-        var options = {
-            key: fs.readFileSync(config.https.key_file),
-            cert: fs.readFileSync(config.https.cert_file)
-        };
-
-        https.createServer(options, function(req,res) {
-            app.handle(req, res);
-        }).listen(app.get('port'));
-    } else {
-        app.listen(app.get('port'));
-    }
-
 }, function (status, e) {
     log.error('Error in keystone communication', e);
 });
 
+if (config.https.enabled === true) {
+    var options = {
+        key: fs.readFileSync(config.https.key_file),
+        cert: fs.readFileSync(config.https.cert_file)
+    };
 
+    https.createServer(options, function(req,res) {
+        app.handle(req, res);
+    }).listen(app.get('port'));
+} else {
+    app.listen(app.get('port'));
+}
