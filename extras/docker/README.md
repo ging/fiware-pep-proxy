@@ -9,7 +9,7 @@ Both options require that you have [docker](https://docs.docker.com/installation
 
 ## Build your own image and run the container from it
 
-You have to download the [Wilma's code](https://github.com/ging/fiware-pep-proxy) from GitHub and navigate to `docker` directory. There, to compile your own image just run:
+You have to download the [Wilma's code](https://github.com/ging/fiware-pep-proxy) from GitHub and navigate to `extras/docker` directory. There, to compile your own image just run:
 
 	sudo docker build -t pep-proxy-image .
 
