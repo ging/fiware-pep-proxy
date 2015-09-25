@@ -1,0 +1,3 @@
+{
+  "run_list": [ "recipe[fiware-pep-proxy]"]
+}
