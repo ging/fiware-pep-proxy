@@ -7,11 +7,10 @@ bash :set_dependencies do
 end
 
 bash :get_system do
-  apppath =  node[fiware-pep-proxy][:app_dir]
   code <<-EOH
-    cd #{node.default[:app_dir]}
+    cd /opt && \
     sudo git clone https://github.com/ging/fiware-pep-proxy.git && \
-    cd  #{apppath}&& \
+    cd  #{node['fiware-pep-proxy'][:app_dir]}&& \
     sudo npm install &&\
     sudo cp config.js.template config.js
     EOH

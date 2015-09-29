@@ -1,6 +1,4 @@
-cookbook_path [
-                  '/home/ubuntu'
-              ]
-file_cache_path '/home/ubuntu/.cache'
-log_level :info
+cookbook_path '/var/chef/cookbooks'
+file_cache_path '/var/chef/cookbooks/.cache'
+log_level :debug
 log_location STDOUT
