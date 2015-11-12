@@ -12,7 +12,7 @@ Chef must be installed.
 Attributes
 ==========
 
-node[fiware-pep-proxy]['app_dir'] contains the path to install
+node[wilma]['app_dir'] contains the path to install
 
 Usage
 =====

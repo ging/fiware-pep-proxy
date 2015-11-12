@@ -2,6 +2,6 @@
 # attributes to be applied to nodes that run this cookbook.
 
 # Set a default name
-default['fiware-pep-proxy'][:appdir] = "/opt/fiware-pep-proxy"
+default['wilma'][:install_dir] = '/opt/wilma'
 
 # For further information, see the Chef documentation (http://docs.getchef.com/essentials_cookbook_attribute_files.html).
