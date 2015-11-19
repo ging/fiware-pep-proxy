@@ -29,11 +29,15 @@ config.chache_time = 300;
 
 // if enabled PEP checks permissions with AuthZForce GE. 
 // only compatible with oauth2 tokens engine
+//
+// you can use custom policy checks by including programatic scripts 
+// in policies folder. An script template is included there
 config.azf = {
 	enabled: false,
     host: 'auth.lab.fiware.org',
     port: 6019,
-    path: '/authzforce/domains/d698df7f-ffd4-11e4-a09d-ed06f24e1e78/pdp'
+    path: '/authzforce/domains/d698df7f-ffd4-11e4-a09d-ed06f24e1e78/pdp',
+    custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
 };
 
 // list of paths that will not check authentication/authorization

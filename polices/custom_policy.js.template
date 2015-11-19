@@ -1,0 +1,17 @@
+/* 
+Params
+	roles: Array with the list of roles the user has inside app_id
+	req: Req Express 3 object (http://expressjs.com/es/3x/api.html)
+    app_id: Application user is trying to use
+
+Returns
+	xml: XACML 3.0 Request
+
+*/
+exports.getPolicy = function (roles, req, app_id) {
+	var xml;
+
+    // operations
+
+    return xml;
+}
