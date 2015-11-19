@@ -68,6 +68,8 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
  module.exports = config;
 </pre>
 
+The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. Do do so you have to first register an application. The steps can be found [here](http://fiware-idm.readthedocs.org/en/latest/user_guide.html#registering-an-application) 
+
 - Launch the executable by running the next command with administrative permissions as it is going to be run on TCP Port 80:
 
 <pre>
