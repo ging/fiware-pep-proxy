@@ -9,8 +9,7 @@ config.https = config.https || {};
 
 var log = require('./lib/logger').logger.getLogger("Server");
 
-var express = require('express'),
-    XMLHttpRequest = require("./lib/xmlhttprequest").XMLHttpRequest;
+var express = require('express');
 
 process.on('uncaughtException', function (err) {
   log.error('Caught exception: ' + err);
@@ -22,14 +21,13 @@ var app = express();
 //app.use(express.bodyParser());
 
 app.use (function(req, res, next) {
-    var data='';
-    req.setEncoding('utf8');
+    var bodyChunks = [];
     req.on('data', function(chunk) { 
-       data += chunk;
+       bodyChunks.push(chunk);
     });
 
     req.on('end', function() {
-        req.body = data;
+        req.body = Buffer.concat(bodyChunks);
         next();
     });
 });
