@@ -7,7 +7,20 @@ Params
 Returns
 	xml: XACML 3.0 Request
 
+Notes
+
+	1. xml2json can be used to convert a JSON object in XML string: 
+
+		var xml = xml2json.toXml(JSON_XACMLPolicy)
+
+	2. escapeXML can be used to escape caracteres:
+
+		var escaped = escapeXML(string);
 */
+
+var xml2json = require('xml2json'),
+    escapeXML = require('escape-html');
+
 exports.getPolicy = function (roles, req, app_id) {
 	var xml;
 
