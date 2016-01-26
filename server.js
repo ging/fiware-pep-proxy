@@ -2,7 +2,8 @@ var config = require('./config'),
     fs = require('fs'),
     https = require('https'),
     Root = require('./controllers/root').Root,
-    IDM = require("./lib/idm.js").IDM;
+    IDM = require("./lib/idm.js").IDM,
+    errorhandler = require('errorhandler');
 
 config.azf = config.azf || {};
 config.https = config.https || {};
@@ -32,15 +33,7 @@ app.use (function(req, res, next) {
     });
 });
 
-app.configure(function () {
-    "use strict";
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-    //app.use(express.logger());
-    //app.use(express.static(__dirname + dirName));
-    //app.set('views', __dirname + '/../views/');
-    //disable layout
-    //app.set("view options", {layout: false});
-});
+app.use(errorhandler({log: log.error}))
 
 app.use(function (req, res, next) {
     "use strict";
