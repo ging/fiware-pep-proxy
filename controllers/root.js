@@ -48,6 +48,9 @@ var Root = (function() {
                         if (status === 401) {
                             log.error('User access-token not authorized: ', e);
                             res.send(401, 'User token not authorized');
+                        } else if (status === 404) {
+                            log.error('Domain not found: ', e);
+                            res.send(404, e);
                         } else {
                             log.error('Error in AZF communication ', e);
                             res.send(503, 'Error in AZF communication');

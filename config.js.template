@@ -36,7 +36,7 @@ config.azf = {
 	enabled: false,
     host: 'auth.lab.fiware.org',
     port: 6019,
-    path: '/authzforce/domains/d698df7f-ffd4-11e4-a09d-ed06f24e1e78/pdp',
+    path: '/authzforce/domains/',
     custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
 };
 
