@@ -1,1 +1,8 @@
+site_name: Fiware-Pep-Proxy
+site_url: http://fiware-pep-proxy.readthedocs.org
+repo_url: https://github.com/ging/fiware-pep-proxy
+site_description: Pep Proxy Wilma Documentation
+docs_dir: doc
+site_dir: html
+theme: readthedocs
 extra_css: ["https://fiware.org/style/fiware_readthedocs.css"]
