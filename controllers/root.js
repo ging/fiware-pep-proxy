@@ -7,6 +7,9 @@ var log = require('./../lib/logger').logger.getLogger("Root");
 
 var Root = (function() {
 
+    //{token: {user_info: {}, date: Date, verb1: [res1, res2, ..], verb2: [res3, res4, ...]}}
+    var tokens_cache = {};
+
     var pep = function(req, res) {
     	
     	var auth_token = req.headers['x-auth-token'];
@@ -56,7 +59,7 @@ var Root = (function() {
                             res.send(503, 'Error in AZF communication');
                         }
 
-                    });
+                    }, tokens_cache);
                 } else {
                     redir_request(req, res, user_info);
                 }
@@ -70,7 +73,7 @@ var Root = (function() {
                     log.error('Error in IDM communication ', e);
                     res.send(503, 'Error in IDM communication');
                 }
-    		});
+    		}, tokens_cache);
     	};	
     };
 
