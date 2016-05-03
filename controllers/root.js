@@ -95,8 +95,8 @@ var Root = (function() {
             } else {
                 req.headers['X-Nick-Name'] = user_info.id;
                 req.headers['X-Display-Name'] = user_info.displayName;
-                req.headers['X-Roles'] = user_info.roles;
-                req.headers['X-Organizations'] = user_info.organizations;
+                req.headers['X-Roles'] = JSON.stringify(user_info.roles);
+                req.headers['X-Organizations'] = JSON.stringify(user_info.organizations);
             }
         } else {
             log.info('Public path. Redirecting to app...');
