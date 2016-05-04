@@ -9,7 +9,9 @@
     "log4js": "0.6.x",
     "escape-html": "1.0.3",
     "xmlhttprequest": "1.8.0",
-    "errorhandler": "1.x"
+    "errorhandler": "1.x",
+    "should":"~4.0.4",
+    "mocha":"~1.20.1"
   },
   "repository": {
     "type": "git",
@@ -24,5 +26,9 @@
       "name": "Javier Cerviño",
       "email": "jcervino@dit.upm.es"
     }
-  ]
+  ],
+  "scripts": {
+    "start": "node server.js",
+    "test": "./node_modules/.bin/mocha sanity/test.js -R spec"
+  }
 }
