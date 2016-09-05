@@ -34,6 +34,7 @@ config.chache_time = 300;
 // in policies folder. An script template is included there
 config.azf = {
 	enabled: false,
+	protocol: 'https',
     host: 'auth.lab.fiware.org',
     port: 6019,
     custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
