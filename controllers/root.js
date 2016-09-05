@@ -66,7 +66,11 @@ var Root = (function() {
 
 
     		}, function (status, e) {
-    			if (status === 404) {
+                if (status === 404) {
+                    log.error('Page not found.');
+                    res.send(404, 'Page not found');
+                }
+    			else if (status === 401) {
                     log.error('User access-token not authorized');
                     res.send(401, 'User token not authorized');
                 } else {
