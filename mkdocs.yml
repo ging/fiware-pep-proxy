@@ -6,3 +6,4 @@ docs_dir: doc
 site_dir: html
 theme: readthedocs
 extra_css: ["https://fiware.org/style/fiware_readthedocs.css"]
+google_analytics: ['UA-83727401-3', 'fiware-pep-proxy.readthedocs.io']
