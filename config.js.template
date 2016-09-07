@@ -25,7 +25,7 @@ config.username = '';
 config.password = '';
 
 // in seconds
-config.chache_time = 300;
+config.cache_time = 300;
 
 // if enabled PEP checks permissions with AuthZForce GE. 
 // only compatible with oauth2 tokens engine
