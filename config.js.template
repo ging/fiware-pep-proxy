@@ -1,5 +1,6 @@
 var config = {};
 
+// Used only if https is disabled
 config.pep_port = 80;
 
 // Set this var to undefined if you don't want the server to listen on HTTPS
