@@ -1,5 +1,6 @@
 var config = {};
 
+// Used only if https is disabled
 config.pep_port = 80;
 
 // Set this var to undefined if you don't want the server to listen on HTTPS
@@ -25,7 +26,7 @@ config.username = '';
 config.password = '';
 
 // in seconds
-config.chache_time = 300;
+config.cache_time = 300;
 
 // if enabled PEP checks permissions with AuthZForce GE. 
 // only compatible with oauth2 tokens engine
@@ -34,6 +35,7 @@ config.chache_time = 300;
 // in policies folder. An script template is included there
 config.azf = {
 	enabled: false,
+	protocol: 'https',
     host: 'auth.lab.fiware.org',
     port: 6019,
     custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
