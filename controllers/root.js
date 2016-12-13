@@ -23,7 +23,7 @@ var Root = (function() {
             log.error('Auth-token not found in request header');
             var auth_header = 'IDM uri = ' + config.account_host;
             res.set('WWW-Authenticate', auth_header);
-    		res.send(401, 'Auth-token not found in request header');
+    		res.status(401).send('Auth-token not found in request header');
     	} else {
 
             if (config.magic_key && config.magic_key === auth_token) {
@@ -50,13 +50,13 @@ var Root = (function() {
                     }, function (status, e) {
                         if (status === 401) {
                             log.error('User access-token not authorized: ', e);
-                            res.send(401, 'User token not authorized');
+                            res.status(401).send('User token not authorized');
                         } else if (status === 404) {
                             log.error('Domain not found: ', e);
-                            res.send(404, e);
+                            res.status(404).send(e);
                         } else {
                             log.error('Error in AZF communication ', e);
-                            res.send(503, 'Error in AZF communication');
+                            res.status(503).send('Error in AZF communication');
                         }
 
                     }, tokens_cache);
@@ -68,10 +68,10 @@ var Root = (function() {
     		}, function (status, e) {
     			if (status === 404) {
                     log.error('User access-token not authorized');
-                    res.send(401, 'User token not authorized');
+                    res.status(401).send('User token not authorized');
                 } else {
                     log.error('Error in IDM communication ', e);
-                    res.send(503, 'Error in IDM communication');
+                    res.status(503).send('Error in IDM communication');
                 }
     		}, tokens_cache);
     	};	
