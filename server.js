@@ -22,13 +22,16 @@ var app = express();
 //app.use(express.bodyParser());
 
 app.use (function(req, res, next) {
+
     var bodyChunks = [];
     req.on('data', function(chunk) { 
        bodyChunks.push(chunk);
     });
 
     req.on('end', function() {
-        req.body = Buffer.concat(bodyChunks);
+        if (bodyChunks.length > 0) {
+            req.body = Buffer.concat(bodyChunks);
+        };
         next();
     });
 });
