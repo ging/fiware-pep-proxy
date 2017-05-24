@@ -97,7 +97,7 @@ var Root = (function() {
                 req.headers['X-Display-Name'] = user_info.displayName;
                 req.headers['X-Roles'] = JSON.stringify(user_info.roles);
                 req.headers['X-Organizations'] = JSON.stringify(user_info.organizations);
-				req.headers['X-App-Id'] = user_info.app_id;
+                req.headers['X-App-Id'] = user_info.app_id;
             }
         } else {
             log.info('Public path. Redirecting to app...');
