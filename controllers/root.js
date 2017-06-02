@@ -39,16 +39,23 @@ var Root = (function() {
 
             }
 
-    		IDM.check_token(auth_token, function (user_info) {
-
+    		IDM.check_token(auth_token, function (user_info) {                
+                
                 if (config.azf.enabled) {
                     
                     AZF.check_permissions(auth_token, user_info, req, function () {
-
-                        redir_request(req, res, user_info);
-
+                        if (config.work_mode && config.work_mode === 'validate'){
+                            redir_request_validate(req, res, user_info);
+                        } else if (config.work_mode &&  config.work_mode === 'proxy'){
+                            redir_request(req, res, user_info);
+                        }
                     }, function (status, e) {
-                        if (status === 401) {
+
+                        if (status === 401 && config.work_mode && config.work_mode === 'validate') {
+                            log.error('User access-token not authorized: ', e);
+                            res.status(401).send('0');
+                        } else if (status === 401 && config.work_mode && config.work_mode === 'proxy') {
+
                             log.error('User access-token not authorized: ', e);
                             res.status(401).send('User token not authorized');
                         } else if (status === 404) {
@@ -61,12 +68,20 @@ var Root = (function() {
 
                     }, tokens_cache);
                 } else {
-                    redir_request(req, res, user_info);
+
+                    if (config.work_mode && config.work_mode === 'validate'){
+                        redir_request_validate(req, res, user_info);
+                    } else if (config.work_mode && config.work_mode === 'proxy'){
+                        redir_request(req, res, user_info);
+                    }
                 }
-
-
     		}, function (status, e) {
-    			if (status === 404) {
+
+    		   	if (status === 404 && config.work_mode && config.work_mode === 'validate') {
+                    log.error('User access-token not authorized: ', e);
+                    res.status(401).send('0');
+    			} else if (status === 404 && config.work_mode && config.work_mode === 'proxy') {
+
                     log.error('User access-token not authorized');
                     res.status(401).send('User token not authorized');
                 } else {
@@ -84,12 +99,10 @@ var Root = (function() {
     var redir_request = function (req, res, user_info) {
 
         if (user_info) {
-
             log.info('Access-token OK. Redirecting to app...');
-
-            if (config.tokens_engine === 'keystone') {
+			if (config.tokens_engine === 'keystone') {
                 req.headers['X-Nick-Name'] = user_info.token.user.id;
-                req.headers['X-Display-Name'] = user_info.token.user.id;
+				req.headers['X-Display-Name'] = user_info.token.user.id;
                 req.headers['X-Roles'] = user_info.token.roles;
                 req.headers['X-Organizations'] = user_info.token.project;
             } else {
@@ -112,6 +125,11 @@ var Root = (function() {
             headers: proxy.getClientIp(req, req.headers)
         };
         proxy.sendData(protocol, options, req.body, res);
+    };
+    var redir_request_validate = function (req, res, user_info) {
+            if (user_info) {
+                res.status(200).send('1');
+            }
     };
 
     return {
