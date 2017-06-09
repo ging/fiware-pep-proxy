@@ -23,7 +23,7 @@ var Root = (function() {
             log.error('Auth-token not found in request header');
             var auth_header = 'IDM uri = ' + config.account_host;
             res.set('WWW-Authenticate', auth_header);
-	    res.status(401).send('Auth-token not found in request header');
+	     res.status(401).send('Auth-token not found in request header');
     	} else {
 
             if (config.work_mode === 'validate' && config.magic_key && config.magic_key === auth_token){
@@ -78,10 +78,10 @@ var Root = (function() {
                 }
     		}, function (status, e) {
 
-    		if (status === 404 && config.work_mode === 'validate') {
+    		 if (status === 404 && config.work_mode === 'validate') {
                     log.error('User access-token not authorized: ', e);
                     res.status(401).send('User access-token not authorized');
-    		} else if (status === 404 ) {
+    		 } else if (status === 404 ) {
                     log.error('User access-token not authorized');
                     res.status(401).send('User token not authorized');
                 } else {
@@ -100,9 +100,9 @@ var Root = (function() {
 
         if (user_info) {
             log.info('Access-token OK. Redirecting to app...');
-	    if (config.tokens_engine === 'keystone') {
+	     if (config.tokens_engine === 'keystone') {
                 req.headers['X-Nick-Name'] = user_info.token.user.id;
-		req.headers['X-Display-Name'] = user_info.token.user.id;
+		 req.headers['X-Display-Name'] = user_info.token.user.id;
                 req.headers['X-Roles'] = user_info.token.roles;
                 req.headers['X-Organizations'] = user_info.token.project;
             } else {
@@ -131,7 +131,7 @@ var Root = (function() {
             if (user_info) {
                 if (config.tokens_engine === 'keystone') {
                     info.Nick_Name = user_info.token.user.id;
-            	    info.Display_Name = user_info.token.user.id;
+            	     info.Display_Name = user_info.token.user.id;
                     info.Roles = user_info.token.roles;
                     info.Organizations = user_info.token.project;
                 } else {
