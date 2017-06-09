@@ -23,7 +23,7 @@ var Root = (function() {
             log.error('Auth-token not found in request header');
             var auth_header = 'IDM uri = ' + config.account_host;
             res.set('WWW-Authenticate', auth_header);
-    		res.status(401).send('Auth-token not found in request header');
+	    res.status(401).send('Auth-token not found in request header');
     	} else {
 
             if (config.work_mode === 'validate' && config.magic_key && config.magic_key === auth_token){
