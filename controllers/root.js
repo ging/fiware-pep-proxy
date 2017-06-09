@@ -26,7 +26,9 @@ var Root = (function() {
     		res.status(401).send('Auth-token not found in request header');
     	} else {
 
-            if (config.magic_key && config.magic_key === auth_token) {
+            if (config.work_mode === 'validate' && config.magic_key && config.magic_key === auth_token){
+                res.status(200).send('Access-token OK')
+            } else if ( config.magic_key && config.magic_key === auth_token) {
                 var options = {
                     host: config.app_host,
                     port: config.app_port,
@@ -42,13 +44,19 @@ var Root = (function() {
     		IDM.check_token(auth_token, function (user_info) {
 
                 if (config.azf.enabled) {
-                    
+
                     AZF.check_permissions(auth_token, user_info, req, function () {
-
-                        redir_request(req, res, user_info);
-
+                        if (config.work_mode === 'validate'){
+                            redir_request_validate(req, res, user_info);
+                        } else {
+                            redir_request(req, res, user_info);
+                        }
                     }, function (status, e) {
-                        if (status === 401) {
+
+                        if (status === 401 && config.work_mode === 'validate') {
+                            log.error('User access-token not authorized: ', e);
+                            res.status(401).send('User access-token not authorized');
+                        } else if (status === 401 ) {
                             log.error('User access-token not authorized: ', e);
                             res.status(401).send('User token not authorized');
                         } else if (status === 404) {
@@ -61,12 +69,19 @@ var Root = (function() {
 
                     }, tokens_cache);
                 } else {
-                    redir_request(req, res, user_info);
+
+                    if (config.work_mode === 'validate'){
+                        redir_request_validate(req, res, user_info);
+                    } else {
+                        redir_request(req, res, user_info);
+                    }
                 }
-
-
     		}, function (status, e) {
-    			if (status === 404) {
+
+    		if (status === 404 && config.work_mode === 'validate') {
+                    log.error('User access-token not authorized: ', e);
+                    res.status(401).send('User access-token not authorized');
+    		} else if (status === 404 ) {
                     log.error('User access-token not authorized');
                     res.status(401).send('User token not authorized');
                 } else {
@@ -74,7 +89,7 @@ var Root = (function() {
                     res.status(503).send('Error in IDM communication');
                 }
     		}, tokens_cache);
-    	};	
+    	};
     };
 
     var public = function(req, res) {
@@ -84,12 +99,10 @@ var Root = (function() {
     var redir_request = function (req, res, user_info) {
 
         if (user_info) {
-
             log.info('Access-token OK. Redirecting to app...');
-
-            if (config.tokens_engine === 'keystone') {
+	    if (config.tokens_engine === 'keystone') {
                 req.headers['X-Nick-Name'] = user_info.token.user.id;
-                req.headers['X-Display-Name'] = user_info.token.user.id;
+		req.headers['X-Display-Name'] = user_info.token.user.id;
                 req.headers['X-Roles'] = user_info.token.roles;
                 req.headers['X-Organizations'] = user_info.token.project;
             } else {
@@ -112,6 +125,23 @@ var Root = (function() {
             headers: proxy.getClientIp(req, req.headers)
         };
         proxy.sendData(protocol, options, req.body, res);
+    };
+    var redir_request_validate = function (req, res, user_info) {
+            var info = {Nick_Name:'',Display_Name:'',Roles:'',Organizations:''};
+            if (user_info) {
+                if (config.tokens_engine === 'keystone') {
+                    info.Nick_Name = user_info.token.user.id;
+            	    info.Display_Name = user_info.token.user.id;
+                    info.Roles = user_info.token.roles;
+                    info.Organizations = user_info.token.project;
+                } else {
+                    info.Nick_Name = user_info.id;
+                    info.Display_Name = user_info.displayName;
+                    info.Roles = user_info.roles;
+                    info.Organizations = user_info.organizations;
+                }
+                res.status(200).send('Access-token OK sending user information: '+JSON.stringify(info));
+            }
     };
 
     return {

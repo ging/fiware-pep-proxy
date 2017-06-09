@@ -2,6 +2,8 @@ var config = {};
 
 // Used only if https is disabled
 config.pep_port = 80;
+// Define the work mode as 'proxy' or 'validate'
+config.work_mode = 'proxy';
 
 // Set this var to undefined if you don't want the server to listen on HTTPS
 config.https = {
