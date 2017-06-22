@@ -32,8 +32,8 @@ Thanks to this component and together with Identity Management and Authorization
 
 - Software requirements:
 
-	+ nodejs 
-	+ npm
+	+ nodejs >= v0.10.37
+	+ npm >= 1.3.6
 	Note: Both can be installed from (http://nodejs.org/download/)
 
 - Clone Proxy repository:
