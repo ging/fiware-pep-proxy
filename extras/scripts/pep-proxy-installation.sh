@@ -8,7 +8,7 @@ sudo apt-get update && \
 	sudo apt-get install nodejs git -y
 
 # Download latest version of the code and install npm dependencies
-git clone --branch 4.4.1 https://github.com/ging/fiware-pep-proxy.git && \
+git clone --branch 6.2 https://github.com/ging/fiware-pep-proxy.git && \
 	cd fiware-pep-proxy && \
 	npm install
 
