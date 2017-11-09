@@ -17,7 +17,7 @@
 
 ## Introduction
 
-Welcome to the User and Programmer Guide of the PEP Proxy GE. PEP Proxy provides a security layer for adding authentication and authorization filters to FIWARE GEs and any backend service. It is the PEP (Police Enforcement Point) of the FIWARE Security Chapter. So together with Identity Management and Authorization PDP GEs provides security to FIWARE backends.
+Welcome to the Installation and Administration Guide of the PEP Proxy GE. PEP Proxy provides a security layer for adding authentication and authorization filters to FIWARE GEs and any backend service. It is the PEP (Police Enforcement Point) of the FIWARE Security Chapter. So together with Identity Management and Authorization PDP GEs provides security to FIWARE backends.
 
 **Note:** The PEP Proxy GE is a backend component, therefore for this GE there is no need to provide a user guide.
 
@@ -68,7 +68,19 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
  module.exports = config;
 </pre>
 
-The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. Do do so you have to first register an application. The steps can be found [here](http://fiware-idm.readthedocs.org/en/latest/user_guide.html#registering-an-application) 
+The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. Do do so you have to first register an application. The steps can be found [here](http://fiware-idm.readthedocs.org/en/latest/user_guide.html#registering-an-application).
+
+You can also configure the connection to an [Authorization PDP GE](http://catalogue.fiware.org/enablers/authorization-pdp-authzforce) instance to validate authorization in your application ([levels 2 and 3 of authorization](user_guide/#level-2-basic-authorization)):
+
+<pre>
+	config.azf = {
+		enabled: true,
+		protocol: 'http',
+	    host: 'azf_host',
+	    port: 6019,
+	    custom_policy: undefined
+	};
+</pre>
 
 - Launch the executable by running the next command with administrative permissions as it is going to be run on TCP Port 80:
 
