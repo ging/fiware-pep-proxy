@@ -67,7 +67,7 @@ for (var p in config.public_paths) {
 
 app.all('/*', Root.pep);
 
-log.info('Starting PEP proxy in port ' + port + '. Keystone authentication ...');
+log.info('Starting PEP proxy in port ' + port + '. IdM authentication ...');
 
 IDM.authenticate (function (token) {
 
