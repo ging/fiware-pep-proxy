@@ -67,7 +67,7 @@ var Root = (function() {
 
 
     		}, function (status, e) {
-    			if (status === 404) {
+    			if (status === 404 || status === 401) {
                     log.error('User access-token not authorized');
                     res.status(401).send('User token not authorized');
                 } else {

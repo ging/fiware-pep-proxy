@@ -54,11 +54,12 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
 
  config.idm_host = 'https://account.lab.fiware.org';
 
- config.app_host = 'www.google.es';
- config.app_port = '80';
+ config.app.host = 'www.google.es';
+ config.app.port = '80';
 
- config.username = 'pepProxy';
- config.password = 'pepProxy';
+ config.pep.app_id = 'my_app_id';
+ config.pep.username = 'pepProxy';
+ config.pep.password = 'pepProxy';
 
  config.check_permissions = false;
 
@@ -72,7 +73,7 @@ You can also configure the connection to an [Authorization PDP GE](http://catalo
 <pre>
 	config.azf = {
 		enabled: true,
-		protocol: 'http',
+		ssl: false,
 	    host: 'azf_host',
 	    port: 6019,
 	    custom_policy: undefined

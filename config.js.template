@@ -24,9 +24,12 @@ config.app = {
 }
 
 
-// Credentials obtained when registering PEP Proxy in Account Portal
-config.username = '';
-config.password = '';
+// Credentials obtained when registering PEP Proxy in app_id in Account Portal
+config.pep = {
+	app_id: '',
+	username: '',
+	password: ''
+}
 
 // in seconds
 config.cache_time = 300;
