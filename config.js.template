@@ -11,15 +11,18 @@ config.https = {
     port: 443
 };
 
-config.account_host = 'https://account.lab.fiware.org';
+config.idm = {
+	host: 'account.lab.fiware.org',
+	port: 443,
+	ssl: true
+}
 
-config.keystone_host = 'account.lab.fiware.org';
-config.keystone_port = 4731;
+config.app = {
+	host: 'www.google.es',
+	port: '80',
+	ssl: false // Use true if the app server listens in https
+}
 
-config.app_host = 'www.google.es';
-config.app_port = '80';
-// Use true if the app server listens in https
-config.app_ssl = false;
 
 // Credentials obtained when registering PEP Proxy in Account Portal
 config.username = '';
@@ -44,9 +47,6 @@ config.azf = {
 // list of paths that will not check authentication/authorization
 // example: ['/public/*', '/static/css/']
 config.public_paths = [];
-
-// options: oauth2/keystone
-config.tokens_engine = 'oauth2';
 
 config.magic_key = undefined;
 

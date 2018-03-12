@@ -52,10 +52,7 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
 <pre>
  var config = {};
 
- config.account_host = 'https://account.lab.fiware.org';
-
- config.keystone_host = 'cloud.lab.fiware.org';
- config.keystone_port = 4731;
+ config.idm_host = 'https://account.lab.fiware.org';
 
  config.app_host = 'www.google.es';
  config.app_port = '80';

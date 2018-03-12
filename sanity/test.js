@@ -12,14 +12,6 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
 
     describe('Testing Keystone configuration', function() {
 
-		it('should have Keystone configured', function (done) {
-			if (config.keystone_host !== undefined && config.keystone_host !== '') {
-				if (config.keystone_port !== undefined && config.keystone_port !== '') {
-					done();
-				}
-			}
-		});
-
 		it('should have PEP user configured', function (done) {
 			if (config.username !== undefined && config.username !== '') {
 				if (config.password !== undefined && config.password !== '') {

@@ -67,11 +67,6 @@ for (var p in config.public_paths) {
 
 app.all('/*', Root.pep);
 
-if (config.tokens_engine === 'keystone' && config.azf.enabled === true) {
-    log.error('Keystone token engine is not compatible with AuthZForce. Please review configuration file.');
-    return;
-}
-
 log.info('Starting PEP proxy in port ' + port + '. Keystone authentication ...');
 
 IDM.authenticate (function (token) {
