@@ -11,8 +11,8 @@
     "escape-html": "1.0.3",
     "xmlhttprequest": "1.8.0",
     "errorhandler": "1.x",
-    "should":"~4.0.4",
-    "mocha":"~1.20.1"
+    "should": "~4.0.4",
+    "mocha": "~1.20.1"
   },
   "repository": {
     "type": "git",
