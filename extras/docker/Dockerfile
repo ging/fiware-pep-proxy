@@ -17,7 +17,6 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
 # Download latest version of the code and install npm dependencies
 RUN git clone https://github.com/ging/fiware-pep-proxy.git && \
     cd fiware-pep-proxy && \
-    git checkout tags/7.0.0 && \
     npm install
 
 # Run PEP Proxy
