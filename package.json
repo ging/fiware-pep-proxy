@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "PEP oauth2 authentication proxy for FIWARE GE services",
   "author": "GING DIT UPM",
+  "license": "MIT",
   "dependencies": {
     "express": "4.x",
     "xml2json": "0.9.0",
