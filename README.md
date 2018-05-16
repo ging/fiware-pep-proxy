@@ -1,4 +1,4 @@
-#PEP Proxy - Wilma
+# PEP Proxy - Wilma
 
 [![License badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Documentation badge](https://img.shields.io/badge/docs-stable-brightgreen.svg?style=flat)](http://fiware-pep-proxy.readthedocs.org/en/stable/)
