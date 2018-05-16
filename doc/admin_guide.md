@@ -66,7 +66,7 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
  module.exports = config;
 </pre>
 
-The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. Do do so you have to first register an application. The steps can be found [here](http://fiware-idm.readthedocs.org/en/latest/user_guide.html#registering-an-application).
+The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. To do so, you have to first register an application. The steps can be found [here](http://fiware-idm.readthedocs.io/en/latest/user_guide/#def-register-pep-and-iot).
 
 You can also configure the connection to an [Authorization PDP GE](http://catalogue.fiware.org/enablers/authorization-pdp-authzforce) instance to validate authorization in your application ([levels 2 and 3 of authorization](user_guide/#level-2-basic-authorization)):
 
