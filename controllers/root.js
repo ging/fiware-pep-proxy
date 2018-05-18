@@ -12,7 +12,8 @@ var Root = (function() {
 
     var pep = function(req, res) {
     	
-    	var auth_token = req.headers['x-auth-token'];
+        var token_header = req.headers['authorization'];
+        var auth_token = token_header ? token_header.split('Bearer ')[1] : req.headers['x-auth-token'];
 
         if (auth_token === undefined && req.headers['authorization'] !== undefined) {
             var header_auth = req.headers['authorization'].split(' ')[1];
