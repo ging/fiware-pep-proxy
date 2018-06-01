@@ -41,9 +41,20 @@ var Root = (function() {
 
             }
 
-    		IDM.check_token(auth_token, function (user_info) {
+            var action = undefined
+            var resource = undefined
+            var authzforce = undefined
 
-                if (config.azf.enabled) {
+            if (config.idm.enabled_authorization === 'basic') {
+                action = req.method;
+                resource = req.url.split('?')[0].substring(1, req.url.split('?')[0].length);
+            } else if (config.idm.enabled_authorization === 'advanced') {
+                authzforce = true
+            }
+
+    		IDM.check_token(auth_token, action, resource, authzforce, function (user_info) {
+
+                if (config.idm.enabled_authorization === 'advanced') {
                     
                     AZF.check_permissions(auth_token, user_info, req, function () {
 
@@ -68,9 +79,13 @@ var Root = (function() {
 
 
     		}, function (status, e) {
+
     			if (status === 404 || status === 401) {
-                    log.error('User access-token not authorized');
-                    res.status(401).send('User token not authorized');
+                    var error = (e.message)
+                        ? e.message
+                        : 'User access-token not authorized'
+                    log.error(error);
+                    res.status(401).send(error);
                 } else {
                     log.error('Error in IDM communication ', e);
                     res.status(503).send('Error in IDM communication');
