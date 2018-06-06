@@ -45,47 +45,64 @@ var Root = (function() {
             var resource = undefined
             var authzforce = undefined
 
-            if (config.idm.enabled_authorization === 'basic') {
-                action = req.method;
-                resource = req.url.split('?')[0].substring(1, req.url.split('?')[0].length);
-            } else if (config.idm.enabled_authorization === 'advanced') {
-                authzforce = true
+            if (config.authorization.enabled) {
+                if (config.authorization.pdp === 'authzforce') {
+                    authzforce = true
+                } else {
+                    action = req.method;
+                    resource = req.path;
+                }
             }
 
     		IDM.check_token(auth_token, action, resource, authzforce, function (user_info) {
 
-                if (config.idm.enabled_authorization === 'advanced') {
-                    
-                    AZF.check_permissions(auth_token, user_info, req, function () {
+                // Set headers with user information
+                req.headers['X-Nick-Name'] = user_info.id;
+                req.headers['X-Display-Name'] = user_info.displayName;
+                req.headers['X-Roles'] = JSON.stringify(user_info.roles);
+                req.headers['X-Organizations'] = JSON.stringify(user_info.organizations);
 
-                        redir_request(req, res, user_info);
+                if (config.authorization.enabled) {
 
-                    }, function (status, e) {
-                        if (status === 401) {
-                            log.error('User access-token not authorized: ', e);
-                            res.status(401).send('User token not authorized');
-                        } else if (status === 404) {
-                            log.error('Domain not found: ', e);
-                            res.status(404).send(e);
+                    if (config.authorization.pdp === 'authzforce') {
+                       
+                        // Check decision through authzforce
+                        AZF.check_permissions(auth_token, user_info, req, function () {
+
+                            redir_request(req, res, user_info);
+
+                        }, function (status, e) {
+                            if (status === 401) {
+                                log.error('User access-token not authorized: ', e);
+                                res.status(401).send('User token not authorized');
+                            } else if (status === 404) {
+                                log.error('Domain not found: ', e);
+                                res.status(404).send(e);
+                            } else {
+                                log.error('Error in AZF communication ', e);
+                                res.status(503).send('Error in AZF communication');
+                            }
+
+                        }, tokens_cache);
+                    } else {
+
+                        // Check decision through idm
+                        if (user_info.authorization_decision === "Permit") {
+                            redir_request(req, res, user_info);
                         } else {
-                            log.error('Error in AZF communication ', e);
-                            res.status(503).send('Error in AZF communication');
+                            res.status(401).send('User access-token not authorized');
                         }
 
-                    }, tokens_cache);
+                    }
                 } else {
                     redir_request(req, res, user_info);
                 }
 
-
     		}, function (status, e) {
 
     			if (status === 404 || status === 401) {
-                    var error = (e.message)
-                        ? e.message
-                        : 'User access-token not authorized'
-                    log.error(error);
-                    res.status(401).send(error);
+                    log.error(e);
+                    res.status(401).send(e);
                 } else {
                     log.error('Error in IDM communication ', e);
                     res.status(503).send('Error in IDM communication');
@@ -101,13 +118,7 @@ var Root = (function() {
     var redir_request = function (req, res, user_info) {
 
         if (user_info) {
-
             log.info('Access-token OK. Redirecting to app...');
-
-            req.headers['X-Nick-Name'] = user_info.id;
-            req.headers['X-Display-Name'] = user_info.displayName;
-            req.headers['X-Roles'] = JSON.stringify(user_info.roles);
-            req.headers['X-Organizations'] = JSON.stringify(user_info.organizations);
         } else {
             log.info('Public path. Redirecting to app...');
         }

@@ -35,18 +35,24 @@ config.pep = {
 // in seconds
 config.cache_time = 300;
 
-// if enabled PEP checks permissions with AuthZForce GE. 
-// only compatible with oauth2 tokens engine
-//
-// you can use custom policy checks by including programatic scripts 
-// in policies folder. An script template is included there
-config.azf = {
+// if enabled PEP checks permissions in two ways:
+//  - With IdM: only allow basic authorization
+//  - With Authzforce: allow basic and advanced authorization. 
+//	  For advanced authorization, you can use custom policy checks by including programatic scripts 
+//    in policies folder. An script template is included there 
+// 
+//	This is only compatible with oauth2 tokens engine
+
+config.authorization = {
 	enabled: false,
-	protocol: 'https',
-    host: 'auth.lab.fiware.org',
-    port: 6019,
-    custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
-};
+	pdp: 'idm', 	// idm|authzforce  
+	azf: {
+		protocol: 'http',
+	    host: 'localhost',
+	    port: 8080,
+	    custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
+	} 
+}
 
 // list of paths that will not check authentication/authorization
 // example: ['/public/*', '/static/css/']

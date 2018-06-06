@@ -74,7 +74,7 @@ IDM.authenticate (function (token) {
     log.info('Success authenticating PEP proxy. Proxy Auth-token: ', token);
 
 }, function (status, e) {
-    log.error('Error in keystone communication', e);
+    log.error('Error in IDM communication', e);
 });
 
 if (config.https.enabled === true) {
