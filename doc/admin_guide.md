@@ -1,3 +1,4 @@
+
 # Installation and Administration Guide
 
 - [Introduction](#introduction)
@@ -68,17 +69,24 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
 
 The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. To do so, you have to first register an application. The steps can be found [here](http://fiware-idm.readthedocs.io/en/latest/user_guide/#def-register-pep-and-iot).
 
-You can also configure the connection to an [Authorization PDP GE](http://catalogue.fiware.org/enablers/authorization-pdp-authzforce) instance to validate authorization in your application ([levels 2 and 3 of authorization](user_guide/#level-2-basic-authorization)):
+You can also configure Pep Proxy to validate authorization in your application ([levels 2 and 3 of authorization](user_guide/#level-2-basic-authorization)). If enabled PEP checks permissions in two ways:
+ - With IdM: only allow basic authorization
+ - With [Authorization PDP GE](http://catalogue.fiware.org/enablers/authorization-pdp-authzforce): allow basic and advanced authorization. For advanced authorization, you can use custom policy checks by including programatic scripts in policies folder. An script template is included there.
 
 <pre>
-	config.azf = {
-		enabled: true,
-		ssl: false,
-	    host: 'azf_host',
-	    port: 6019,
-	    custom_policy: undefined
-	};
+config.authorization = {
+    enabled: false,
+    pdp: 'idm',     // idm|authzforce  
+    azf: {
+        protocol: 'http',
+        host: 'localhost',
+        port: 8080,
+        custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
+    } 
+}
 </pre>
+
+This is only compatible with oauth2 tokens engine
 
 - Launch the executable by running the next command with administrative permissions as it is going to be run on TCP Port 80:
 
