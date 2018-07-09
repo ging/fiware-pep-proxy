@@ -45,7 +45,7 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
 
 describe('Sanity Checks for Wilma PEP Proxy - AuthZForce Checks', function(done) {
 
-	if(config.azf.enabled) {
+	if(config.authorization.enabled && config.authorization.pdp === 'authzforce') {
 	    describe('Testing configuration', function() {
 
 			it('should have AZF server configured', function (done) {
