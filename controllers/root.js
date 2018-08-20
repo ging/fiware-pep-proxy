@@ -35,7 +35,7 @@ var Root = (function() {
                     method: req.method,
                     headers: proxy.getClientIp(req, req.headers)
                 };
-                var protocol = config.app.ssl ? 'https' : 'http';
+                var protocol = (config.app.ssl  === true) ? 'https' : 'http';
                 proxy.sendData(protocol, options, req.body, res);
                 return;
 
@@ -123,7 +123,7 @@ var Root = (function() {
             log.info('Public path. Redirecting to app...');
         }
 
-        var protocol = config.app.ssl ? 'https' : 'http';
+        var protocol = (config.app.ssl   === true) ? 'https' : 'http';
 
         var options = {
             host: config.app.host,
