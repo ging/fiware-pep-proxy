@@ -1,9 +1,11 @@
 {
   "name": "fiware-pep-proxy",
-  "version": "0.1.0",
+  "version": "7.0.1",
+  "license": "MIT",
   "description": "PEP oauth2 authentication proxy for FIWARE GE services",
   "author": "GING DIT UPM",
   "dependencies": {
+    "async": "1.5.2",
     "express": "4.x",
     "xml2json": "0.9.0",
     "xml2js": "0.4.17",

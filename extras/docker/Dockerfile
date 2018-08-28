@@ -1,22 +1,25 @@
-FROM ubuntu:14.04
+FROM node:carbon
 
 MAINTAINER FIWARE Wilma PEP Proxy Team. DIT-UPM
 
 WORKDIR /opt
 
-# Install Ubuntu dependencies
-RUN sudo apt-get update && \
-	sudo apt-get install make g++ software-properties-common python-software-properties -y && \
-	sudo add-apt-repository ppa:chris-lea/node.js -y && \
-	sudo apt-get update && \
-	sudo apt-get install nodejs git -y
+ENV PEP_PROXY_PORT "1027"
 
 # Download latest version of the code and install npm dependencies
-RUN git clone https://github.com/ging/fiware-pep-proxy.git && \
-	cd fiware-pep-proxy && \
-	git checkout tags/7.0.1 && \
-	npm install
+RUN git clone https://github.com/ging/fiware-pep-proxy.git
+
+# Copy config file
+COPY config.js.template /opt/fiware-pep-proxy/config.js
 
 # Run PEP Proxy
 WORKDIR /opt/fiware-pep-proxy
-CMD ["sudo", "node", "server.js"]
+
+RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
+
+# Ports used by idm
+EXPOSE ${PEP_PROXY_PORT} 
+
+CMD ["npm", "start" ]

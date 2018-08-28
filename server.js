@@ -3,6 +3,7 @@ const fs = require('fs');
 const https = require('https');
 const Root = require('./controllers/root').Root;
 const IDM = require("./lib/idm.js").IDM;
+const async = require('async');
 const errorhandler = require('errorhandler');
 
 config.azf = config.azf || {};
@@ -67,15 +68,52 @@ for (const p in config.public_paths) {
 
 app.all('/*', Root.pep);
 
-log.info('Starting PEP proxy in port ' + port + '. IdM authentication ...');
+let retries = 0;
+let idmConnected = false;
 
-IDM.authenticate (function (token) {
+function retryCheck() {
+    return (!idmConnected && retries < 10);
+}
 
-    log.info('Success authenticating PEP proxy. Proxy Auth-token: ', token);
 
-}, function (status, e) {
-    log.error('Error in IDM communication', e);
-});
+function connectIDM (callback) {
+    IDM.authenticate (function (token) {
+        log.info('Success authenticating PEP proxy. Proxy Auth-token: ', token);
+        idmConnected = true;
+        callback();
+    }, function (status, e) {
+        log.error('Error in IDM communication', e);
+        callback();
+    });
+
+}
+
+function tryCreateConnection(callback) {
+    const seconds = 5;
+
+    retries++;
+
+    if (retries === 1) {
+        log.info('Starting PEP proxy in port ' + port + '. IdM authentication ...');
+        connectIDM(callback);
+
+    } else {
+        log.info('Waiting %d seconds before attempting again.', seconds);
+        setTimeout(()=>{connectIDM(callback)}, seconds * 1000);
+    }
+}
+
+function createConnectionHandler(error) {
+    if (idmConnected) {
+         log.info('Success authenticating PEP proxy.');
+    } else {
+        log.error('Error found after [%d] attempts: %s', retries, error);
+    }
+}
+
+async.whilst(retryCheck, tryCreateConnection, createConnectionHandler);
+
+
 
 if (config.https.enabled === true) {
     const options = {
