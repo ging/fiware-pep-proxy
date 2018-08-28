@@ -1,4 +1,4 @@
-var config = require('./config'),
+let config = require('./config'),
     fs = require('fs'),
     https = require('https'),
     Root = require('./controllers/root').Root,
@@ -8,22 +8,22 @@ var config = require('./config'),
 config.azf = config.azf || {};
 config.https = config.https || {};
 
-var log = require('./lib/logger').logger.getLogger("Server");
+const log = require('./lib/logger').logger.getLogger("Server");
 
-var express = require('express');
+const express = require('express');
 
 process.on('uncaughtException', function (err) {
   log.error('Caught exception: ' + err);
 });
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-var app = express();
+const app = express();
 
 //app.use(express.bodyParser());
 
 app.use (function(req, res, next) {
 
-    var bodyChunks = [];
+    const bodyChunks = [];
     req.on('data', function(chunk) { 
        bodyChunks.push(chunk);
     });
@@ -31,7 +31,7 @@ app.use (function(req, res, next) {
     req.on('end', function() {
         if (bodyChunks.length > 0) {
             req.body = Buffer.concat(bodyChunks);
-        };
+        }
         next();
     });
 });
@@ -39,7 +39,7 @@ app.use (function(req, res, next) {
 app.use(errorhandler({log: log.error}))
 
 app.use(function (req, res, next) {
-    "use strict";
+    
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'HEAD, POST, PUT, GET, OPTIONS, DELETE');
     res.header('Access-Control-Allow-Headers', 'origin, content-type, X-Auth-Token, Tenant-ID, Authorization');
@@ -56,11 +56,11 @@ app.use(function (req, res, next) {
     }
 });
 
-var port = config.pep_port || 80;
-if (config.https.enabled) port = config.https.port || 443;
+let port = config.pep_port || 80;
+if (config.https.enabled) {port = config.https.port || 443;}
 app.set('port', port);
 
-for (var p in config.public_paths) {
+for (const p in config.public_paths) {
     log.debug('Public paths', config.public_paths[p]);
     app.all(config.public_paths[p], Root.public);
 }
@@ -78,7 +78,7 @@ IDM.authenticate (function (token) {
 });
 
 if (config.https.enabled === true) {
-    var options = {
+    const options = {
         key: fs.readFileSync(config.https.key_file),
         cert: fs.readFileSync(config.https.cert_file)
     };

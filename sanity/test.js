@@ -1,11 +1,11 @@
-var should = require('should');
-var mocha = require('mocha'); 
+const should = require('should');
+const mocha = require('mocha'); 
 
-var config = require('./../config'),
+let config = require('./../config'),
     IDM = require("./../lib/idm.js").IDM,
     AZF = require('./../lib/azf.js').AZF;
 
-var log = require('./../lib/logger').logger.getLogger("Test");
+const log = require('./../lib/logger').logger.getLogger("Test");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function() {
@@ -27,7 +27,7 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
 			IDM.check_conn (function (status) {
 				if (status === 200) {
 			    	done();	
-				};
+				}
 			}, function (status, e) {
 			    log.error('Error in keystone communication', e);
 			});
@@ -64,7 +64,7 @@ describe('Sanity Checks for Wilma PEP Proxy - AuthZForce Checks', function(done)
 				}, function (status, e) {
 					if (status === 401) {
 				    	done();	
-					};
+					}
 				});
 			});
 		});
