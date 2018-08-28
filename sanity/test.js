@@ -1,9 +1,9 @@
-const should = require('should');
-const mocha = require('mocha'); 
+//const should = require('should');
+//const mocha = require('mocha'); 
 
-let config = require('./../config'),
-    IDM = require("./../lib/idm.js").IDM,
-    AZF = require('./../lib/azf.js').AZF;
+const config = require('./../config');
+const IDM = require("./../lib/idm.js").IDM;
+const AZF = require('./../lib/azf.js').AZF;
 
 const log = require('./../lib/logger').logger.getLogger("Test");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -24,7 +24,7 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
     describe('Testing connection with Keystone', function() {
 
     	it('should have connectivity with Keystone', function (done) {
-			IDM.check_conn (function (status) {
+			IDM.checkConn (function (status) {
 				if (status === 200) {
 			    	done();	
 				}
@@ -34,16 +34,16 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
 		});
 
 		it('should authenticate with Keystone', function (done) {
-			IDM.authenticate (function (token) {
+			IDM.authenticate ( () => {
 			    done();
-			}, function (status, e) {
+			}, () => {
 			});
 		});
 	});
 });
 
 
-describe('Sanity Checks for Wilma PEP Proxy - AuthZForce Checks', function(done) {
+describe('Sanity Checks for Wilma PEP Proxy - AuthZForce Checks', function() {
 
 	if(config.authorization.enabled && config.authorization.pdp === 'authzforce') {
 	    describe('Testing configuration', function() {
@@ -60,8 +60,8 @@ describe('Sanity Checks for Wilma PEP Proxy - AuthZForce Checks', function(done)
 		describe('Testing connection with AZF', function() {
 
 	    	it('should have connectivity with AZF', function (done) {
-				AZF.check_conn (function (status, b, c) {	
-				}, function (status, e) {
+				AZF.checkConn (function () {	
+				}, function (status) {
 					if (status === 401) {
 				    	done();	
 					}
