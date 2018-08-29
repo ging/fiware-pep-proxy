@@ -1,30 +1,30 @@
-var config = require('./config'),
-    fs = require('fs'),
-    https = require('https'),
-    Root = require('./controllers/root').Root,
-    IDM = require("./lib/idm.js").IDM,
-    async = require('async'),
-    errorhandler = require('errorhandler');
+const config = require('./config');
+const fs = require('fs');
+const https = require('https');
+const Root = require('./controllers/root').Root;
+const IDM = require("./lib/idm.js").IDM;
+const async = require('async');
+const errorhandler = require('errorhandler');
 
 config.azf = config.azf || {};
 config.https = config.https || {};
 
-var log = require('./lib/logger').logger.getLogger("Server");
+const log = require('./lib/logger').logger.getLogger("Server");
 
-var express = require('express');
+const express = require('express');
 
 process.on('uncaughtException', function (err) {
   log.error('Caught exception: ' + err);
 });
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-var app = express();
+const app = express();
 
 //app.use(express.bodyParser());
 
 app.use (function(req, res, next) {
 
-    var bodyChunks = [];
+    const bodyChunks = [];
     req.on('data', function(chunk) { 
        bodyChunks.push(chunk);
     });
@@ -32,7 +32,7 @@ app.use (function(req, res, next) {
     req.on('end', function() {
         if (bodyChunks.length > 0) {
             req.body = Buffer.concat(bodyChunks);
-        };
+        }
         next();
     });
 });
@@ -40,12 +40,12 @@ app.use (function(req, res, next) {
 app.use(errorhandler({log: log.error}))
 
 app.use(function (req, res, next) {
-    "use strict";
+    
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'HEAD, POST, PUT, GET, OPTIONS, DELETE');
     res.header('Access-Control-Allow-Headers', 'origin, content-type, X-Auth-Token, Tenant-ID, Authorization');
     //log.debug("New Request: ", req.method);
-    if (req.method == 'OPTIONS') {
+    if (req.method === 'OPTIONS') {
         log.debug("CORS request");
         res.statusCode = 200;
         res.header('Content-Length', '0');
@@ -57,19 +57,19 @@ app.use(function (req, res, next) {
     }
 });
 
-var port = config.pep_port || 80;
-if (config.https.enabled) port = config.https.port || 443;
+let port = config.pep_port || 80;
+if (config.https.enabled) {port = config.https.port || 443;}
 app.set('port', port);
 
-for (var p in config.public_paths) {
+for (const p in config.public_paths) {
     log.debug('Public paths', config.public_paths[p]);
     app.all(config.public_paths[p], Root.public);
 }
 
 app.all('/*', Root.pep);
 
-var retries = 0;
-var idmConnected = false;
+let retries = 0;
+let idmConnected = false;
 
 function retryCheck() {
     return (!idmConnected && retries < 10);
@@ -89,7 +89,7 @@ function connectIDM (callback) {
 }
 
 function tryCreateConnection(callback) {
-    var seconds = 5;
+    const seconds = 5;
 
     retries++;
 
@@ -103,7 +103,7 @@ function tryCreateConnection(callback) {
     }
 }
 
-function createConnectionHandler(error, results) {
+function createConnectionHandler(error) {
     if (idmConnected) {
          log.info('Success authenticating PEP proxy.');
     } else {
@@ -116,7 +116,7 @@ async.whilst(retryCheck, tryCreateConnection, createConnectionHandler);
 
 
 if (config.https.enabled === true) {
-    var options = {
+    const options = {
         key: fs.readFileSync(config.https.key_file),
         cert: fs.readFileSync(config.https.cert_file)
     };

@@ -16,6 +16,13 @@
     "should": "~4.0.4",
     "mocha": "~1.20.1"
   },
+  "devDependencies": {
+    "eslint": "^4.11.0",
+    "eslint-config-tamia": "^5.0.1",
+    "eslint-plugin-prettier": "^2.3.1",
+    "memfs": "2.9.0",
+    "prettier": "^1.13.5"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ging/fiware-pep-proxy"
@@ -32,6 +39,8 @@
   ],
   "scripts": {
     "start": "node server.js",
-    "test": "./node_modules/.bin/mocha sanity/test.js -R spec"
+    "test": "./node_modules/.bin/mocha sanity/test.js -R spec",
+    "pretest": "npm run lint",
+    "lint": "eslint . --cache --fix"
   }
 }
