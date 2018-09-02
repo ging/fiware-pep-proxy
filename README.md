@@ -20,7 +20,7 @@
 
 ## Introduction
 
-This project is part of [FIWARE](http://fiware.org). You will find more information about this FIWARE GE [here](http://catalogue.fiware.org/enablers/pep-proxy-wilma).
+This project is part of [FIWARE](http://fiware.org). You will find more information about this FIWARE GE [here](https://catalogue-server.fiware.org/enablers/pep-proxy-wilma).
 
 - You will find the source code of this project in GitHub [here](https://github.com/ging/fiware-pep-proxy)
 - You will find the documentation of this project in Read the Docs [here](http://fiware-pep-proxy.readthedocs.org/)
