@@ -56,9 +56,9 @@ To stop the container:
 
 ## Run the container from the last release in Docker Hub
 
-You can also run the container from the [image we provide](https://hub.docker.com/r/ging/pep-proxy/) in Docker Hub. In this case you have only to execute the run command. But now the image name is ging/pep-proxy:*version* where `version` is the release you want to use:
+You can also run the container from the [image we provide](https://hub.docker.com/r/fiware/pep-proxy/) in Docker Hub. In this case you have only to execute the run command. But now the image name is fiware/pep-proxy:*version* where `version` is the release you want to use:
 
-	sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-pep-proxy/config.js -p [host_port]:[container_port] ging/pep-proxy
+	sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-pep-proxy/config.js -p [host_port]:[container_port] fiware/pep-proxy
 
 > **Note**
 > If you do not specify a version you are pulling from `latest` by default.
