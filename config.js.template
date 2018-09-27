@@ -29,6 +29,10 @@ config.pep = {
 	app_id: '',
 	username: '',
 	password: '',
+	token: {
+		type: 'bearer',  // Could be bearer or jwt
+		secret: ''       // If jwt is selected, this value need to be configured with the one obtained from keyrock
+	},
 	trusted_apps : []
 }
 
