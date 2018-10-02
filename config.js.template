@@ -28,8 +28,7 @@ config.app = {
 config.pep = {
 	app_id: '',
 	username: '',
-	password: '',
-	trusted_apps : []
+	password: ''
 }
 
 // in seconds
