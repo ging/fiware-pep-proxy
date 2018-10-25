@@ -14,7 +14,7 @@ RUN sudo apt-get update && \
 # Download latest version of the code and install npm dependencies
 RUN git clone https://github.com/SmartInfrastructures/fiware-pep-proxy.git && \
 	cd fiware-pep-proxy && \
-	git checkout tags/5.4 && \
+	git checkout master && \
 	npm install
 
 # Run PEP Proxy
