@@ -7,6 +7,7 @@
 [![Support badge](https://img.shields.io/badge/tag-fiware--wilma-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-wilma)
 <br>
 [![Documentation badge](https://img.shields.io/readthedocs/fiware-pep-proxy.svg)](http://fiware-pep-proxy.readthedocs.org/en/latest/)
+[![Build Status](https://travis-ci.org/ging/fiware-pep-proxy.svg?branch=master)](https://travis-ci.org/ging/fiware-pep-proxy)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/wilma.svg)
 
 Wilma is a PEP Proxy - it can be combined with other security components such
