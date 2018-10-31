@@ -36,8 +36,8 @@ check the FIWARE Catalogue entry for
 
 -   Software requirements:
 
-    -   nodejs >= v0.10.37
-    -   npm >= 1.3.6
+    -   nodejs >= v8.x.x
+    -   npm >= 5.x.x
 
 Note: Both can be installed from (http://nodejs.org/download/)
 
