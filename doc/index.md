@@ -1,14 +1,7 @@
 # PEP Proxy - Wilma
 
 [![FIWARE Security](https://nexus.lab.fiware.org/static/badges/chapters/security.svg)](https://www.fiware.org/developers/catalogue/)
-[![License: MIT](https://img.shields.io/github/license/ging/fiware-pep-proxy.svg)](https://opensource.org/licenses/MIT)
-
-[![Docker badge](https://img.shields.io/docker/pulls/fiware/pep-proxy.svg)](https://hub.docker.com/r/fiware/pep-proxy/)
 [![Support badge](https://img.shields.io/badge/tag-fiware--wilma-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-wilma)
-<br>
-[![Documentation badge](https://img.shields.io/readthedocs/fiware-pep-proxy.svg)](http://fiware-pep-proxy.readthedocs.org/en/latest/)
-[![Build Status](https://travis-ci.org/ging/fiware-pep-proxy.svg?branch=master)](https://travis-ci.org/ging/fiware-pep-proxy)
-![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/wilma.svg)
 
 Wilma is a PEP Proxy - it can be combined with other security components such
 such as [Keyrock](https://github.com/ging/fiware-idm) and
@@ -23,6 +16,8 @@ check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
 ## Content
+
+<span/>
 
 -   [Install](#how-to-build--install)
     -   [Docker](#docker)
@@ -69,12 +64,14 @@ sudo node server
 
 ### Docker
 
-We also provide a Docker image to facilitate you the building of this GE.
+We also provide a Docker image  and two version of the `Dockerfile` to facilitate you building this GE.
 
 -   [Here](https://github.com/ging/fiware-pep-proxy/tree/master/extras/docker)
-    you will find the Dockerfile and the documentation explaining how to use it.
+    you will find the `Dockerfile` used in the automated build and the documentation explaining how to use it.
 -   In [Docker Hub](https://hub.docker.com/r/fiware/pep-proxy/) you will find
     the public image.
+
+A hacker's `Dockerfile-sample` file is also available in the root of the GitHub repository which can be used to build Docker images against a local codebase - It can be modified to suit your needs and allows you to create local images based on your own codebase if you want to make changes by yourself.
 
 ## API
 

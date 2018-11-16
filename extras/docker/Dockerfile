@@ -1,27 +1,48 @@
-FROM node:carbon-alpine
+ARG OWNER "ging"
+ARG REPOSITORY "fiware-pep-proxy"
+ARG NODE_VERSION=8.12.0-slim
+FROM node:${NODE_VERSION}
+
+# Automated Docker file for Docker Hub
+# This will retrieve the source code of the latest tagged release from GitHub
 
 MAINTAINER FIWARE Wilma PEP Proxy Team. DIT-UPM
 
 WORKDIR /opt
 
-ENV PEP_PROXY_PORT "1027"
+ENV OWNER=${OWNER}
+ENV REPOSITORY=${REPOSITORY}
 
-# Download latest version of the code and install npm dependencies
-RUN apk add --no-cache git && \
-	git clone https://github.com/ging/fiware-pep-proxy.git
+WORKDIR /
 
-# Copy config file
+RUN RELEASE=$(curl -s https://api.github.com/repos/"${OWNER}"/"${REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4) && \
+  	echo "${RELEASE}"  && \
+  	apt-get update && \
+  	apt-get install -y  --no-install-recommends unzip && \
+  	curl https://github.com/"${OWNER}"/"${REPOSITORY}"/archive/"${RELEASE}".zip -L -s -o source.zip  && \
+  	unzip source.zip && \
+	rm source.zip && \
+	mv "${REPOSITORY}"-"${RELEASE}" /opt/fiware-pep-proxy && \
+	rm -rf "${REPOSITORY}"-"${RELEASE}" && \
+	apt-get clean && \
+	apt-get remove -y unzip && \
+    apt-get -y autoremove
+
+
+# Copy config file from the same Directory.
 COPY config.js.template /opt/fiware-pep-proxy/config.js
 
 # Run PEP Proxy
 WORKDIR /opt/fiware-pep-proxy
 
-RUN apk add --no-cache make gcc g++ python && \
-  npm install --production --silent && \
-  rm -rf /root/.npm/cache/* && \
-  apk del make gcc g++ python
+RUN apt-get install -y  --no-install-recommends make gcc g++ python && \
+	npm install --production --silent && \
+	rm -rf /root/.npm/cache/* && \
+	apt-get clean && \
+	apt-get remove -y make gcc g++ python  && \
+	apt-get -y autoremove
 
 # Ports used by idm
-EXPOSE ${PEP_PROXY_PORT} 
+EXPOSE ${PEP_PROXY_PORT:-1027}
 
 CMD ["npm", "start" ]
