@@ -1,0 +1,4 @@
+node_modules/
+doc/
+sanity/
+npm-debug.log
