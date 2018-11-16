@@ -49,7 +49,7 @@ config.cache_time = 300;
 //	This is only compatible with oauth2 tokens engine
 
 config.authorization = {
-	enabled: (process.env.PEP_PROXY_AUTH_ENABLED, false),
+	enabled: toBoolean (process.env.PEP_PROXY_AUTH_ENABLED, false),
 	pdp: (process.env.PEP_PROXY_PDP || 'idm'), 	// idm|authzforce  
 	azf: {
 		protocol: (process.env.PEP_PROXY_AZF_PROTOCOL  || 'http'),
