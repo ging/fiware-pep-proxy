@@ -28,7 +28,11 @@ config.app = {
 config.pep = {
 	app_id: '',
 	username: '',
-	password: ''
+	password: '',
+	token: {
+		secret: ''   // Secret must be configured in order validate a jwt
+	},
+	trusted_apps : []
 }
 
 // in seconds

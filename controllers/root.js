@@ -2,6 +2,8 @@ const config = require('./../config.js');
 const proxy = require('./../lib/HTTPClient.js');
 const IDM = require('./../lib/idm.js').IDM;
 const AZF = require('./../lib/azf.js').AZF;
+const jsonwebtoken = require('jsonwebtoken');
+const is_hex = require('is-hex');
 
 const log = require('./../lib/logger').logger.getLogger("Root");
 
@@ -11,7 +13,7 @@ const Root = (function() {
     const tokensCache = {};
 
     const pep = function(req, res) {
-    	
+        
         const tokenHeader = req.headers.authorization;
         let authToken = tokenHeader ? tokenHeader.split('Bearer ')[1] : req.headers['x-auth-token'];
 
@@ -20,12 +22,12 @@ const Root = (function() {
             authToken = new Buffer(headerAuth, 'base64').toString();
         }
 
-    	if (authToken === undefined) {
+        if (authToken === undefined) {
             log.error('Auth-token not found in request header');
             const authHeader = 'IDM uri = ' + config.idm_host;
             res.set('WWW-Authenticate', authHeader);
-    		res.status(401).send('Auth-token not found in request header');
-    	} else {
+            res.status(401).send('Auth-token not found in request header');
+        } else {
 
             if (config.magic_key && config.magic_key === authToken) {
                 const options = {
@@ -44,6 +46,7 @@ const Root = (function() {
             let action
             let resource
             let authzforce
+            let app_id
 
             if (config.authorization.enabled) {
                 if (config.authorization.pdp === 'authzforce') {
@@ -51,60 +54,97 @@ const Root = (function() {
                 } else {
                     action = req.method;
                     resource = req.path;
+                    app_id = config.pep.app_id
                 }
             }
 
-    		IDM.checkToken(authToken, action, resource, authzforce, function (userInfo) {
-
-                // Set headers with user information
-                req.headers['X-Nick-Name'] = userInfo.id;
-                req.headers['X-Display-Name'] = userInfo.displayName;
-                req.headers['X-Roles'] = JSON.stringify(userInfo.roles);
-                req.headers['X-Organizations'] = JSON.stringify(userInfo.organizations);
-
-                if (config.authorization.enabled) {
-
-                    if (config.authorization.pdp === 'authzforce') {
-                       
-                        // Check decision through authzforce
-                        AZF.checkPermissions(authToken, userInfo, req, function () {
-
-                            redirRequest(req, res, userInfo);
-
-                        }, function (status, e) {
-                            if (status === 401) {
-                                log.error('User access-token not authorized: ', e);
-                                res.status(401).send('User token not authorized');
-                            } else if (status === 404) {
-                                log.error('Domain not found: ', e);
-                                res.status(404).send(e);
-                            } else {
-                                log.error('Error in AZF communication ', e);
-                                res.status(503).send('Error in AZF communication');
-                            }
-
-                        }, tokensCache);
-                    } else  if (userInfo.authorization_decision === "Permit") {
-                        redirRequest(req, res, userInfo);
+            if (config.pep.token.secret) {
+                jsonwebtoken.verify(authToken, config.pep.token.secret, function(err, userInfo) {
+                    if (err) {
+                        if (err.name === 'TokenExpiredError') {
+                            res.status(401).send('Invalid token: jwt token has expired');
+                        } else {
+                            log.error('Error in JWT ', err.message);
+                            log.error('Or JWT secret bad configured');
+                            log.error('Validate Token with Keyrock');
+                            checkToken(req, res, authToken, null, action, resource, app_id, authzforce)
+                        }
                     } else {
-                        res.status(401).send('User access-token not authorized');
+                        if (config.authorization.enabled) {
+                            if (config.authorization.pdp === 'authzforce') {
+                                authorize_azf(req, res, authToken, userInfo)
+                            } else if (config.authorization.pdp === 'idm') {
+                                checkToken(req, res, authToken, userInfo.exp, action, resource, app_id, authzforce)
+                            } else {
+                                res.status(401).send('User access-token not authorized');
+                            }
+                        } else {
+                            setHeaders(req, userInfo)
+                            redirRequest(req, res, userInfo);
+                        }
                     }
-                } else {
-                    redirRequest(req, res, userInfo);
-                }
-
-    		}, function (status, e) {
-
-    			if (status === 404 || status === 401) {
-                    log.error(e);
-                    res.status(401).send(e);
-                } else {
-                    log.error('Error in IDM communication ', e);
-                    res.status(503).send('Error in IDM communication');
-                }
-    		}, tokensCache);
-    	}	
+                })
+            } else {
+                checkToken(req, res, authToken, null, action, resource, app_id, authzforce)
+            }
+        }
     };
+
+    const checkToken = function(req, res, authToken, jwt_expiration, action, resource, app_id, authzforce) {
+        IDM.checkToken(authToken, jwt_expiration, action, resource, app_id, authzforce, function (userInfo) {
+            setHeaders(req, userInfo);
+            if (config.authorization.enabled) {
+                if (config.authorization.pdp === 'authzforce') {
+                    authorize_azf(req, res, authToken, userInfo)
+                } else if (userInfo.authorization_decision === "Permit") {
+                    redirRequest(req, res, userInfo);
+                } else {
+                    res.status(401).send('User access-token not authorized');
+                }
+            } else {
+                redirRequest(req, res, userInfo);
+            }
+        }, function (status, e) {
+
+            if (status === 404 || status === 401) {
+                log.error(e);
+                res.status(401).send(e);
+            } else {
+                log.error('Error in IDM communication ', e);
+                res.status(503).send('Error in IDM communication');
+            }
+        }, tokensCache);
+    }
+
+    const setHeaders = function (req, userInfo) {
+        // Set headers with user information
+        req.headers['X-Nick-Name'] = userInfo.id;
+        req.headers['X-Display-Name'] = userInfo.displayName;
+        req.headers['X-Roles'] = JSON.stringify(userInfo.roles);
+        req.headers['X-Organizations'] = JSON.stringify(userInfo.organizations);
+    }
+
+    const authorize_azf = function (req, res, authToken, userInfo) {
+
+        // Check decision through authzforce
+        AZF.checkPermissions(authToken, userInfo, req, function () {
+
+            redirRequest(req, res, userInfo);
+
+        }, function (status, e) {
+            if (status === 401) {
+                log.error('User access-token not authorized: ', e);
+                res.status(401).send('User token not authorized');
+            } else if (status === 404) {
+                log.error('Domain not found: ', e);
+                res.status(404).send(e);
+            } else {
+                log.error('Error in AZF communication ', e);
+                res.status(503).send('Error in AZF communication');
+            }
+
+        }, tokensCache);
+    }
 
     const publicFunc = function(req, res) {
         redirRequest(req, res);
