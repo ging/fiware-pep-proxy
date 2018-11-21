@@ -122,6 +122,7 @@ const Root = (function() {
         req.headers['X-Display-Name'] = userInfo.displayName;
         req.headers['X-Roles'] = JSON.stringify(userInfo.roles);
         req.headers['X-Organizations'] = JSON.stringify(userInfo.organizations);
+        req.headers['X-Eidas-Profile'] = JSON.stringify(userInfo.eidas_profile);
     }
 
     const authorize_azf = function (req, res, authToken, userInfo) {
