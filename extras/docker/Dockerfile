@@ -1,8 +1,4 @@
-ARG OWNER "ging"
-ARG REPOSITORY "fiware-pep-proxy"
-ARG NODE_VERSION=8.12.0-slim
-FROM node:${NODE_VERSION}
-
+FROM node:8.12.0-slim
 # Automated Docker file for Docker Hub
 # This will retrieve the source code of the latest tagged release from GitHub
 
@@ -10,12 +6,14 @@ MAINTAINER FIWARE Wilma PEP Proxy Team. DIT-UPM
 
 WORKDIR /opt
 
-ENV OWNER=${OWNER}
-ENV REPOSITORY=${REPOSITORY}
+ARG OWNER
+ENV OWNER ${OWNER:-ging}
+ARG REPOSITORY
+ENV REPOSITORY ${REPOSITORY:-fiware-pep-proxy}
 
 WORKDIR /
 
-RUN RELEASE=$(curl -s https://api.github.com/repos/"${OWNER}"/"${REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4) && \
+RUN RELEASE=$(curl -s https://api.github.com/repos/${OWNER}/${REPOSITORY}/releases/latest | grep 'tag_name' | cut -d\" -f4) && \
   	echo "${RELEASE}"  && \
   	apt-get update && \
   	apt-get install -y  --no-install-recommends unzip && \
