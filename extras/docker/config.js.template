@@ -31,9 +31,12 @@ config.app = {
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {
-	app_id: (process.env.PEP_PROXY_APP_ID || ''),
-	username: (process.env.PEP_PROXY_USERNAME ||''),
+	app_id: (process.env.PEP_PROXY_APP_ID ||  ''),
+	username: (process.env.PEP_PROXY_USERNAME || ''),
 	password: (process.env.PEP_PASSWORD ||''),
+	token: {
+		secret: (process.env.PEP_TOKEN_SECRET ||  '')  // Secret must be configured in order validate a jwt
+	},
 	trusted_apps : []
 }
 
