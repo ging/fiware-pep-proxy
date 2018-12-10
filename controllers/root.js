@@ -118,11 +118,11 @@ const Root = (function() {
 
     const setHeaders = function (req, userInfo) {
         // Set headers with user information
-        req.headers['X-Nick-Name'] = userInfo.id;
-        req.headers['X-Display-Name'] = userInfo.displayName;
-        req.headers['X-Roles'] = JSON.stringify(userInfo.roles);
-        req.headers['X-Organizations'] = JSON.stringify(userInfo.organizations);
-        req.headers['X-Eidas-Profile'] = JSON.stringify(userInfo.eidas_profile);
+        req.headers['X-Nick-Name'] = (userInfo.id) ? userInfo.id : '';
+        req.headers['X-Display-Name'] = (userInfo.displayName) ?  userInfo.displayName : '';
+        req.headers['X-Roles'] = (userInfo.roles) ? JSON.stringify(userInfo.roles) : [];
+        req.headers['X-Organizations'] = (userInfo.organizations) ? JSON.stringify(userInfo.organizations) : [];
+        req.headers['X-Eidas-Profile'] = (userInfo.eidas_profile) ? JSON.stringify(userInfo.eidas_profile) : {};
     }
 
     const authorize_azf = function (req, res, authToken, userInfo) {
