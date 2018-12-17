@@ -21,6 +21,9 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
+|:books: [Documentation](https://fiware-pep-proxy.rtfd.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/wilma) |  :whale: [Docker Hub](https://hub.docker.com/r/fiware/pep-proxy/) | 
+|---|---|---|
+
 ## Content
 
 -   [Install](#how-to-build--install)
