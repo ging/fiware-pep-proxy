@@ -108,6 +108,7 @@ function createConnectionHandler(error) {
          log.info('Success authenticating PEP proxy.');
     } else {
         log.error('Error found after [%d] attempts: %s', retries, error);
+        process.exit(1);
     }
 }
 
