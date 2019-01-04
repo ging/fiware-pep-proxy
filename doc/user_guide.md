@@ -44,7 +44,7 @@ In order to validate the request and forward it to the backend application, PEP 
 
 - Level 1: Authentication PEP Proxy checks if the token included in the request corresponds to an authenticated user in FIWARE.
 - Level 2: Basic Authorization PEP Proxy checks if the token included in the request corresponds to an authenticated user in FIWARE but also if the roles that the user has allow it to access the resource specified in the request. This is based in the HTTP verb and the path.
-- Level 3: Advanced Authorization PEP Proxy checks if the token included in the request corresponds to an authenticated user in FIWARE but also other advanced parameters such us the body or the headers of the request.
+- Level 3: Advanced Authorization PEP Proxy checks if the token included in the request corresponds to an authenticated user in FIWARE but also other advanced parameters such as the body or the headers of the request.
 
 Below are detailed these three levels and how to configure each one.
 
@@ -85,6 +85,6 @@ The first step is to create a user and an application in FIWARE Account. Then co
 ![](https://raw.githubusercontent.com/ging/fiware-pep-proxy/master/doc/resources/Level_3-_Advanced_Authorization_.png)
 <p align="center">Figure 3: Advanced Authorization</p>
 
-[Figure 3](#def-fig3) shows the architecture of this configuration. As this case is thought to check advanced parameters of the request such us the body or custom headers, it depends on the specific use case. So the programmer should modify the PEP Proxy source code in order to include the specific requirements.
+[Figure 3](#def-fig3) shows the architecture of this configuration. As this case is thought to check advanced parameters of the request such as the body or custom headers, it depends on the specific use case. So the programmer should modify the PEP Proxy source code in order to include the specific requirements.
 
 With the desired parameters he has to create a XACML <Request> and send a request to Authorization PDP GE in order to validate it. The request could be based in the one used in the previous configuration.
