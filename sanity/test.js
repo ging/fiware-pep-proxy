@@ -14,7 +14,7 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
 
 		it('should have PEP user configured', function (done) {
 			if (config.pep.username !== undefined && config.pep.username !== '') {
-				if (config.password !== undefined && config.password !== '') {
+				if (config.pep.password !== undefined && config.pep.password !== '') {
 					done();
 				}
 			}
