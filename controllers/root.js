@@ -3,7 +3,6 @@ const proxy = require('./../lib/HTTPClient.js');
 const IDM = require('./../lib/idm.js').IDM;
 const AZF = require('./../lib/azf.js').AZF;
 const jsonwebtoken = require('jsonwebtoken');
-const is_hex = require('is-hex');
 
 const log = require('./../lib/logger').logger.getLogger("Root");
 
@@ -46,7 +45,7 @@ const Root = (function() {
             let action
             let resource
             let authzforce
-            let app_id
+            let appId
 
             if (config.authorization.enabled) {
                 if (config.authorization.pdp === 'authzforce') {
@@ -54,7 +53,7 @@ const Root = (function() {
                 } else {
                     action = req.method;
                     resource = req.path;
-                    app_id = config.pep.app_id
+                    appId = config.pep.app_id
                 }
             }
 
@@ -67,14 +66,13 @@ const Root = (function() {
                             log.error('Error in JWT ', err.message);
                             log.error('Or JWT secret bad configured');
                             log.error('Validate Token with Keyrock');
-                            checkToken(req, res, authToken, null, action, resource, app_id, authzforce)
+                            checkToken(req, res, authToken, null, action, resource, appId, authzforce)
                         }
-                    } else {
-                        if (config.authorization.enabled) {
+                    } else if (config.authorization.enabled) {
                             if (config.authorization.pdp === 'authzforce') {
-                                authorize_azf(req, res, authToken, userInfo)
+                                authorizeAzf(req, res, authToken, userInfo)
                             } else if (config.authorization.pdp === 'idm') {
-                                checkToken(req, res, authToken, userInfo.exp, action, resource, app_id, authzforce)
+                                checkToken(req, res, authToken, userInfo.exp, action, resource, appId, authzforce)
                             } else {
                                 res.status(401).send('User access-token not authorized');
                             }
@@ -82,20 +80,19 @@ const Root = (function() {
                             setHeaders(req, userInfo)
                             redirRequest(req, res, userInfo);
                         }
-                    }
                 })
             } else {
-                checkToken(req, res, authToken, null, action, resource, app_id, authzforce)
+                checkToken(req, res, authToken, null, action, resource, appId, authzforce)
             }
         }
     };
 
-    const checkToken = function(req, res, authToken, jwt_expiration, action, resource, app_id, authzforce) {
-        IDM.checkToken(authToken, jwt_expiration, action, resource, app_id, authzforce, function (userInfo) {
+    const checkToken = function(req, res, authToken, jwtExpiration, action, resource, appId, authzforce) {
+        IDM.checkToken(authToken, jwtExpiration, action, resource, appId, authzforce, function (userInfo) {
             setHeaders(req, userInfo);
             if (config.authorization.enabled) {
                 if (config.authorization.pdp === 'authzforce') {
-                    authorize_azf(req, res, authToken, userInfo)
+                    authorizeAzf(req, res, authToken, userInfo)
                 } else if (userInfo.authorization_decision === "Permit") {
                     redirRequest(req, res, userInfo);
                 } else {
@@ -125,7 +122,7 @@ const Root = (function() {
         req.headers['X-Eidas-Profile'] = (userInfo.eidas_profile) ? JSON.stringify(userInfo.eidas_profile) : {};
     }
 
-    const authorize_azf = function (req, res, authToken, userInfo) {
+    const authorizeAzf = function (req, res, authToken, userInfo) {
 
         // Check decision through authzforce
         AZF.checkPermissions(authToken, userInfo, req, function () {
