@@ -23,7 +23,7 @@ before_install:
  - sudo mysql_upgrade -u root -ptest
  - sudo service mysql restart
  - docker pull fiware/idm:latest
- - docker run -d --net host -l idm -p 3000:3000 -e IDM_DB_USER=root -e IDM_DB_PASS=test fiware/idm:latest
+ - docker run -d --add-host mysql:127.0.0.1 -l idm -p 3000:3000 -e IDM_DB_USER=root -e IDM_DB_PASS=test fiware/idm:latest
 
 before_script:
  - npm run lint
