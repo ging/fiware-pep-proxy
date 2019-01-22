@@ -14,7 +14,7 @@ install:
  - npm install
 
 before_install:
- - docker pull fiware/idm:latest
+ - docker pull fiware/idm:7.5.1
  - docker pull mysql:5.7
  - docker network create --driver=bridge my-network
  - docker run -d -h mysql --net=my-network  -p 3306:3306 --name mysql -v $(pwd)/test/mysql-data:/docker-entrypoint-initdb.d/:ro -e MYSQL_ROOT_PASSWORD=test  mysql:5.7
