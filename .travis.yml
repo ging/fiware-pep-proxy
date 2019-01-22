@@ -10,21 +10,16 @@ branches:
   only:
     - master
 
-services:
-  - mysql
-
 install:
  - npm install
 
 before_install:
- - mysql -e 'CREATE DATABASE IF NOT EXISTS idm;' 
- - mysql -u root --default-character-set=utf8 idm < test/mysql-data/backup.sql
- - sudo mysql -e "use mysql; update user set authentication_string=password('test') where user='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
- - sudo mysql_upgrade -u root -ptest
- - sudo service mysql restart
  - docker pull fiware/idm:latest
- - docker run -d --add-host mysql:127.0.0.1 -l idm -p 3000:3000 -e IDM_DB_USER=root -e IDM_DB_PASS=test -e DATABASE_HOST=mysql -e IDM_HOST=http://localhost:3000 fiware/idm:latest
-
+ - docker pull mysql:5.7
+ - docker network create --driver=bridge my-network
+ - docker run -d -h mysql --net=my-network  -p 3306:3306 --name mysql -v $(pwd)/test/mysql-data:/docker-entrypoint-initdb.d/:ro -e MYSQL_ROOT_PASSWORD=test  mysql:5.7
+ - docker run -d --net=my-network -p 3000:3000 --name keyrock -e IDM_DB_USER=root -e IDM_DB_PASS=test -e DATABASE_HOST=mysql -e IDM_DB_PORT=3306  fiware/idm:7.5.1
+ 
 before_script:
  - npm run lint
 
