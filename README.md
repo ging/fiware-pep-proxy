@@ -17,6 +17,8 @@ access your Generic Enablers or REST services. Identity Management allows you to
 manage specific permissions and policies to resources allowing different access
 levels for your users.
 
+The roadmap of this FIWARE GE is described [here](https://github.com/ging/fiware-pep-proxy/edit/master/roadmap.md)
+
 This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
