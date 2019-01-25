@@ -28,6 +28,8 @@ The following list of features are planned to be addressed in the medium term,
 typically within the subsequent release(s) generated in the next 9 months
 after next planned release:
 
+- Unit tests: to be run in CI
+
 - OpenID Connect: Keyrock GE will implement support to OpenID Connect for creating *id_tokens*. Wilma will support these tokens for validating users identity. 
 
 - Integration with Context Broker Service Path: to support a better integration of authorization mechanisms with Context Broker, requests will take into account the CB service path in HTTP headers.
