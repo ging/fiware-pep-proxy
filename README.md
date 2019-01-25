@@ -17,14 +17,12 @@ access your Generic Enablers or REST services. Identity Management allows you to
 manage specific permissions and policies to resources allowing different access
 levels for your users.
 
-The roadmap of this FIWARE GE is described [here](https://github.com/ging/fiware-pep-proxy/blob/master/roadmap.md)
-
 This project is part of [FIWARE](https://www.fiware.org/). For more information
 check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
-|:books: [Documentation](https://fiware-pep-proxy.rtfd.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/wilma) |  :whale: [Docker Hub](https://hub.docker.com/r/fiware/pep-proxy/) | 
-|---|---|---|
+|:books: [Documentation](https://fiware-pep-proxy.rtfd.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/wilma) |  :whale: [Docker Hub](https://hub.docker.com/r/fiware/pep-proxy/) | :dart: [Roadmap](https://github.com/ging/fiware-pep-proxy/blob/master/roadmap.md) |
+|---|---|---|---|
 
 ## Content
 
