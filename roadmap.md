@@ -1,12 +1,8 @@
-# {{(Incubated) GE Name}} Roadmap
+# Wilma PEP Proxy GE Roadmap
 
-{{Use this for full member GEs}} This product is a FIWARE Generic Enabler. If
+This product is a FIWARE Generic Enabler. If
 you would like to learn about the overall Roadmap of FIWARE, please check
-section "Roadmap" on the FIWARE Catalogue.
-
-{{Use this for Incubated GEs}} This product is an Incubated FIWARE Generic
-Enabler. If you would like to learn about the overall Roadmap of FIWARE, please
-check section "Roadmap" on the FIWARE Catalogue.
+section "Roadmap" on the [FIWARE Catalogue](https://github.com/Fiware/catalogue).
 
 ## Introduction
 
@@ -22,36 +18,19 @@ any time.
 ## Short term
 
 The following list of features are planned to be addressed in the short term,
-and incorporated in the next release of the product planned for **{{date}}**:
+and incorporated in the next release of the product:
 
-{{bullet list of features/tasks}} - this should be a simple list of features you
-plan to address in the given period. Try to be comprehensive as well as short in
-the description of each feature (**2 lines max**).
-
--   {{Feature 1}}
-
--   {{Feature n}}
-
-{{If the description of a given feature will need more elaboration, please add
-the following text after end of the description}}:
-
-"(see more detailed description below)" and then create a subsection below or,
-alternatively, refer to issues associated to implementation of the feature:
-"(see issueX, issueY, ...)" providing the link for each issue.
-
-### {{Feature n}}
-
-subsections providing more details of selected features if needed - this section
-would be needed if you plan to add further details as explained above (and not
-do it through references to issues)
+-   There are no new features planned for the next release.
 
 ## Medium term
 
 The following list of features are planned to be addressed in the medium term,
-typically within the subsequent release(s) generated in the next **9 months**
+typically within the subsequent release(s) generated in the next 9 months
 after next planned release:
 
-{{Complete this section following the same structure as described for short term roadmap}}
+-		OpenID Connect: Keyrock GE will implement support to OpenID Connect for creating *id_tokens*. Wilma will support these tokens for validating users identity. 
+
+-   Integration with Context Broker Service Path: to support a better integration of authorization mechanisms with Context Broker, requests will take into account the CB service path in HTTP headers.
 
 ## Long term
 
@@ -60,4 +39,6 @@ of the product even though development of these features has not yet been
 scheduled for a release in the near future. Please feel free to contact us if
 you wish to get involved in the implementation or influence the roadmap
 
-{{Complete this section following the same structure as described for shory term roadmap}}
+-   COAP compatibility: supporting this protocol as an alternative of HTTP could improve the performance of IoT devices authentication process.
+
+-   Integration with API management tools: in the same way the logic of Wilma is available in API Umbrella, the implementation in other tools such us KONG and/or Proxy42 will be studied. 
