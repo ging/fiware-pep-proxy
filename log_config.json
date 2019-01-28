@@ -13,7 +13,7 @@
   	"Server": "DEBUG",
     "Root": "INFO",
     "HTTP-Client": "WARN",
-    "AZF-Client": "INFo",
+    "AZF-Client": "INFO",
     "IDM-Client": "INFO",
     "Test": "DEBUG"
   }

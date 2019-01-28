@@ -1,3 +1,4 @@
+
 # Installation and Administration Guide
 
 - [Introduction](#introduction)
@@ -17,7 +18,7 @@
 
 ## Introduction
 
-Welcome to the User and Programmer Guide of the PEP Proxy GE. PEP Proxy provides a security layer for adding authentication and authorization filters to FIWARE GEs and any backend service. It is the PEP (Police Enforcement Point) of the FIWARE Security Chapter. So together with Identity Management and Authorization PDP GEs provides security to FIWARE backends.
+Welcome to the Installation and Administration Guide of the PEP Proxy GE. PEP Proxy provides a security layer for adding authentication and authorization filters to FIWARE GEs and any backend service. It is the PEP (Police Enforcement Point) of the FIWARE Security Chapter. So together with Identity Management and Authorization PDP GEs provides security to FIWARE backends.
 
 **Note:** The PEP Proxy GE is a backend component, therefore for this GE there is no need to provide a user guide.
 
@@ -52,35 +53,40 @@ To configure PEP Proxy you can copy the file named config.js.template to config.
 <pre>
  var config = {};
 
- config.account_host = 'https://account.lab.fiware.org';
+ config.idm_host = 'https://account.lab.fiware.org';
 
- config.keystone_host = 'cloud.lab.fiware.org';
- config.keystone_port = 4731;
+ config.app.host = 'www.google.es';
+ config.app.port = '80';
 
- config.app_host = 'www.google.es';
- config.app_port = '80';
-
- config.username = 'pepProxy';
- config.password = 'pepProxy';
+ config.pep.app_id = 'my_app_id';
+ config.pep.username = 'pepProxy';
+ config.pep.password = 'pepProxy';
 
  config.check_permissions = false;
 
  module.exports = config;
 </pre>
 
-The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. Do do so you have to first register an application. The steps can be found [here](http://fiware-idm.readthedocs.org/en/latest/user_guide.html#registering-an-application).
+The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. To do so, you have to first register an application. The steps can be found [here](http://fiware-idm.readthedocs.io/en/latest/user_guide/#def-register-pep-and-iot).
 
-You can also configure the connection to an [Authorization PDP GE](http://catalogue.fiware.org/enablers/authorization-pdp-authzforce) instance to validate authorization in your application ([levels 2 and 3 of authorization](user_guide/#level-2-basic-authorization)):
+You can also configure Pep Proxy to validate authorization in your application ([levels 2 and 3 of authorization](user_guide/#level-2-basic-authorization)). If enabled PEP checks permissions in two ways:
+ - With IdM: only allow basic authorization
+ - With [Authorization PDP GE](http://catalogue.fiware.org/enablers/authorization-pdp-authzforce): allow basic and advanced authorization. For advanced authorization, you can use custom policy checks by including programatic scripts in policies folder. An script template is included there.
 
 <pre>
-	config.azf = {
-		enabled: true,
-		protocol: 'http',
-	    host: 'azf_host',
-	    port: 6019,
-	    custom_policy: undefined
-	};
+config.authorization = {
+    enabled: false,
+    pdp: 'idm',     // idm|authzforce  
+    azf: {
+        protocol: 'http',
+        host: 'localhost',
+        port: 8080,
+        custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
+    } 
+}
 </pre>
+
+This is only compatible with oauth2 tokens engine
 
 - Launch the executable by running the next command with administrative permissions as it is going to be run on TCP Port 80:
 

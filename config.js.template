@@ -11,42 +11,55 @@ config.https = {
     port: 443
 };
 
-config.account_host = 'https://account.lab.fiware.org';
+config.idm = {
+	host: 'account.lab.fiware.org',
+	port: 443,
+	ssl: true
+}
 
-config.keystone_host = 'cloud.lab.fiware.org';
-config.keystone_port = 4731;
+config.app = {
+	host: 'www.google.es',
+	port: '80',
+	ssl: false // Use true if the app server listens in https
+}
 
-config.app_host = 'www.google.es';
-config.app_port = '80';
-// Use true if the app server listens in https
-config.app_ssl = false;
 
-// Credentials obtained when registering PEP Proxy in Account Portal
-config.username = '';
-config.password = '';
+// Credentials obtained when registering PEP Proxy in app_id in Account Portal
+config.pep = {
+	app_id: '',
+	username: '',
+	password: '',
+	token: {
+		secret: ''   // Secret must be configured in order validate a jwt
+	},
+	trusted_apps : []
+}
 
 // in seconds
 config.cache_time = 300;
 
-// if enabled PEP checks permissions with AuthZForce GE. 
-// only compatible with oauth2 tokens engine
-//
-// you can use custom policy checks by including programatic scripts 
-// in policies folder. An script template is included there
-config.azf = {
+// if enabled PEP checks permissions in two ways:
+//  - With IdM: only allow basic authorization
+//  - With Authzforce: allow basic and advanced authorization. 
+//	  For advanced authorization, you can use custom policy checks by including programatic scripts 
+//    in policies folder. An script template is included there 
+// 
+//	This is only compatible with oauth2 tokens engine
+
+config.authorization = {
 	enabled: false,
-	protocol: 'https',
-    host: 'auth.lab.fiware.org',
-    port: 6019,
-    custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
-};
+	pdp: 'idm', 	// idm|authzforce  
+	azf: {
+		protocol: 'http',
+	    host: 'localhost',
+	    port: 8080,
+	    custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
+	} 
+}
 
 // list of paths that will not check authentication/authorization
 // example: ['/public/*', '/static/css/']
 config.public_paths = [];
-
-// options: oauth2/keystone
-config.tokens_engine = 'oauth2';
 
 config.magic_key = undefined;
 

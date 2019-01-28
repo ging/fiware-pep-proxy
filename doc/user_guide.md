@@ -58,7 +58,7 @@ When the frontend part of the application (Web App) sends a REST request to the 
 ![](https://raw.githubusercontent.com/ging/fiware-pep-proxy/master/doc/resources/Level_1-_Authentication.png)
 <p align="center">Figure 1: Authentication</p>
 
-[Figure 1](#def-fig1) shows the architecture of this configuration. When PEP Proxy receives the request, it extracts the access_token from the HTTP header (X-Auth-Token) and sends a request to FIWARE Account server (Identity Management GE) in order to validate it. The URL of the server is set in "account_host" field of the config file.
+[Figure 1](#def-fig1) shows the architecture of this configuration. When PEP Proxy receives the request, it extracts the access_token from the HTTP header (X-Auth-Token) and sends a request to FIWARE Account server (Identity Management GE) in order to validate it. The URL of the server is set in "idm_host" field of the config file.
 
 If the validation success, PEP Proxy will redirect the request to the backend service configured in "app_host" and "app_port" fields of the config file.
 

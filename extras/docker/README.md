@@ -1,6 +1,6 @@
 # How to use this Dockerfile
 
-To run a Wima Docker container you have two options: 
+To run a Wima Docker container you have two options:
 
 - You can build your own image using the Dockerfile we provide and then run the container from it or
 - you can run the container directly from the image we provide in Docker Hub.
@@ -17,7 +17,7 @@ You have to download the [Wilma's code](https://github.com/ging/fiware-pep-proxy
 > **Note**
 > If you do not want to have to use `sudo` in this or in the next section follow [these instructions](https://docs.docker.com/installation/ubuntulinux/#create-a-docker-group).
 
-This builds a new Docker image following the steps in `Dockerfile` and saves it in your local Docker repository with the name `pep-proxy-image`. You can check the available images in your local repository using: 
+This builds a new Docker image following the steps in `Dockerfile` and saves it in your local Docker repository with the name `pep-proxy-image`. You can check the available images in your local repository using:
 
 	sudo docker images
 
@@ -30,7 +30,7 @@ Now you can run a new container from the image you have just created with:
 	sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-pep-proxy/config.js -p [host_port]:[container_port] pep-proxy-image
 
 
-Where the different params mean: 
+Where the different params mean:
 
 * -d indicates that the container runs as a daemon
 * --name is the name of the new container (you can use the name you want)
@@ -43,7 +43,7 @@ Here is an example of this command:
 	sudo docker run -d --name pep-proxy -v /home/root/workspace/fiware-pep-proxy/config.js:/opt/fiware-pep-proxy/config.js -p 80:80 pep-proxy-image
 
 
-Once the container is running you can view the console logs using: 
+Once the container is running you can view the console logs using:
 
 	sudo docker logs -f pep-proxy
 
@@ -56,9 +56,32 @@ To stop the container:
 
 ## Run the container from the last release in Docker Hub
 
-You can also run the container from the [image we provide](https://hub.docker.com/r/ging/pep-proxy/) in Docker Hub. In this case you have only to execute the run command. But now the image name is ging/pep-proxy:*version* where `version` is the release you want to use:
+You can also run the container from the [image we provide](https://hub.docker.com/r/fiware/pep-proxy/) in Docker Hub. In this case you have only to execute the run command. But now the image name is fiware/pep-proxy:*version* where `version` is the release you want to use:
 
-	sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-pep-proxy/config.js -p [host_port]:[container_port] ging/pep-proxy
+	sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-pep-proxy/config.js -p [host_port]:[container_port] fiware/pep-proxy
 
 > **Note**
 > If you do not specify a version you are pulling from `latest` by default.
+
+
+### Docker Environment Variables
+
+* `PEP_PROXY_PORT` - default value is `80`
+* `PEP_PROXY_HTTPS_ENABLED` - default value is `false`
+* `PEP_PROXY_HTTPS_PORT` - default value is `443`
+* `PEP_PROXY_IDM_HOST` - default value is `account.lab.fiware.org`
+* `PEP_PROXY_IDM_PORT` - default value is ` 443`
+* `PEP_PROXY_IDM_SSL_ENABLED` - default value is `true`
+* `PEP_PROXY_APP_HOST` - default value is `www.fiware.org'`
+* `PEP_PROXY_APP_PORT` - default value is `80`
+* `PEP_PROXY_APP_SSL_ENABLED` - default value is `false` - Use `true` if the app server listens in https
+* `PEP_PROXY_APP_ID` - default value is left blank and must be overridden
+* `PEP_PROXY_USERNAME`  - default value is left blank and must be overridden
+* `PEP_PASSWORD`  - default value is left blank and must be overridden
+* `PEP_PROXY_AUTH_ENABLED` - default value is `false`
+* `PEP_PROXY_PDP` - default value is `idm` 	can be set tp `authzforce`
+* `PEP_PROXY_AZF_PROTOCOL ` - default value is `http`
+* `PEP_PROXY_AZF_HOST` - default value is `localhost`
+* `PEP_PROXY_AZF_PORT` - default value is `8080`
+* `PEP_PROXY_AZF_CUSTOM_POLICY ` - default value is ` undefined` which impliesthe usage of default policy checks (HTTP verb + path).
+* `PEP_PROXY_MAGIC_KEY` - default value is `undefined` - should be overridden
