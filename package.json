@@ -31,7 +31,12 @@
     "prettier": "^1.14.2",
     "should": "8.4.0",
     "sinon": "1.17.4",
-    "sinon-chai": "2.8.0"
+    "sinon-chai": "2.8.0",
+    "textlint": "^11.0.1",
+    "textlint-rule-common-misspellings": "^1.0.1",
+    "textlint-rule-no-dead-link": "^4.4.1",
+    "textlint-rule-terminology": "^1.1.30",
+    "textlint-rule-write-good": "^1.6.2"
   },
   "repository": {
     "type": "git",
@@ -52,7 +57,9 @@
     "pretest": "npm run lint",
     "test": "mocha --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
     "lint": "eslint . --cache --fix",
+    "lint:text": "textlint 'README.md' 'doc/*.md' 'doc/**/*.md'",
     "prettier": "prettier --single-quote --trailing-comma es5 --write **/*.js *.js",
+    "prettier:text": "prettier 'README.md' 'doc/*.md' 'doc/**/*.md' --no-config --tab-width 4 --print-width 120 --write --prose-wrap always",
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
     "test:coverage": "istanbul cover _mocha -- --recursive 'test/**/*.js' --reporter spec --exit",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
@@ -65,6 +72,10 @@
   "lint-staged": {
     "*.js": [
       "prettier --parser flow --single-quote --trailing-comma es5 --write",
+      "git add"
+    ],
+    "*.md": [
+      "prettier --no-config --tab-width 4 --print-width 120 --write --prose-wrap always",
       "git add"
     ]
   }
