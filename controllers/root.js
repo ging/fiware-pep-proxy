@@ -174,6 +174,7 @@ const Root = (function() {
     req.headers['X-Eidas-Profile'] = userInfo.eidas_profile
       ? JSON.stringify(userInfo.eidas_profile)
       : {};
+    req.headers['X-App-Id'] = userInfo.app_id;
   };
 
   const authorize_azf = function(req, res, authToken, userInfo) {
