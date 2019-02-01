@@ -123,6 +123,7 @@ const Root = (function() {
         req.headers['X-Roles'] = (userInfo.roles) ? JSON.stringify(userInfo.roles) : [];
         req.headers['X-Organizations'] = (userInfo.organizations) ? JSON.stringify(userInfo.organizations) : [];
         req.headers['X-Eidas-Profile'] = (userInfo.eidas_profile) ? JSON.stringify(userInfo.eidas_profile) : {};
+        req.headers['X-App-Id'] = userInfo.app_id;
     }
 
     const authorize_azf = function (req, res, authToken, userInfo) {
