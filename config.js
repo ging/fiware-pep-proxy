@@ -16,9 +16,9 @@ config.https = {
 };
 
 config.idm = {
-  host: process.env.PEP_PROXY_IDM_HOST || 'account.lab.fiware.org',
-  port: process.env.PEP_PROXY_IDM_PORT || 443,
-  ssl: toBoolean(process.env.PEP_PROXY_IDM_SSL_ENABLED, true),
+  host: process.env.PEP_PROXY_IDM_HOST || 'localhost',
+  port: process.env.PEP_PROXY_IDM_PORT || 4000,
+  ssl: toBoolean(process.env.PEP_PROXY_IDM_SSL_ENABLED, false),
 };
 
 config.app = {
@@ -29,9 +29,14 @@ config.app = {
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {
-  app_id: process.env.PEP_PROXY_APP_ID || '',
-  username: process.env.PEP_PROXY_USERNAME || '',
-  password: process.env.PEP_PASSWORD || '',
+  app_id:
+    process.env.PEP_PROXY_APP_ID || '90d6f527-fcee-4a6b-8db6-8c53d04d85f4',
+  username:
+    process.env.PEP_PROXY_USERNAME ||
+    'pep_proxy_aebaf1a7-5c92-48df-8996-dc22f876603d',
+  password:
+    process.env.PEP_PASSWORD ||
+    'pep_proxy_9a02a907-1947-4391-9d41-334bb06922e8',
   token: {
     secret: process.env.PEP_TOKEN_SECRET || '', // Secret must be configured in order validate a jwt
   },
