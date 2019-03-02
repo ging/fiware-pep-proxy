@@ -1,29 +1,49 @@
-language: node_js
-sudo: required
-dist: xenial
+jobs:
+    include:
+        - stage: test
+          name: "Unit Tests"
+          language: node_js
+          sudo: required
+          dist: xenial
 
-node_js:
-    - "8"
-    - "10"
+          node_js:
+              - "8"
+              - "10"
 
-branches:
-    only:
-        - master
+          branches:
+              only:
+                  - master
 
-install:
-    - npm install
+          install:
+              - npm install
 
-before_install:
-    - docker pull fiware/idm:7.5.1
-    - docker pull mysql:5.7
-    - docker network create --driver=bridge my-network
-    - docker run -d -h mysql --net=my-network  -p 3306:3306 --name mysql -v $(pwd)/test/mysql-data:/docker-entrypoint-initdb.d/:ro -e MYSQL_ROOT_PASSWORD=test  mysql:5.7
-    - docker run -d --net=my-network -p 3000:3000 --name keyrock -e IDM_DB_USER=root -e IDM_DB_PASS=test -e DATABASE_HOST=mysql -e IDM_DB_PORT=3306  fiware/idm:7.5.1
+          before_install:
+              - docker pull fiware/idm:7.5.1
+              - docker pull mysql:5.7
+              - docker network create --driver=bridge my-network
+              - docker run -d -h mysql --net=my-network  -p 3306:3306 --name mysql -v $(pwd)/test/mysql-data:/docker-entrypoint-initdb.d/:ro -e MYSQL_ROOT_PASSWORD=test  mysql:5.7
+              - docker run -d --net=my-network -p 3000:3000 --name keyrock -e IDM_DB_USER=root -e IDM_DB_PASS=test -e DATABASE_HOST=mysql -e IDM_DB_PORT=3306  fiware/idm:7.5.1
 
-before_script:
-    - npm run lint
-    - npm run lint:md
-    - npm run lint:text
+          before_script:
+              - npm run lint
 
-after_script:
-    - npm run test:coveralls
+          after_script:
+              - npm run test:coveralls
+
+        - stage: test
+          name: "Documentation Tests"
+          language: node_js
+
+          node_js:
+              - "10"
+
+          branches:
+              only:
+                  - master
+
+          install:
+              - npm install
+
+          script:
+              - npm run lint:md
+              - npm run lint:text
