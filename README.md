@@ -40,7 +40,7 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information 
     -   nodejs >= v8.x.x
     -   npm >= 5.x.x
 
-Note: Both can be installed from (http://nodejs.org/download/)
+Note: Both can be installed from [Node.js](http://nodejs.org/download/)
 
 -   Clone Proxy repository:
 
@@ -83,7 +83,7 @@ obtained from FIWARE IDM GE.
 
 Example of request:
 
-```bash
+```text
 GET / HTTP/1.1
 Host: proxy_host
 X-Auth-Token:z2zXk...ANOXvZrmvxvSg
@@ -97,7 +97,7 @@ curl --header "X-Auth-Token:z2zXk...ANOXvZrmvxvSg" http://proxy_host
 
 Once authenticated, the forwarded request will include additional HTTP headers with user info:
 
-```bash
+```text
 X-Nick-Name: nickname of the user in IdM
 X-Display-Name: display name of user in IdM
 X-Roles: roles of the user in IdM
@@ -114,26 +114,26 @@ obtained from FIWARE IDM GE.
 
 Example of request:
 
-<pre>
+```text
  GET / HTTP/1.1
  Host: proxy_host
  X-Auth-Token:z2zXk...ANOXvZrmvxvSg
-</pre>
+```
 
 To test the proxy you can generate this request running the following command:
 
-<pre>
+```console
  curl --header "X-Auth-Token:z2zXk...ANOXvZrmvxvSg" http://proxy_host
-</pre>
+```
 
 Once authenticated, the forwarded request will include additional HTTP headers with user info:
 
-<pre>
+```text
  X-Nick-Name: nickname of the user in IdM
  X-Display-Name: display name of user in IdM
  X-Roles: roles of the user in IdM
  X-Organizations: organizations in IdM
-</pre>
+```
 
 ## Advanced Documentation
 
@@ -146,18 +146,18 @@ Once authenticated, the forwarded request will include additional HTTP headers w
 This project is part of [FIWARE](https://fiware.org/) and has been rated as follows:
 
 -   **Version Tested:**
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Version&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.version&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Version&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.version&colorB=blue)
 -   **Documentation:**
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Completeness&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.docCompleteness&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Usability&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.docSoundness&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Completeness&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.docCompleteness&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Usability&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.docSoundness&colorB=blue)
 -   **Responsiveness:**
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Time%20to%20Respond&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.timeToCharge&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Time%20to%20Fix&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.timeToFix&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Time%20to%20Respond&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.timeToCharge&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Time%20to%20Fix&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.timeToFix&colorB=blue)
 -   **FIWARE Testing:**
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Tests%20Passed&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.failureRate&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Scalability&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.scalability&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Performance&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.performance&colorB=blue)
-    ![ ](https://img.shields.io/badge/dynamic/json.svg?label=Stability&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.stability&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Tests%20Passed&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.failureRate&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Scalability&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.scalability&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Performance&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.performance&colorB=blue)
+    ![](https://img.shields.io/badge/dynamic/json.svg?label=Stability&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.stability&colorB=blue)
 
 ---
 

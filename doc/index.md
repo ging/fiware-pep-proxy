@@ -31,7 +31,7 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information 
     -   nodejs >= v8.x.x
     -   npm >= 5.x.x
 
-Note: Both can be installed from (http://nodejs.org/download/)
+Note: Both can be installed from [Node.js](http://nodejs.org/download/)
 
 -   Clone Proxy repository:
 

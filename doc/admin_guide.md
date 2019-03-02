@@ -28,8 +28,8 @@ FIWARE backends.
 
 In order to execute the PEP Proxy GE, it is needed to have previously installed the following software of framework:
 
--   Node.js Server v0.8.17 or greater (http://nodejs.org/download/).
--   Node Packaged Modules. It is usually included within Node.js (https://npmjs.org/).
+-   Node.js Server v0.8.17 or greater - [Download](http://nodejs.org/download/).
+-   Node Packaged Modules. It is usually included within [Node.js](https://npmjs.org/).
 
 ## System Installation
 
@@ -78,10 +78,11 @@ You can also configure Pep Proxy to validate authorization in your application
 ([levels 2 and 3 of authorization](user_guide.md#level-2-basic-authorization)). If enabled PEP checks permissions in two
 ways:
 
--   With IdM: only allow basic authorization
--   With [Authorization PDP GE](http://catalogue.fiware.org/enablers/authorization-pdp-authzforce): allow basic and
-    advanced authorization. For advanced authorization, you can use custom policy checks by including programatic
-    scripts in policies folder. An script template is included there.
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): only allow basic
+    authorization
+-   With [Authzforce Authorization PDP](https://github.com/Fiware/catalogue/tree/master/security#authzforce): allow
+    basic and advanced authorization. For advanced authorization, you can use custom policy checks by including
+    programatic scripts in policies folder. An script template is included there.
 
 ```javascript
 config.authorization = {
