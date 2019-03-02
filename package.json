@@ -1,6 +1,6 @@
 {
   "name": "fiware-pep-proxy",
-  "version": "7.5.1",
+  "version": "7.6.0",
   "license": "MIT",
   "description": "PEP oauth2 authentication proxy for FIWARE GE services",
   "author": "GING DIT UPM",
@@ -71,6 +71,12 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "remarkConfig": {
+    "settings" : { 
+      "bullet": "-", "paddedTable": true 
+    },
+    "plugins": ["remark-preset-lint-recommended"]
   },
   "lint-staged": {
     "*.js": [
