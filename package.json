@@ -60,7 +60,7 @@
     "test": "mocha --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
     "lint": "eslint . --cache --fix",
     "lint:text": "textlint '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md'",
-    "lint:md": "remark 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
+    "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
     "prettier": "prettier --single-quote --trailing-comma es5 --write **/*.js *.js",
     "prettier:text": "prettier '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md' --no-config --tab-width 4 --print-width 120 --write --prose-wrap always",
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
