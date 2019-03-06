@@ -79,9 +79,9 @@ You can also configure Pep Proxy to validate authorization in your application
 ways:
 
 -   With IdM: only allow basic authorization
--   With [Authorization PDP GE](http://catalogue.fiware.org/enablers/authorization-pdp-authzforce): allow basic and
-    advanced authorization. For advanced authorization, you can use custom policy checks by including programatic
-    scripts in policies folder. An script template is included there.
+-   With [Authorization PDP GE](https://authzforce-ce-fiware.readthedocs.io/en/latest/): allow basic and advanced
+    authorization. For advanced authorization, you can use custom policy checks by including programatic scripts in
+    policies folder. An script template is included there.
 
 ```javascript
 config.authorization = {
