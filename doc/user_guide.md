@@ -44,15 +44,22 @@ environment are the following:
 
 ## Programmer Guide
 
-PEP Proxy GE is designed to perform three levels of security for the backend REST APIs. Requests to proxy should be made
-with a special HTTP Header: X-Auth-Token. This header contains the OAuth access token obtained from FIWARE IDM GE.
-Request example:
+PEP Proxy GE is designed to perform three levels of security for the backend REST APIs. Requests to proxy should be made with a special HTTP Header: X-Auth-Token or with the standar header Authorization: Bearer header. These headers contain the OAuth access token obtained from FIWARE IDM GE.
 
-<pre>
+Example of requests:
+
+```text
+GET / HTTP/1.1
+Host: proxy_host
+Authorization: Bearer z2zXk...ANOXvZrmvxvSg
+```
+
+```text
 GET / HTTP/1.1
 Host: proxy_host
 X-Auth-Token:z2zXk...ANOXvZrmvxvSg
-</pre>
+```
+
 
 In order to validate the request and forward it to the backend application, PEP Proxy will check with Identity
 Management and Authorization PDP GEs different parameters depending on the security level that the administrator has
