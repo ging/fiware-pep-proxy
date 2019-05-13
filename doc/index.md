@@ -76,9 +76,15 @@ based on your own codebase if you want to make changes by yourself.
 Requests to proxy should be made with a special `HTTP Header: X-Auth-Token`. This header contains the OAuth access token
 obtained from FIWARE IDM GE.
 
-Example of request:
+Example of requests:
 
-```bash
+```text
+GET / HTTP/1.1
+Host: proxy_host
+Authorization: Bearer z2zXk...ANOXvZrmvxvSg
+```
+
+```text
 GET / HTTP/1.1
 Host: proxy_host
 X-Auth-Token:z2zXk...ANOXvZrmvxvSg
@@ -86,10 +92,14 @@ X-Auth-Token:z2zXk...ANOXvZrmvxvSg
 
 To test the proxy you can generate this request running the following command:
 
-```bash
-curl --header "X-Auth-Token:z2zXk...ANOXvZrmvxvSg" http://proxy_host
+```console
+curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
+or
 
+```console
+curl --header "Authorization: Bearer z2zXk...ANOXvZrmvxvSg" http://proxy_host
+```
 Once authenticated, the forwarded request will include additional HTTP headers with user info:
 
 ```bash
@@ -109,23 +119,36 @@ obtained from FIWARE IDM GE.
 
 Example of request:
 
-<pre>
- GET / HTTP/1.1
- Host: proxy_host
- X-Auth-Token:z2zXk...ANOXvZrmvxvSg
-</pre>
+Example of requests:
+
+```text
+GET / HTTP/1.1
+Host: proxy_host
+Authorization: Bearer z2zXk...ANOXvZrmvxvSg
+```
+
+```text
+GET / HTTP/1.1
+Host: proxy_host
+X-Auth-Token:z2zXk...ANOXvZrmvxvSg
+```
 
 To test the proxy you can generate this request running the following command:
 
-<pre>
- curl --header "X-Auth-Token:z2zXk...ANOXvZrmvxvSg" http://proxy_host
-</pre>
+```console
+curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
+```
+or
+
+```console
+curl --header "Authorization: Bearer z2zXk...ANOXvZrmvxvSg" http://proxy_host
+```
 
 Once authenticated, the forwarded request will include additional HTTP headers with user info:
 
-<pre>
- X-Nick-Name: nickname of the user in IdM
- X-Display-Name: display name of user in IdM
- X-Roles: roles of the user in IdM
- X-Organizations: organizations in IdM
-</pre>
+```bash
+X-Nick-Name: nickname of the user in IdM
+X-Display-Name: display name of user in IdM
+X-Roles: roles of the user in IdM
+X-Organizations: organizations in IdM
+```
