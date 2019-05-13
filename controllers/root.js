@@ -21,6 +21,10 @@ const Root = (function() {
       authToken = new Buffer(headerAuth, 'base64').toString();
     }
 
+    const organizationToken = req.headers['fiware-service']
+      ? req.headers['fiware-service']
+      : null;
+
     if (authToken === undefined) {
       log.error('Auth-token not found in request header');
       const authHeader = 'IDM uri = ' + config.idm_host;
@@ -75,7 +79,8 @@ const Root = (function() {
                 action,
                 resource,
                 app_id,
-                authzforce
+                authzforce,
+                organizationToken
               );
             }
           } else if (config.authorization.enabled) {
@@ -90,7 +95,8 @@ const Root = (function() {
                 action,
                 resource,
                 app_id,
-                authzforce
+                authzforce,
+                organizationToken
               );
             } else {
               res.status(401).send('User access-token not authorized');
@@ -109,7 +115,8 @@ const Root = (function() {
           action,
           resource,
           app_id,
-          authzforce
+          authzforce,
+          organizationToken
         );
       }
     }
@@ -123,7 +130,8 @@ const Root = (function() {
     action,
     resource,
     app_id,
-    authzforce
+    authzforce,
+    organizationToken
   ) {
     IDM.checkToken(
       authToken,
@@ -132,6 +140,7 @@ const Root = (function() {
       resource,
       app_id,
       authzforce,
+      organizationToken,
       function(userInfo) {
         setHeaders(req, userInfo);
         if (config.authorization.enabled) {

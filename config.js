@@ -27,16 +27,22 @@ config.app = {
   ssl: toBoolean(process.env.PEP_PROXY_APP_SSL_ENABLED, false), // Use true if the app server listens in https
 };
 
+config.organizations = {
+  enabled: true,
+};
+
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {
   app_id:
-    process.env.PEP_PROXY_APP_ID || '90d6f527-fcee-4a6b-8db6-8c53d04d85f4',
+    process.env.PEP_PROXY_APP_ID || '491b27ed-2f1e-4435-8a6c-01c25220af12', //'90d6f527-fcee-4a6b-8db6-8c53d04d85f4',
   username:
     process.env.PEP_PROXY_USERNAME ||
-    'pep_proxy_aebaf1a7-5c92-48df-8996-dc22f876603d',
+    'pep_proxy_9b0b48d1-bf44-40ca-85ee-3ea12fd5a207',
+  //'pep_proxy_aebaf1a7-5c92-48df-8996-dc22f876603d',
   password:
     process.env.PEP_PASSWORD ||
-    'pep_proxy_9a02a907-1947-4391-9d41-334bb06922e8',
+    'pep_proxy_5408c16d-e28b-49b4-926a-717ecec42a10',
+  //'pep_proxy_9a02a907-1947-4391-9d41-334bb06922e8',
   token: {
     secret: process.env.PEP_TOKEN_SECRET || '', // Secret must be configured in order validate a jwt
   },
