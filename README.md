@@ -81,7 +81,13 @@ We also provide a Docker image to facilitate you the building of this GE.
 Requests to proxy should be made with a special `HTTP Header: X-Auth-Token`. This header contains the OAuth access token
 obtained from FIWARE IDM GE.
 
-Example of request:
+Example of requests:
+
+```text
+GET / HTTP/1.1
+Host: proxy_host
+Authorization: Bearer z2zXk...ANOXvZrmvxvSg
+```
 
 ```text
 GET / HTTP/1.1
@@ -92,7 +98,12 @@ X-Auth-Token:z2zXk...ANOXvZrmvxvSg
 To test the proxy you can generate this request running the following command:
 
 ```console
-curl --header "X-Auth-Token:z2zXk...ANOXvZrmvxvSg" http://proxy_host
+curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
+```
+or
+
+```console
+curl --header "Authorization: Bearer z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
 
 Once authenticated, the forwarded request will include additional HTTP headers with user info:
@@ -112,18 +123,29 @@ can be found [here](http://fiware-pep-proxy.readthedocs.org/en/latest/admin_guid
 Requests to proxy should be made with a special HTTP Header: X-Auth-Token. This header contains the OAuth access token
 obtained from FIWARE IDM GE.
 
-Example of request:
+Example of requests:
 
 ```text
- GET / HTTP/1.1
- Host: proxy_host
- X-Auth-Token:z2zXk...ANOXvZrmvxvSg
+GET / HTTP/1.1
+Host: proxy_host
+Authorization: Bearer z2zXk...ANOXvZrmvxvSg
+```
+
+```text
+GET / HTTP/1.1
+Host: proxy_host
+X-Auth-Token:z2zXk...ANOXvZrmvxvSg
 ```
 
 To test the proxy you can generate this request running the following command:
 
 ```console
- curl --header "X-Auth-Token:z2zXk...ANOXvZrmvxvSg" http://proxy_host
+curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
+```
+or
+
+```console
+curl --header "Authorization: Bearer z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
 
 Once authenticated, the forwarded request will include additional HTTP headers with user info:
