@@ -28,6 +28,9 @@ config.app = {
 	ssl: toBoolean(process.env.PEP_PROXY_APP_SSL_ENABLED, false) // Use true if the app server listens in https
 }
 
+config.organizations = {
+  enabled: process.env.PEP_PROXY_ORG_ENABLED || false,
+}
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {

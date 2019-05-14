@@ -28,7 +28,7 @@ config.app = {
 };
 
 config.organizations = {
-  enabled: false,
+  enabled: process.env.PEP_PROXY_ORG_ENABLED || false,
 }
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
