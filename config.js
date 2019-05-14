@@ -28,14 +28,20 @@ config.app = {
 };
 
 config.organizations = {
-  enabled: process.env.PEP_PROXY_ORG_ENABLED || false,
+  enabled: process.env.PEP_PROXY_ORG_ENABLED || true,
+  header: process.env.PEP_PROXY_ORG_HEADER || 'fiware-service',
 };
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {
-  app_id: process.env.PEP_PROXY_APP_ID || '',
-  username: process.env.PEP_PROXY_USERNAME || '',
-  password: process.env.PEP_PASSWORD || '',
+  app_id:
+    process.env.PEP_PROXY_APP_ID || '19d7329e-e2df-40c8-8b2b-3378d82c1de1',
+  username:
+    process.env.PEP_PROXY_USERNAME ||
+    'pep_proxy_2d14838e-9d6b-4e57-b9c2-2596f8ee056e',
+  password:
+    process.env.PEP_PASSWORD ||
+    'pep_proxy_ca394748-fb1b-4713-af3c-738c74046bc4',
   token: {
     secret: process.env.PEP_TOKEN_SECRET || '', // Secret must be configured in order validate a jwt
   },

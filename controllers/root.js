@@ -21,8 +21,8 @@ const Root = (function() {
       authToken = new Buffer(headerAuth, 'base64').toString();
     }
 
-    const organizationToken = req.headers['fiware-service']
-      ? req.headers['fiware-service']
+    const organizationToken = req.headers[config.organizations.header]
+      ? req.headers[config.organizations.header]
       : null;
 
     if (authToken === undefined) {
