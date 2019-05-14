@@ -33,9 +33,12 @@ config.organizations = {
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {
-  app_id: process.env.PEP_PROXY_APP_ID || '',
-  username: process.env.PEP_PROXY_USERNAME || '',
-  password: process.env.PEP_PASSWORD || '',
+  app_id:
+    process.env.PEP_PROXY_APP_ID || '',
+  username:
+    process.env.PEP_PROXY_USERNAME || '',
+  password:
+    process.env.PEP_PASSWORD || '',
   token: {
     secret: process.env.PEP_TOKEN_SECRET || '', // Secret must be configured in order validate a jwt
   },
@@ -48,10 +51,10 @@ config.cache_time = 300;
 // if enabled PEP checks permissions in two ways:
 //  - With IdM: only allow basic authorization
 //  - With Authzforce: allow basic and advanced authorization.
-//	  For advanced authorization, you can use custom policy checks by including programatic scripts
+//    For advanced authorization, you can use custom policy checks by including programatic scripts
 //    in policies folder. An script template is included there
 //
-//	This is only compatible with oauth2 tokens engine
+//  This is only compatible with oauth2 tokens engine
 
 config.authorization = {
   enabled: toBoolean(process.env.PEP_PROXY_AUTH_ENABLED, false),
