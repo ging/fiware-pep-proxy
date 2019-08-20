@@ -72,7 +72,7 @@ module.exports = config;
 
 The username/password corresponds with the credentials of a registerd PEP Proxy in the FIWARE Account Portal. To do so,
 you have to first register an application. The steps can be found
-[here](http://fiware-idm.readthedocs.io/en/latest/user_guide/#def-register-pep-and-iot).
+[here](https://fiware-idm.readthedocs.io/en/latest/user_and_programmers_guide/application_guide/index.html#register-pep-proxy-and-iot-agents).
 
 You can also configure Pep Proxy to validate authorization in your application
 ([levels 2 and 3 of authorization](user_guide.md#level-2-basic-authorization)). If enabled PEP checks permissions in two
