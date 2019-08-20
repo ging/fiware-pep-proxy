@@ -99,4 +99,5 @@ sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-
 -   `PEP_PROXY_AZF_PORT` - default value is `8080`
 -   `PEP_PROXY_AZF_CUSTOM_POLICY` - default value is `undefined` which impliesthe usage of default policy checks (HTTP
     verb + path).
+-   `PEP_PROXY_PUBLIC_PATHS` - default value is `[]` - Use `,` to split paths
 -   `PEP_PROXY_MAGIC_KEY` - default value is `undefined` - should be overridden
