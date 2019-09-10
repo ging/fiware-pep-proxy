@@ -165,7 +165,7 @@ Once authenticated, the forwarded request will include additional HTTP headers w
 
 ## Quality Assurance
 
-This project is part of [FIWARE](https://fiware.org/) and has been rated as follows:
+This project is part of [FIWARE](https://www.fiware.org/) and has been rated as follows:
 
 -   **Version Tested:**
     ![](https://img.shields.io/badge/dynamic/json.svg?label=Version&url=https://fiware.github.io/catalogue/json/wilma.json&query=$.version&colorB=blue)
