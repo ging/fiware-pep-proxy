@@ -28,7 +28,7 @@ config.app = {
 };
 
 config.organizations = {
-  enabled: process.env.PEP_PROXY_ORG_ENABLED || false,
+  enabled: toBoolean(process.env.PEP_PROXY_ORG_ENABLED, false),
   header: process.env.PEP_PROXY_ORG_HEADER || 'fiware-service'
 }
 
