@@ -47,7 +47,6 @@ const Root = (function() {
       let action;
       let resource;
       let authzforce;
-      let app_id;
 
       if (config.authorization.enabled) {
         if (config.authorization.pdp === 'authzforce') {
@@ -55,7 +54,6 @@ const Root = (function() {
         } else {
           action = req.method;
           resource = req.path;
-          app_id = config.pep.app_id;
         }
       }
 
@@ -78,14 +76,13 @@ const Root = (function() {
                 null,
                 action,
                 resource,
-                app_id,
                 authzforce,
                 organizationToken
               );
             }
           } else if (config.authorization.enabled) {
             if (config.authorization.pdp === 'authzforce') {
-              authorize_azf(req, res, authToken, userInfo);
+              authorizeAzf(req, res, authToken, userInfo);
             } else if (config.authorization.pdp === 'idm') {
               checkToken(
                 req,
@@ -94,7 +91,6 @@ const Root = (function() {
                 userInfo.exp,
                 action,
                 resource,
-                app_id,
                 authzforce,
                 organizationToken
               );
@@ -114,7 +110,6 @@ const Root = (function() {
           null,
           action,
           resource,
-          app_id,
           authzforce,
           organizationToken
         );
@@ -126,26 +121,24 @@ const Root = (function() {
     req,
     res,
     authToken,
-    jwt_expiration,
+    jwtExpiration,
     action,
     resource,
-    app_id,
     authzforce,
     organizationToken
   ) {
     IDM.checkToken(
       authToken,
-      jwt_expiration,
+      jwtExpiration,
       action,
       resource,
-      app_id,
       authzforce,
       organizationToken,
       function(userInfo) {
         setHeaders(req, userInfo);
         if (config.authorization.enabled) {
           if (config.authorization.pdp === 'authzforce') {
-            authorize_azf(req, res, authToken, userInfo);
+            authorizeAzf(req, res, authToken, userInfo);
           } else if (userInfo.authorization_decision === 'Permit') {
             redirRequest(req, res, userInfo);
           } else {
@@ -186,7 +179,7 @@ const Root = (function() {
     req.headers['X-App-Id'] = userInfo.app_id;
   };
 
-  const authorize_azf = function(req, res, authToken, userInfo) {
+  const authorizeAzf = function(req, res, authToken, userInfo) {
     // Check decision through authzforce
     AZF.checkPermissions(
       authToken,

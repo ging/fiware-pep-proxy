@@ -44,7 +44,9 @@ environment are the following:
 
 ## Programmer Guide
 
-PEP Proxy GE is designed to perform three levels of security for the backend REST APIs. Requests to proxy should be made with a special HTTP Header: X-Auth-Token or with the standar header Authorization: Bearer header. These headers contain the OAuth access token obtained from FIWARE IDM GE.
+PEP Proxy GE is designed to perform three levels of security for the backend REST APIs. Requests to proxy should be made
+with a special HTTP Header: X-Auth-Token or with the standar header Authorization: Bearer header. These headers contain
+the OAuth access token obtained from FIWARE IDM GE.
 
 Example of requests:
 
@@ -60,7 +62,6 @@ Host: proxy_host
 X-Auth-Token:z2zXk...ANOXvZrmvxvSg
 ```
 
-
 In order to validate the request and forward it to the backend application, PEP Proxy will check with Identity
 Management and Authorization PDP GEs different parameters depending on the security level that the administrator has
 configured. The available levels are:
@@ -71,7 +72,7 @@ configured. The available levels are:
     user in FIWARE but also if the roles that the user has allow it to access the resource specified in the request.
     This is based in the HTTP verb and the path.
 -   Level 3: Advanced Authorization PEP Proxy checks if the token included in the request corresponds to an
-    authenticated user in FIWARE but also other advanced parameters such us the body or the headers of the request.
+    authenticated user in FIWARE but also other advanced parameters such as the body or the headers of the request.
 
 Below are detailed these three levels and how to configure each one.
 
@@ -128,7 +129,7 @@ that user in that application. Please, see the User Guide of Identity Management
 <p align="center">Figure 3: Advanced Authorization</p>
 
 [Figure 3](#def-fig3) shows the architecture of this configuration. As this case is thought to check advanced parameters
-of the request such us the body or custom headers, it depends on the specific use case. So the programmer should modify
+of the request such as the body or custom headers, it depends on the specific use case. So the programmer should modify
 the PEP Proxy source code in order to include the specific requirements.
 
 With the desired parameters he has to create a XACML <Request> and send a request to Authorization PDP GE in order to
