@@ -95,11 +95,13 @@ To test the proxy you can generate this request running the following command:
 ```console
 curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
+
 or
 
 ```console
 curl --header "Authorization: Bearer z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
+
 Once authenticated, the forwarded request will include additional HTTP headers with user info:
 
 ```bash
@@ -112,7 +114,7 @@ X-Organizations: organizations in IdM
 ## Tests
 
 For performing a basic end-to-end test, you have to follow the next steps. A detailed description about how to run tests
-can be found [here](http://fiware-pep-proxy.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
+can be found [here](https://fiware-pep-proxy.readthedocs.io/en/latest/admin_guide#end-to-end-testing).
 
 Requests to proxy should be made with a special HTTP Header: X-Auth-Token. This header contains the OAuth access token
 obtained from FIWARE IDM GE.
@@ -138,6 +140,7 @@ To test the proxy you can generate this request running the following command:
 ```console
 curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
+
 or
 
 ```console

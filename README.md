@@ -5,7 +5,7 @@
 [![Docker badge](https://img.shields.io/docker/pulls/fiware/pep-proxy.svg)](https://hub.docker.com/r/fiware/pep-proxy/)
 [![Support badge](https://img.shields.io/badge/tag-fiware--wilma-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-wilma)
 <br>
-[![Documentation badge](https://img.shields.io/readthedocs/fiware-pep-proxy.svg)](http://fiware-pep-proxy.readthedocs.org/en/latest/)
+[![Documentation badge](https://img.shields.io/readthedocs/fiware-pep-proxy.svg)](https://fiware-pep-proxy.readthedocs.io/en/latest/)
 [![Build Status](https://travis-ci.org/ging/fiware-pep-proxy.svg?branch=master)](https://travis-ci.org/ging/fiware-pep-proxy)
 [![Coverage Status](https://coveralls.io/repos/github/ging/fiware-pep-proxy/badge.svg?branch=master)](https://coveralls.io/github/ging/fiware-pep-proxy?branch=master)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/wilma.svg)
@@ -19,8 +19,8 @@ different access levels for your users.
 This project is part of [FIWARE](https://www.fiware.org/). For more information check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
-| :books: [Documentation](https://fiware-pep-proxy.rtfd.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/wilma) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/pep-proxy/) | :dart: [Roadmap](https://github.com/ging/fiware-pep-proxy/blob/master/roadmap.md) |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| :books: [Documentation](https://fiware-pep-proxy.readthedocs.io/en/latest/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/wilma) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/pep-proxy/) | :dart: [Roadmap](https://github.com/ging/fiware-pep-proxy/blob/master/roadmap.md) |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 
 
 ## Content
@@ -100,6 +100,7 @@ To test the proxy you can generate this request running the following command:
 ```console
 curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
+
 or
 
 ```console
@@ -118,7 +119,7 @@ X-Organizations: organizations in IdM
 ## Tests
 
 For performing a basic end-to-end test, you have to follow the next steps. A detailed description about how to run tests
-can be found [here](http://fiware-pep-proxy.readthedocs.org/en/latest/admin_guide#end-to-end-testing).
+can be found [here](https://fiware-pep-proxy.readthedocs.io/en/latest/admin_guide#end-to-end-testing).
 
 Requests to proxy should be made with a special HTTP Header: X-Auth-Token. This header contains the OAuth access token
 obtained from FIWARE IDM GE.
@@ -142,6 +143,7 @@ To test the proxy you can generate this request running the following command:
 ```console
 curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
+
 or
 
 ```console
@@ -159,9 +161,9 @@ Once authenticated, the forwarded request will include additional HTTP headers w
 
 ## Advanced Documentation
 
--   [How to run tests](http://fiware-pep-proxy.readthedocs.org/en/latest/admin_guide#end-to-end-testing)
--   [User & Programmers Manual](http://fiware-pep-proxy.readthedocs.org/en/latest/user_guide/)
--   [Installation & Administration Guide](http://fiware-pep-proxy.readthedocs.org/en/latest/admin_guide/)
+-   [How to run tests](https://fiware-pep-proxy.readthedocs.io/en/latest/admin_guide#end-to-end-testing)
+-   [User & Programmers Manual](https://fiware-pep-proxy.readthedocs.io/en/latest/user_guide/)
+-   [Installation & Administration Guide](https://fiware-pep-proxy.readthedocs.io/en/latest/admin_guide/)
 
 ## Quality Assurance
 

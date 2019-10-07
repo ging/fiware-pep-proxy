@@ -29,7 +29,7 @@ FIWARE backends.
 In order to execute the PEP Proxy GE, it is needed to have previously installed the following software of framework:
 
 -   Node.js Server v0.8.17 or greater - [Download](http://nodejs.org/download/).
--   Node Packaged Modules. It is usually included within [Node.js](https://npmjs.org/).
+-   Node Packaged Modules. It is usually included within [Node.js](https://www.npmjs.com/).
 
 ## System Installation
 
@@ -136,7 +136,8 @@ before proceeding to unit tests, integration tests and user validation.
 
 ### End-to-end testing
 
-Requests to proxy should be made with a special HTTP Header: X-Auth-Token or with the standar header Authorization: Bearer header. These headers contain the OAuth access token obtained from FIWARE IDM GE.
+Requests to proxy should be made with a special HTTP Header: X-Auth-Token or with the standar header Authorization:
+Bearer header. These headers contain the OAuth access token obtained from FIWARE IDM GE.
 
 Example of requests:
 
@@ -157,6 +158,7 @@ To test the proxy you can generate this request running the following command:
 ```console
 curl --header "X-Auth-Token: z2zXk...ANOXvZrmvxvSg" http://proxy_host
 ```
+
 or
 
 ```console
