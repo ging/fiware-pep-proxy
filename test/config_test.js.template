@@ -4,6 +4,10 @@ function toBoolean(env, defaultValue) {
   return env !== undefined ? env.toLowerCase() === 'true' : defaultValue;
 }
 
+function to_array(env, default_value){
+    return (env !== undefined) ? env.split(',') : default_value;
+}
+
 // Used only if https is disabled
 config.pep_port = process.env.PEP_PROXY_PORT || 80;
 
