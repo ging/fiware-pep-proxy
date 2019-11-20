@@ -71,7 +71,7 @@ config.authorization = {
 
 // list of paths that will not check authentication/authorization
 // example: ['/public/*', '/static/css/']
-config.public_paths = to_array(process.env.PEP_PROXY_PUBLIC_PATHS, '*');
+config.public_paths = to_array(process.env.PEP_PROXY_PUBLIC_PATHS, []);
 
 config.magic_key = (process.env.PEP_PROXY_MAGIC_KEY || undefined);
 
