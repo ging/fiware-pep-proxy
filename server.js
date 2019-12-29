@@ -46,7 +46,7 @@ app.use(function(req, res, next) {
   );
   res.header(
     'Access-Control-Allow-Headers',
-    'origin, content-type, X-Auth-Token, Tenant-ID, Authorization, Fiware-Service'
+    'origin, content-type, X-Auth-Token, Tenant-ID, Authorization, Fiware-Service, Fiware-ServicePath'
   );
   //log.debug("New Request: ", req.method);
   if (req.method === 'OPTIONS') {
