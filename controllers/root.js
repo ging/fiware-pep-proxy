@@ -11,15 +11,7 @@ const Root = (function() {
   const tokensCache = {};
 
   const pep = function(req, res) {
-    const tokenHeader = req.headers.authorization;
-    let authToken = tokenHeader
-      ? tokenHeader.split('Bearer ')[1]
-      : req.headers['x-auth-token'];
-
-    if (authToken === undefined && req.headers.authorization !== undefined) {
-      const headerAuth = req.headers.authorization.split(' ')[1];
-      authToken = new Buffer(headerAuth, 'base64').toString();
-    }
+    const authToken = JSON.parse(req.body.toString('utf8')).access_token;
 
     const organizationToken = req.headers[config.organizations.header]
       ? req.headers[config.organizations.header]
@@ -224,7 +216,16 @@ const Root = (function() {
       method: req.method,
       headers: proxy.getClientIp(req, req.headers),
     };
-    proxy.sendData(protocol, options, req.body, res);
+
+    const body_no_token = JSON.parse(req.body.toString('utf8'));
+    delete body_no_token.access_token;
+
+    proxy.sendData(
+      protocol,
+      options,
+      Buffer.from(JSON.stringify(body_no_token)),
+      res
+    );
   };
 
   return {
