@@ -12,7 +12,6 @@ const Root = (function() {
 
   const pep = function(req, res) {
     const authToken = JSON.parse(req.body.toString('utf8')).access_token;
-
     const organizationToken = req.headers[config.organizations.header]
       ? req.headers[config.organizations.header]
       : null;
