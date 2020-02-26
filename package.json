@@ -6,6 +6,7 @@
   "author": "GING DIT UPM",
   "dependencies": {
     "async": "1.5.2",
+    "coap": "^0.23.1",
     "errorhandler": "1.x",
     "escape-html": "1.0.3",
     "express": "4.x",

@@ -11,16 +11,17 @@ const Root = (function() {
   const tokensCache = {};
 
   const pep = function(req, res) {
-    const authToken = JSON.parse(req.body.toString('utf8')).access_token;
+    const authToken = JSON.parse(req.payload.toString('utf8')).access_token;
+
     const organizationToken = req.headers[config.organizations.header]
       ? req.headers[config.organizations.header]
       : null;
 
     if (authToken === undefined) {
-      log.error('Auth-token not found in request header');
-      const authHeader = 'IDM uri = ' + config.idm_host;
-      res.set('WWW-Authenticate', authHeader);
-      res.status(401).send('Auth-token not found in request header');
+      log.error('Auth-token not found in request');
+
+      res.code = '4.01';
+      res.end('Auth-token not found in request header');
     } else {
       if (config.magic_key && config.magic_key === authToken) {
         const options = {
@@ -55,7 +56,8 @@ const Root = (function() {
         ) {
           if (err) {
             if (err.name === 'TokenExpiredError') {
-              res.status(401).send('Invalid token: jwt token has expired');
+              res.code = '4.01';
+              res.end('Invalid token: jwt token has expired');
             } else {
               log.error('Error in JWT ', err.message);
               log.error('Or JWT secret bad configured');
@@ -86,7 +88,8 @@ const Root = (function() {
                 organizationToken
               );
             } else {
-              res.status(401).send('User access-token not authorized');
+              res.code = '4.01';
+              res.end('User access-token not authorized');
             }
           } else {
             setHeaders(req, userInfo);
@@ -133,7 +136,8 @@ const Root = (function() {
           } else if (userInfo.authorization_decision === 'Permit') {
             redirRequest(req, res, userInfo);
           } else {
-            res.status(401).send('User access-token not authorized');
+            res.code = '4.01';
+            res.end('User access-token not authorized');
           }
         } else {
           redirRequest(req, res, userInfo);
@@ -142,10 +146,12 @@ const Root = (function() {
       function(status, e) {
         if (status === 404 || status === 401) {
           log.error(e);
-          res.status(401).send(e);
+          res.code = '4.01';
+          res.end(JSON.stringify(e));
         } else {
           log.error('Error in IDM communication ', e);
-          res.status(503).send('Error in IDM communication');
+          res.code = '5.03';
+          res.end('Error in IDM communication');
         }
       },
       tokensCache
@@ -182,13 +188,16 @@ const Root = (function() {
       function(status, e) {
         if (status === 401) {
           log.error('User access-token not authorized: ', e);
-          res.status(401).send('User token not authorized');
+          res.code = '4.01';
+          res.end('User token not authorized');
         } else if (status === 404) {
           log.error('Domain not found: ', e);
-          res.status(404).send(e);
+          res.code = '4.04';
+          res.end(JSON.stringify(e));
         } else {
           log.error('Error in AZF communication ', e);
-          res.status(503).send('Error in AZF communication');
+          res.code = '5.03';
+          res.end('Error in AZF communication');
         }
       },
       tokensCache
@@ -216,13 +225,13 @@ const Root = (function() {
       headers: proxy.getClientIp(req, req.headers),
     };
 
-    const body_no_token = JSON.parse(req.body.toString('utf8'));
-    delete body_no_token.access_token;
+    const payload_no_token = JSON.parse(req.payload.toString('utf8'));
+    delete payload_no_token.access_token;
 
     proxy.sendData(
       protocol,
       options,
-      Buffer.from(JSON.stringify(body_no_token)),
+      Buffer.from(JSON.stringify(payload_no_token)),
       res
     );
   };
