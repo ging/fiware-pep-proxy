@@ -11,103 +11,107 @@ const Root = (function() {
   const tokensCache = {};
 
   const pep = function(req, res) {
-    const authToken = JSON.parse(req.payload.toString('utf8')).access_token;
+    if (config.check_token) {
+      const authToken = JSON.parse(req.payload.toString('utf8')).access_token;
 
-    const organizationToken = req.headers[config.organizations.header]
-      ? req.headers[config.organizations.header]
-      : null;
+      const organizationToken = req.headers[config.organizations.header]
+        ? req.headers[config.organizations.header]
+        : null;
 
-    if (authToken === undefined) {
-      log.error('Auth-token not found in request');
+      if (authToken === undefined) {
+        log.error('Auth-token not found in request');
 
-      res.code = '4.01';
-      res.end('Auth-token not found in request header');
-    } else {
-      if (config.magic_key && config.magic_key === authToken) {
-        const options = {
-          host: config.app.host,
-          port: config.app.port,
-          path: req.url,
-          method: req.method,
-          headers: proxy.getClientIp(req, req.headers),
-        };
-        const protocol = config.app.ssl ? 'https' : 'http';
-        proxy.sendData(protocol, options, req.body, res);
-        return;
-      }
+        res.code = '4.01';
+        res.end('Auth-token not found in request header');
+      } else {
+        if (config.magic_key && config.magic_key === authToken) {
+          const options = {
+            host: config.app.host,
+            port: config.app.port,
+            path: req.url,
+            method: req.method,
+            headers: proxy.getClientIp(req, req.headers),
+          };
+          const protocol = config.app.ssl ? 'https' : 'http';
+          proxy.sendData(protocol, options, req.body, res);
+          return;
+        }
 
-      let action;
-      let resource;
-      let authzforce;
+        let action;
+        let resource;
+        let authzforce;
 
-      if (config.authorization.enabled) {
-        if (config.authorization.pdp === 'authzforce') {
-          authzforce = true;
+        if (config.authorization.enabled) {
+          if (config.authorization.pdp === 'authzforce') {
+            authzforce = true;
+          } else {
+            action = req.method;
+            resource = req.path;
+          }
+        }
+
+        if (config.pep.token.secret) {
+          jsonwebtoken.verify(authToken, config.pep.token.secret, function(
+            err,
+            userInfo
+          ) {
+            if (err) {
+              if (err.name === 'TokenExpiredError') {
+                res.code = '4.01';
+                res.end('Invalid token: jwt token has expired');
+              } else {
+                log.error('Error in JWT ', err.message);
+                log.error('Or JWT secret bad configured');
+                log.error('Validate Token with Keyrock');
+                checkToken(
+                  req,
+                  res,
+                  authToken,
+                  null,
+                  action,
+                  resource,
+                  authzforce,
+                  organizationToken
+                );
+              }
+            } else if (config.authorization.enabled) {
+              if (config.authorization.pdp === 'authzforce') {
+                authorizeAzf(req, res, authToken, userInfo);
+              } else if (config.authorization.pdp === 'idm') {
+                checkToken(
+                  req,
+                  res,
+                  authToken,
+                  userInfo.exp,
+                  action,
+                  resource,
+                  authzforce,
+                  organizationToken
+                );
+              } else {
+                res.code = '4.01';
+                res.end('User access-token not authorized');
+              }
+            } else {
+              setHeaders(req, userInfo);
+              redirRequest(req, res, userInfo);
+            }
+          });
         } else {
-          action = req.method;
-          resource = req.path;
+          checkToken(
+            req,
+            res,
+            authToken,
+            null,
+            action,
+            resource,
+            authzforce,
+            organizationToken
+          );
         }
       }
-
-      if (config.pep.token.secret) {
-        jsonwebtoken.verify(authToken, config.pep.token.secret, function(
-          err,
-          userInfo
-        ) {
-          if (err) {
-            if (err.name === 'TokenExpiredError') {
-              res.code = '4.01';
-              res.end('Invalid token: jwt token has expired');
-            } else {
-              log.error('Error in JWT ', err.message);
-              log.error('Or JWT secret bad configured');
-              log.error('Validate Token with Keyrock');
-              checkToken(
-                req,
-                res,
-                authToken,
-                null,
-                action,
-                resource,
-                authzforce,
-                organizationToken
-              );
-            }
-          } else if (config.authorization.enabled) {
-            if (config.authorization.pdp === 'authzforce') {
-              authorizeAzf(req, res, authToken, userInfo);
-            } else if (config.authorization.pdp === 'idm') {
-              checkToken(
-                req,
-                res,
-                authToken,
-                userInfo.exp,
-                action,
-                resource,
-                authzforce,
-                organizationToken
-              );
-            } else {
-              res.code = '4.01';
-              res.end('User access-token not authorized');
-            }
-          } else {
-            setHeaders(req, userInfo);
-            redirRequest(req, res, userInfo);
-          }
-        });
-      } else {
-        checkToken(
-          req,
-          res,
-          authToken,
-          null,
-          action,
-          resource,
-          authzforce,
-          organizationToken
-        );
-      }
+    } else {
+      redirRequest(req, res, null);
     }
   };
 
@@ -228,12 +232,11 @@ const Root = (function() {
     const payload_no_token = JSON.parse(req.payload.toString('utf8'));
     delete payload_no_token.access_token;
 
-    proxy.sendData(
-      protocol,
-      options,
-      Buffer.from(JSON.stringify(payload_no_token)),
-      res
-    );
+    const data = config.check_token
+      ? Buffer.from(JSON.stringify(payload_no_token))
+      : req.payload;
+
+    proxy.sendData(protocol, options, data, res);
   };
 
   return {
