@@ -11,6 +11,10 @@ function to_array(env, default_value){
 // Used only if https is disabled
 config.pep_port = process.env.PEP_PROXY_PORT || 80;
 
+// Test for Iaacaas
+config.check_token = false
+config.pep_port_coap = process.env.PEP_PROXY_PORT || 5684;
+
 // Set this var to undefined if you don't want the server to listen on HTTPS
 config.https = {
   enabled: toBoolean(process.env.PEP_PROXY_HTTPS_ENABLED, false),
