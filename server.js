@@ -64,6 +64,7 @@ let port = config.pep_port || 80;
 if (config.https.enabled) {
   port = config.https.port || 443;
 }
+
 app.set('port', port);
 
 for (const p in config.public_paths) {

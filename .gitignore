@@ -1,5 +1,3 @@
-config.js
 node_modules
 coverage/
-cert
 .eslintcache
