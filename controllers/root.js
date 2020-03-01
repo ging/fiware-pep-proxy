@@ -4,9 +4,9 @@ const IDM = require('./../lib/idm.js').IDM;
 const AZF = require('./../lib/azf.js').AZF;
 const jsonwebtoken = require('jsonwebtoken');
 const dgram = require('dgram');
-const packet      = require('coap-packet')
-    , parse       = packet.parse
-    , generate    = packet.generate
+const packet = require('coap-packet');
+  const parse = packet.parse;
+  const generate = packet.generate;
 
 const log = require('./../lib/logger').logger.getLogger('Root');
 
@@ -15,40 +15,39 @@ const Root = (function() {
   const tokensCache = {};
 
   const pep = function(req, socket) {
+    req = parse(req);
 
-    req = parse(req)
-    
-    req.headers = {}
+    req.headers = {};
 
-    let res =  {
+    const res = {
       code: '2.01',
       token: req.token,
-    }
+    };
 
     switch (req.code) {
       case '0.01':
-        req.method = 'GET'
+        req.method = 'GET';
         break;
       case '0.02':
-        req.method = 'POST'
+        req.method = 'POST';
         break;
       case '0.03':
-        req.method = 'PUT'
+        req.method = 'PUT';
         break;
       default:
         break;
     }
 
     if (req.options.length > 0) {
-      for (var i = req.options.length - 1; i >= 0; i--) {
-        req.options[i]['value'] = req.options[i]['value'].toString('utf8')
+      for (let i = req.options.length - 1; i >= 0; i--) {
+        req.options[i].value = req.options[i].value.toString('utf8');
 
-        if (req.options[i]['name'] == 'Uri-Path') {
-          req.url = req.options[i]['value'];
+        if (req.options[i].name == 'Uri-Path') {
+          req.url = req.options[i].value;
         }
 
-        if (req.options[i]['name'] == 'Content-Format') {
-          if (req.options[i]['value'] == '50') {
+        if (req.options[i].name == 'Content-Format') {
+          if (req.options[i].value == '50') {
             req.headers['content-type'] = 'application/json';
           } else {
             req.headers['content-type'] = 'text/plain';
@@ -192,7 +191,7 @@ const Root = (function() {
           } else {
             res.code = '4.01';
             res.payload = new Buffer('User access-token not authorized');
-            socket.send(generate(res))
+            socket.send(generate(res));
           }
         } else {
           redirRequest(req, res, socket, userInfo);
@@ -203,28 +202,41 @@ const Root = (function() {
           log.error(e);
           res.code = '4.01';
           res.payload = new Buffer(JSON.stringify(e));
-          if (config.coaps.enabled){
-            socket.send(generate(res))
+          if (config.coaps.enabled) {
+            socket.send(generate(res));
           } else {
             var client = dgram.createSocket('udp4');
-            res = generate(res)
-            client.send(res, 0, res.length, socket.port, socket.address,function(error){
-              client.close();
-            });
+            res = generate(res);
+            client.send(
+              res,
+              0,
+              res.length,
+              socket.port,
+              socket.address,
+              function(error) {
+                client.close();
+              }
+            );
           }
-
         } else {
           log.error('Error in IDM communication ', e);
           res.code = '5.03';
           res.payload = new Buffer('Error in IDM communication');
-          if (config.coaps.enabled){
-            socket.send(generate(res))
+          if (config.coaps.enabled) {
+            socket.send(generate(res));
           } else {
             var client = dgram.createSocket('udp4');
-            res = generate(res)
-            client.send(res, 0, res.length, socket.port, socket.address,function(error){
-              client.close();
-            });
+            res = generate(res);
+            client.send(
+              res,
+              0,
+              res.length,
+              socket.port,
+              socket.address,
+              function(error) {
+                client.close();
+              }
+            );
           }
         }
       },
