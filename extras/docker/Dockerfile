@@ -1,4 +1,4 @@
-ARG NODE_VERSION=10.17.0-slim
+ARG NODE_VERSION=8.11.4-stretch
 FROM node:${NODE_VERSION}
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-pep-proxy
@@ -28,7 +28,7 @@ WORKDIR /
 #
 # COPY . /opt/fiware-pep-proxy
 #
-RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="master"; else RELEASE=$(curl -s https://api.github.com/repos/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4); fi && \
+RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="coap"; else RELEASE=$(curl -s https://api.github.com/repos/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4); fi && \
     if [ ${DOWNLOAD_TYPE} = "latest" ] ; then echo "INFO: Building Latest Development"; else echo "INFO: Building Release: ${RELEASE}"; fi && \
   	apt-get update && \
   	apt-get install -y  --no-install-recommends unzip && \
@@ -63,6 +63,7 @@ RUN apt-get install -y  --no-install-recommends make gcc g++ python && \
 
 # Ports used by idm
 EXPOSE ${PEP_PROXY_PORT:-1027}
+
 
 # Run Idm Keyrock
 COPY docker-entrypoint.sh /opt/fiware-pep-proxy/docker-entrypoint.sh

@@ -89,7 +89,7 @@ function connectIDM(callback) {
       callback();
     },
     function(status, e) {
-      log.error('Error in IDM communication', e);
+      log.error('Error in IDM communication');
       callback();
     }
   );
