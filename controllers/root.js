@@ -11,6 +11,8 @@ const Root = (function() {
   const tokensCache = {};
 
   const pep = function(req, res) {
+    const timeStart = Date.now();
+
     if (config.check_token) {
       const authToken = JSON.parse(req.body.toString('utf8')).access_token;
       const organizationToken = req.headers[config.organizations.header]
@@ -32,7 +34,7 @@ const Root = (function() {
             headers: proxy.getClientIp(req, req.headers),
           };
           const protocol = config.app.ssl ? 'https' : 'http';
-          proxy.sendData(protocol, options, req.body, res);
+          proxy.sendData(protocol, options, req.body, res, null);
           return;
         }
 
@@ -69,7 +71,8 @@ const Root = (function() {
                   action,
                   resource,
                   authzforce,
-                  organizationToken
+                  organizationToken,
+                  timeStart
                 );
               }
             } else if (config.authorization.enabled) {
@@ -84,7 +87,8 @@ const Root = (function() {
                   action,
                   resource,
                   authzforce,
-                  organizationToken
+                  organizationToken,
+                  timeStart
                 );
               } else {
                 res.status(401).send('User access-token not authorized');
@@ -103,12 +107,13 @@ const Root = (function() {
             action,
             resource,
             authzforce,
-            organizationToken
+            organizationToken,
+            timeStart
           );
         }
       }
     } else {
-      redirRequest(req, res, null);
+      redirRequest(req, res, null, timeStart);
     }
   };
 
@@ -120,7 +125,8 @@ const Root = (function() {
     action,
     resource,
     authzforce,
-    organizationToken
+    organizationToken,
+    timeStart
   ) {
     IDM.checkToken(
       authToken,
@@ -135,12 +141,12 @@ const Root = (function() {
           if (config.authorization.pdp === 'authzforce') {
             authorizeAzf(req, res, authToken, userInfo);
           } else if (userInfo.authorization_decision === 'Permit') {
-            redirRequest(req, res, userInfo);
+            redirRequest(req, res, userInfo, timeStart);
           } else {
             res.status(401).send('User access-token not authorized');
           }
         } else {
-          redirRequest(req, res, userInfo);
+          redirRequest(req, res, userInfo, timeStart);
         }
       },
       function(status, e) {
@@ -199,11 +205,11 @@ const Root = (function() {
     );
   };
 
-  const publicFunc = function(req, res) {
-    redirRequest(req, res);
+  const publicFunc = function(req, res, timeStart) {
+    redirRequest(req, res, null, timeStart);
   };
 
-  const redirRequest = function(req, res, userInfo) {
+  const redirRequest = function(req, res, userInfo, timeStart) {
     if (userInfo) {
       log.info('Access-token OK. Redirecting to app...');
     } else {
@@ -227,7 +233,7 @@ const Root = (function() {
       ? Buffer.from(JSON.stringify(body_no_token))
       : req.body;
 
-    proxy.sendData(protocol, options, data, res);
+    proxy.sendData(protocol, options, data, res, timeStart);
   };
 
   return {
