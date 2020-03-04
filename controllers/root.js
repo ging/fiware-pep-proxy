@@ -15,6 +15,9 @@ const Root = (function() {
   const tokensCache = {};
 
   const pep = function(req, socket) {
+
+    let timeStart = Date.now()
+
     req = parse(req);
 
     req.headers = {};
@@ -22,6 +25,8 @@ const Root = (function() {
     const res = {
       code: '2.01',
       token: req.token,
+      ack: true,
+      messageId: req.messageId
     };
 
     switch (req.code) {
@@ -78,7 +83,7 @@ const Root = (function() {
             headers: proxy.getClientIp(req, req.headers),
           };
           const protocol = config.app.ssl ? 'https' : 'http';
-          proxy.sendData(protocol, options, req.body, res, socket);
+          proxy.sendData(protocol, options, req.body, res, socket, timeStart);
           return;
         }
 
@@ -117,7 +122,8 @@ const Root = (function() {
                   action,
                   resource,
                   authzforce,
-                  organizationToken
+                  organizationToken,
+                  timeStart
                 );
               }
             } else if (config.authorization.enabled) {
@@ -133,7 +139,8 @@ const Root = (function() {
                   action,
                   resource,
                   authzforce,
-                  organizationToken
+                  organizationToken,
+                  timeStart
                 );
               } else {
                 res.code = '4.01';
@@ -141,7 +148,7 @@ const Root = (function() {
               }
             } else {
               setHeaders(req, userInfo);
-              redirRequest(req, res, socket, userInfo);
+              redirRequest(req, res, socket, userInfo, timeStart);
             }
           });
         } else {
@@ -154,12 +161,13 @@ const Root = (function() {
             action,
             resource,
             authzforce,
-            organizationToken
+            organizationToken,
+            timeStart
           );
         }
       }
     } else {
-      redirRequest(req, res, socket, null);
+      redirRequest(req, res, socket, null, timeStart);
     }
   };
 
@@ -172,7 +180,8 @@ const Root = (function() {
     action,
     resource,
     authzforce,
-    organizationToken
+    organizationToken,
+    timeStart
   ) {
     IDM.checkToken(
       authToken,
@@ -187,14 +196,14 @@ const Root = (function() {
           if (config.authorization.pdp === 'authzforce') {
             authorizeAzf(req, res, authToken, userInfo);
           } else if (userInfo.authorization_decision === 'Permit') {
-            redirRequest(req, res, socket, userInfo);
+            redirRequest(req, res, socket, userInfo, timeStart);
           } else {
             res.code = '4.01';
             res.payload = new Buffer('User access-token not authorized');
             socket.send(generate(res));
           }
         } else {
-          redirRequest(req, res, socket, userInfo);
+          redirRequest(req, res, socket, userInfo, timeStart);
         }
       },
       function(status, e) {
@@ -269,7 +278,7 @@ const Root = (function() {
       userInfo,
       req,
       function() {
-        redirRequest(req, res, socket, userInfo);
+        redirRequest(req, res, socket, userInfo, timeStart);
       },
       function(status, e) {
         if (status === 401) {
@@ -291,10 +300,10 @@ const Root = (function() {
   };
 
   const publicFunc = function(req, res) {
-    redirRequest(req, res, socket);
+    redirRequest(req, res, socket, null, timeStart);
   };
 
-  const redirRequest = function(req, res, socket, userInfo) {
+  const redirRequest = function(req, res, socket, userInfo, timeStart) {
     if (userInfo) {
       log.info('Access-token OK. Redirecting to app...');
     } else {
@@ -318,7 +327,7 @@ const Root = (function() {
       ? Buffer.from(JSON.stringify(payload_no_token))
       : req.payload;
 
-    proxy.sendData(protocol, options, data, res, socket);
+    proxy.sendData(protocol, options, data, res, socket, timeStart);
   };
 
   return {
