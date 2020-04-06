@@ -9,6 +9,10 @@ ARG DOWNLOAD_TYPE=latest
 
 MAINTAINER FIWARE Wilma PEP Proxy Team. DIT-UPM
 
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends ca-certificates curl wget \
+	&& rm -rf /var/lib/apt/lists/*
+
 WORKDIR /opt
 
 ENV GITHUB_ACCOUNT=${GITHUB_ACCOUNT}
