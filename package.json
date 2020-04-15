@@ -1,6 +1,6 @@
 {
   "name": "fiware-pep-proxy",
-  "version": "7.8.1",
+  "version": "7.8.2",
   "license": "MIT",
   "description": "PEP oauth2 authentication proxy for FIWARE GE services",
   "author": "GING DIT UPM",
