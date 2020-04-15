@@ -1,4 +1,4 @@
-ARG NODE_VERSION=10.17.0-slim
+ARG NODE_VERSION=10.19.0-slim
 FROM node:${NODE_VERSION}
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-pep-proxy
@@ -8,6 +8,10 @@ ARG DOWNLOAD_TYPE=latest
 # This will retrieve the source code of the latest tagged release from GitHub
 
 MAINTAINER FIWARE Wilma PEP Proxy Team. DIT-UPM
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends ca-certificates curl wget \
+	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
 
