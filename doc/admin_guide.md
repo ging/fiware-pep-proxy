@@ -3,6 +3,7 @@
 -   [Introduction](#introduction)
     -   [Requirements](#requirements)
 -   [System Installation](#system-installation)
+    -   [Integration PEP Proxy with Nginx](#integration-pep-proxy-with-nginx)
 -   [System Administration](#system-administration)
 -   [Sanity Check Procedures](#sanity-check-procedures)
     -   [End-to-end testing](#end-to-end-testing)
@@ -123,6 +124,60 @@ This is only compatible with oauth2 tokens engine
 ```bash
  forever status
 ```
+
+### Integration PEP Proxy with Nginx
+
+When deploying a PEP Proxy in a system where Nginx as a reverse proxy is in front of a backend-app, The PEP Proxy is put
+between them. As a result, the system has multiple proxies.
+
+To avoid multi-tiered proxies, you can use the auth_request module of Nginx to trigger an API call to the PEP Proxy
+before proxying a request to a backend-app as shown:
+
+<a name="def-fig1"></a>
+![](./resources/Auth_for_nginx.png)
+
+<p align="center">Figure 1: Integration PEP Proxy with Nginx</p>
+
+When enabling `config.auth for nginx`, a PEP Proxy will respond with the HTTP status '204 No Content' to Nginx instead of
+forwarding a request to a backend-app if the token included in the request is valid.
+
+```
+config.auth_for_nginx = true;
+```
+
+The following is an example of Nginx configuration.
+
+```
+server {
+    listen 80;
+    server_name example.org;
+
+    location / {
+        set $req_uri "$uri";
+        auth_request /_check_oauth2_token;
+        proxy_pass http://orion:1026;
+    }
+
+    location = /_check_oauth2_token {
+        internal;
+        proxy_method $request_method;
+        proxy_pass_request_headers on;
+        proxy_set_header Content-Length "";
+        proxy_pass_request_body off;
+        rewrite (.*) $req_uri break;
+        proxy_pass http://wilma:1027;
+    }
+}
+```
+
+The auth_request directive in the `location /` block specifies the location for checking a token and permissions.
+Proxying to a backend-app happens only if the auth_request response is successful (HTTP status 2xx).
+The proxy_pass directive is a url of a backend-app.
+
+To call a PEP Proxy, the various values of a request are defined in the `/_check_oauth2_token` block.
+The proxy_pass directive is a url of a PEP Proxy.
+
+Update the values of the two proxy_pass directives to suit your system environment.
 
 ## System Administration
 

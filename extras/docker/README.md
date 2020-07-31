@@ -101,3 +101,4 @@ sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-
     verb + path).
 -   `PEP_PROXY_PUBLIC_PATHS` - default value is `[]` - Use `,` to split paths - example: PEP_PROXY_PUBLIC_PATHS=/public/*,/static/css/
 -   `PEP_PROXY_MAGIC_KEY` - default value is `undefined` - should be overridden
+-   `PEP_PROXY_AUTH_FOR_NGINX` - default value is `false`

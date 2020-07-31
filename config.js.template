@@ -75,4 +75,6 @@ config.public_paths = to_array(process.env.PEP_PROXY_PUBLIC_PATHS, []);
 
 config.magic_key = process.env.PEP_PROXY_MAGIC_KEY || undefined;
 
+config.auth_for_nginx = toBoolean(process.env.PEP_PROXY_AUTH_FOR_NGINX, false);
+
 module.exports = config;
