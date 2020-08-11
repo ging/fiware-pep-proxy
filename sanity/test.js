@@ -1,11 +1,11 @@
 //const should = require('should');
 //const mocha = require('mocha');
 
-const config = require('./../config');
-const IDM = require('./../lib/idm.js').IDM;
-const AZF = require('./../lib/azf.js').AZF;
+const config = require('../test/config-test.js');
+const IDM = require('../lib/idm.js').IDM;
+const AZF = require('../lib/azf.js').AZF;
 
-const log = require('./../lib/logger').logger.getLogger('Test');
+const log = require('../lib/logger').logger.getLogger('Test');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function() {

@@ -1,15 +1,19 @@
-const config = require('./config');
+const config_service = require('../lib/config_service.js');
+config_service.set_config(require('../config.js'), true);
+const config = config_service.get_config();
+
+
 const fs = require('fs');
 const https = require('https');
-const Root = require('./controllers/root').Root;
-const IDM = require('./lib/idm.js').IDM;
+const Root = require('../controllers/root').Root;
+const IDM = require('../lib/idm.js').IDM;
 const async = require('async');
 const errorhandler = require('errorhandler');
 
 config.azf = config.azf || {};
 config.https = config.https || {};
 
-const log = require('./lib/logger').logger.getLogger('Server');
+const log = require('../lib/logger').logger.getLogger('Server');
 
 const express = require('express');
 

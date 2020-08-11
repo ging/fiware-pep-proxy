@@ -4,8 +4,8 @@ function toBoolean(env, defaultValue) {
   return env !== undefined ? env.toLowerCase() === 'true' : defaultValue;
 }
 
-function to_array(env, default_value){
-    return (env !== undefined) ? env.split(',') : default_value;
+function to_array(env, default_value) {
+  return env !== undefined ? env.split(',') : default_value;
 }
 
 // Used only if https is disabled
@@ -21,7 +21,7 @@ config.https = {
 
 config.idm = {
   host: process.env.PEP_PROXY_IDM_HOST || 'localhost',
-  port: process.env.PEP_PROXY_IDM_PORT || 3000,
+  port: process.env.PEP_PROXY_IDM_PORT || 4000,
   ssl: toBoolean(process.env.PEP_PROXY_IDM_SSL_ENABLED, false),
 };
 
@@ -33,8 +33,8 @@ config.app = {
 
 config.organizations = {
   enabled: toBoolean(process.env.PEP_PROXY_ORG_ENABLED, false),
-  header: process.env.PEP_PROXY_ORG_HEADER || 'fiware-service'
-}
+  header: process.env.PEP_PROXY_ORG_HEADER || 'fiware-service',
+};
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {
@@ -53,10 +53,10 @@ config.cache_time = 300;
 // if enabled PEP checks permissions in two ways:
 //  - With IdM: only allow basic authorization
 //  - With Authzforce: allow basic and advanced authorization.
-//	  For advanced authorization, you can use custom policy checks by including programatic scripts
+//    For advanced authorization, you can use custom policy checks by including programatic scripts
 //    in policies folder. An script template is included there
 //
-//	This is only compatible with oauth2 tokens engine
+//  This is only compatible with oauth2 tokens engine
 
 config.authorization = {
   enabled: toBoolean(process.env.PEP_PROXY_AUTH_ENABLED, false),

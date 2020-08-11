@@ -1,10 +1,11 @@
-const config = require('./../config.js');
-const proxy = require('./../lib/HTTPClient.js');
-const IDM = require('./../lib/idm.js').IDM;
-const AZF = require('./../lib/azf.js').AZF;
+const config_service = require('../lib/config_service.js');
+const config = config_service.get_config();
+const proxy = require('../lib/HTTPClient.js');
+const IDM = require('../lib/idm.js').IDM;
+const AZF = require('../lib/azf.js').AZF;
 const jsonwebtoken = require('jsonwebtoken');
 
-const log = require('./../lib/logger').logger.getLogger('Root');
+const log = require('../lib/logger').logger.getLogger('Root');
 
 const Root = (function() {
   //{token: {userInfo: {}, date: Date, verb1: [res1, res2, ..], verb2: [res3, res4, ...]}}
