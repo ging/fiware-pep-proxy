@@ -84,8 +84,9 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 # sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
 # variable.
 #
-# - IOTA_AUTH_USER, IOTA_AUTH_PASSWORD - when using Keystone Security 
-# - IOTA_AUTH_CLIENT_ID, IOTA_AUTH_CLIENT_SECRET - when using OAuth2 Security
+# -  PEP_PROXY_USERNAME
+# -  PEP_PASSWORD
+# -  PEP_TOKEN_SECRET
 #
 ########################################################################################
 
@@ -115,3 +116,31 @@ EXPOSE ${PEP_PROXY_PORT:-1027}
 CMD ["./bin/www"]
 HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
   CMD ["/nodejs/bin/node", "./bin/healthcheck"]
+
+
+# 
+# ALL ENVIRONMENT VARIABLES
+#
+#    PEP_PROXY_PORT
+#    PEP_PROXY_HTTPS_ENABLED
+#    PEP_PROXY_HTTPS_PORT
+#    PEP_PROXY_IDM_HOST
+#    PEP_PROXY_IDM_PORT
+#    PEP_PROXY_IDM_SSL_ENABLED
+#    PEP_PROXY_APP_HOST
+#    PEP_PROXY_APP_PORT
+#    PEP_PROXY_APP_SSL_ENABLED
+#    PEP_PROXY_ORG_ENABLED
+#    PEP_PROXY_ORG_HEADER
+#    PEP_PROXY_APP_ID
+#    PEP_PROXY_USERNAME
+#    PEP_PASSWORD
+#    PEP_TOKEN_SECRET
+#    PEP_PROXY_AUTH_ENABLED
+#    PEP_PROXY_PDP
+#    PEP_PROXY_AZF_PROTOCOL
+#    PEP_PROXY_AZF_HOST
+#    PEP_PROXY_AZF_PORT
+#    PEP_PROXY_AZF_CUSTOM_POLICY
+#    PEP_PROXY_PUBLIC_PATHS
+#    PEP_PROXY_MAGIC_KEY
