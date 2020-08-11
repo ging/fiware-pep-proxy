@@ -1,30 +1,40 @@
 ARG NODE_VERSION=10
-FROM node:${NODE_VERSION} AS builder
+ARG GITHUB_ACCOUNT=ging
+ARG GITHUB_REPOSITORY=fiware-pep-proxy
 
+########################################################################################
 #
-# The following line retrieves the latest source code from GitHub.
-# 
-# To obtain the latest stable release run this Docker file with the parameters
-# --no-cache --build-arg DOWNLOAD_TYPE=stable
+# This build stage retrieves the source code and sets up node-SAAS
 #
-# Alternatively for local development, just copy this Dockerfile into file the
-# root of the repository and copy over your local source using : 
-#
+######################################################################################## 
+
+FROM node:${NODE_VERSION} as builder
 COPY . /opt/fiware-pep-proxy
-
-
-# Copy config file from the same Directory.
-#COPY config.js.template /opt/fiware-pep-proxy/config.js
-
-# Run PEP Proxy
 WORKDIR /opt/fiware-pep-proxy
+RUN npm install --only=prod --no-package-lock --no-optional
 
-RUN npm install --production --silent && \
-	rm -rf /root/.npm/cache/*
+########################################################################################
+#
+# This build stage creates an anonymous user to be used with the distroless build
+# as defined below.
+#
+########################################################################################
+FROM node:${NODE_VERSION} AS anon-user
+RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
+    && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
 
+########################################################################################
 #
-# The following creates a distroless build for production.
+# This build stage creates a distroless image for production.
 #
+# IMPORTANT: For production environments use Docker Secrets to protect values of the 
+# sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
+# variable.
+#
+# - IOTA_AUTH_USER, IOTA_AUTH_PASSWORD - when using Keystone Security 
+# - IOTA_AUTH_CLIENT_ID, IOTA_AUTH_CLIENT_SECRET - when using OAuth2 Security
+#
+########################################################################################
 
 FROM gcr.io/distroless/nodejs:${NODE_VERSION}
 ARG GITHUB_ACCOUNT
@@ -42,6 +52,7 @@ LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${G
 LABEL "org.nodejs.version"=${NODE_VERSION}
 
 COPY --from=builder /opt/fiware-pep-proxy /opt/fiware-pep-proxy
+COPY --from=anon-user /etc/passwd /etc/shadow /etc/group /etc/
 WORKDIR /opt/fiware-pep-proxy
 
 USER nobody

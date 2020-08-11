@@ -1,7 +1,7 @@
 //const should = require('should');
 //const mocha = require('mocha');
 
-const config = require('../test/config-test.js');
+const config = require('../test/config_test.js');
 const IDM = require('../lib/idm.js').IDM;
 const AZF = require('../lib/azf.js').AZF;
 

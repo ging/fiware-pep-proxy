@@ -1,12 +1,14 @@
 branches:
     only:
         - master
-        
+
 addons:
-  apt:
-    packages:
-      - build-essential
-      - python
+    apt:
+        packages:
+            - build-essential
+            - python
+services:
+    - docker
 
 jobs:
     include:
@@ -75,3 +77,11 @@ jobs:
           script:
               - npm run lint:md
               - npm run lint:text
+
+        - stage: test
+          name: "Dockerfile Tests"
+          language: bash
+          before_script:
+              - docker pull hadolint/hadolint
+          script:
+              - docker run --rm -i hadolint/hadolint < ./extras/docker/Dockerfile
