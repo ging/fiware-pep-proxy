@@ -5,7 +5,7 @@
         "type": "stdout", 
         "layout": {
           "type": "pattern",
-          "pattern": "%d  - %p: %c - %m",
+          "pattern": "%d  - %p: %c - %m"
         }
       } 
     }
