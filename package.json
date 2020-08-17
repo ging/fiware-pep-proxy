@@ -62,8 +62,8 @@
     "lint": "eslint . --cache --fix",
     "lint:text": "textlint '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md'",
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
-    "prettier": "prettier --single-quote --trailing-comma es5 --write **/*.js *.js",
-    "prettier:text": "prettier '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md' --no-config --tab-width 4 --print-width 120 --write --prose-wrap always",
+    "prettier": "prettier --config .prettierrc.json --write **/*.js *.js",
+    "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 120 --write --prose-wrap always",
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
     "test": "nyc --reporter=text mocha -- --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit",
     "test:coverage": "nyc --reporter=lcov mocha -- --recursive 'test/**/*.js' --timeout 3000 --ui bdd --exit",
@@ -85,12 +85,12 @@
   },
   "lint-staged": {
     "*.js": [
-      "prettier --parser flow --single-quote --trailing-comma es5 --write",
+      "prettier --config .prettierrc.json --write",
       "eslint --fix",
       "git add"
     ],
     "*.md": [
-      "prettier --no-config --tab-width 4 --print-width 120 --write --prose-wrap always",
+      "prettier --parser markdown --tab-width 4 --print-width 120 --write --prose-wrap always",
       "git add"
     ],
     "*.yml": [
