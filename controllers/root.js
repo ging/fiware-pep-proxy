@@ -208,7 +208,7 @@ const Root = (function() {
     redirRequest(req, res);
   };
 
-  const redirRequest = (config.auth_for_nginx)
+  const redirRequest = ('auth_for_nginx' in config && config.auth_for_nginx)
     ? function(req, res, userInfo) {
         log.info('Access-token OK. Response 204');
         res.sendStatus(204);
