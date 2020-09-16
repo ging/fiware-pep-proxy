@@ -90,7 +90,7 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 #
 ########################################################################################
 
-FROM gcr.io/distroless/nodejs:${NODE_VERSION}
+FROM gcr.io/distroless/nodejs:${NODE_VERSION} AS distroless
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
@@ -100,7 +100,7 @@ LABEL "org.opencontainers.image.authors"=""
 LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
 LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
 LABEL "org.opencontainers.image.licenses"="MIT"
-LABEL "org.opencontainers.image.title"="PEP Proxy - Wilma"
+LABEL "org.opencontainers.image.title"="PEP Proxy - Wilma (Distroless)"
 LABEL "org.opencontainers.image.description"="Support for proxy functions within OAuth2-based authentication schemas. Also implements PEP functions within an XACML-based access control schema."
 LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
 LABEL "org.nodejs.version"=${NODE_VERSION}
@@ -117,6 +117,46 @@ CMD ["./bin/www"]
 HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
   CMD ["/nodejs/bin/node", "./bin/healthcheck"]
 
+
+########################################################################################
+#
+# This build stage creates a node-slim image for production.
+#
+# IMPORTANT: For production environments use Docker Secrets to protect values of the 
+# sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
+# variable.
+#
+# -  PEP_PROXY_USERNAME
+# -  PEP_PASSWORD
+# -  PEP_TOKEN_SECRET
+#
+########################################################################################
+
+FROM node:${NODE_VERSION}-slim AS slim
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+ARG NODE_VERSION
+
+LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "org.opencontainers.image.authors"=""
+LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
+LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
+LABEL "org.opencontainers.image.licenses"="MIT"
+LABEL "org.opencontainers.image.title"="PEP Proxy - Wilma"
+LABEL "org.opencontainers.image.description"="Support for proxy functions within OAuth2-based authentication schemas. Also implements PEP functions within an XACML-based access control schema."
+LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
+LABEL "org.nodejs.version"=${NODE_VERSION}
+
+COPY --from=builder /opt/fiware-pep-proxy /opt/fiware-pep-proxy
+WORKDIR /opt/fiware-pep-proxy
+
+USER node
+ENV NODE_ENV=production
+# Ports used by application
+EXPOSE ${PEP_PROXY_PORT:-1027}
+CMD ["npm", "start"]
+HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
+  CMD ["npm", "run", "healthcheck"]
 
 # 
 # ALL ENVIRONMENT VARIABLES
