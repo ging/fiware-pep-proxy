@@ -208,24 +208,29 @@ const Root = (function() {
     redirRequest(req, res);
   };
 
-  const redirRequest = function(req, res, userInfo) {
-    if (userInfo) {
-      log.info('Access-token OK. Redirecting to app...');
-    } else {
-      log.info('Public path. Redirecting to app...');
-    }
+  const redirRequest = ('auth_for_nginx' in config && config.auth_for_nginx)
+    ? function(req, res, userInfo) {
+        log.info('Access-token OK. Response 204');
+        res.sendStatus(204);
+      }
+    : function(req, res, userInfo) {
+        if (userInfo) {
+          log.info('Access-token OK. Redirecting to app...');
+        } else {
+          log.info('Public path. Redirecting to app...');
+        }
 
-    const protocol = config.app.ssl ? 'https' : 'http';
+        const protocol = config.app.ssl ? 'https' : 'http';
 
-    const options = {
-      host: config.app.host,
-      port: config.app.port,
-      path: req.url,
-      method: req.method,
-      headers: proxy.getClientIp(req, req.headers),
-    };
-    proxy.sendData(protocol, options, req.body, res);
-  };
+        const options = {
+          host: config.app.host,
+          port: config.app.port,
+          path: req.url,
+          method: req.method,
+          headers: proxy.getClientIp(req, req.headers),
+        };
+        proxy.sendData(protocol, options, req.body, res);
+      };
 
   return {
     pep,
