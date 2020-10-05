@@ -2,4 +2,4 @@ node_modules
 coverage/
 cert
 .eslintcache
-config.js
+.nyc_output/

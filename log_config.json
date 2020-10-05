@@ -1,20 +1,20 @@
 {
-  "appenders": [
-    { 
-      "type": "console",
+  "appenders": { 
+    "out": { 
+      "type": "console", 
       "layout": {
         "type": "pattern",
-        "pattern": "%d  - %p: %c - %m",
-        "replaceConsole": true
-      } 
-    }
-  ],
-  "levels": {
-  	"Server": "DEBUG",
-    "Root": "INFO",
-    "HTTP-Client": "WARN",
-    "AZF-Client": "INFO",
-    "IDM-Client": "INFO",
-    "Test": "DEBUG"
+        "pattern": "%d  - %p: %c - %m"
+      }
+    } 
+  },
+  "categories": {
+    "default": { "appenders": [ "out" ], "level": "INFO" },
+    "Server": { "appenders": [ "out"], "level": "DEBUG" },
+    "Root": { "appenders": [ "out"], "level": "INFO" },
+    "HTTP-Client": { "appenders": [ "out"], "level": "WARN" },
+    "AZF-Client": { "appenders": [ "out"], "level": "INFO" },
+    "IDM-Client": { "appenders": [ "out"], "level": "INFO" },
+    "Test": { "appenders": [ "out"], "level": "DEBUG" }
   }
 }
