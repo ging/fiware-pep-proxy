@@ -65,7 +65,7 @@ config.app_port = "80"; // Port where the HTTP server is running
 -   Start proxy server
 
 ```console
-sudo node server
+sudo npm start
 ```
 
 ### Docker
