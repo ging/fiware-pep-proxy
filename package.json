@@ -5,7 +5,6 @@
   "description": "PEP oauth2 authentication proxy for FIWARE GE services",
   "author": "GING DIT UPM",
   "dependencies": {
-    "async": "3.2.0",
     "errorhandler": "1.x",
     "escape-html": "1.0.3",
     "express": "4.x",

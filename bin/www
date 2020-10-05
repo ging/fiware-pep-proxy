@@ -7,7 +7,6 @@ const fs = require('fs');
 const https = require('https');
 const Root = require('../controllers/root').Root;
 const IDM = require('../lib/idm.js').IDM;
-const async = require('async');
 const errorhandler = require('errorhandler');
 
 config.azf = config.azf || {};
@@ -77,53 +76,19 @@ for (const p in config.public_paths) {
 
 app.all('/*', Root.pep);
 
-let retries = 0;
-let idmConnected = false;
-
-function retryCheck() {
-  return !idmConnected && retries < 10;
-}
 
 function connectIDM(callback) {
   IDM.authenticate(
     function(token) {
       log.info('Success authenticating PEP proxy. Proxy Auth-token: ', token);
-      idmConnected = true;
       callback();
     },
     function(status, e) {
       log.error('Error in IDM communication', e);
-      callback();
+      callback(e);
     }
   );
 }
-
-function tryCreateConnection(callback) {
-  const seconds = 5;
-
-  retries++;
-
-  if (retries === 1) {
-    log.info('Starting PEP proxy in port ' + port + '. IdM authentication ...');
-    connectIDM(callback);
-  } else {
-    log.info('Waiting %d seconds before attempting again.', seconds);
-    setTimeout(() => {
-      connectIDM(callback);
-    }, seconds * 1000);
-  }
-}
-
-function createConnectionHandler(error) {
-  if (idmConnected) {
-    log.info('Success authenticating PEP proxy.');
-  } else {
-    log.error('Error found after [%d] attempts: %s', retries, error);
-    process.exit(1);
-  }
-}
-
-async.whilst(retryCheck, tryCreateConnection, createConnectionHandler);
 
 if (config.https.enabled === true) {
   const options = {
@@ -139,3 +104,28 @@ if (config.https.enabled === true) {
 } else {
   app.listen(app.get('port'));
 }
+
+let retry = 20;
+function connect() {
+  const connect_with_retry = () => {
+    connectIDM((err) => {
+      if (err) {
+        retry--;
+        if (retry === 0) {
+          log.error('Error found after [%d] attempts: %s', retries, error);
+          process.exit(1);
+        } else {
+          console.log('retry after 5 seconds.');
+          //eslint-disable-next-line snakecase/snakecase
+          setTimeout(connect_with_retry, 5000);
+        }
+      } else {
+        log.info('Success authenticating PEP proxy.');
+      }
+    });
+  };
+  connect_with_retry();
+}
+
+log.info('Starting PEP proxy in port ' + port + '. IdM authentication ...');
+connect();
