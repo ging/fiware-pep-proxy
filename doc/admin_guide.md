@@ -171,10 +171,10 @@ server {
 
 The auth_request directive in the `location /` block specifies the location for checking a token and permissions.
 Proxying to a backend-app happens only if the auth_request response is successful (HTTP status 2xx). The proxy_pass
-directive is a url of a backend-app.
+directive is a URL of a backend-app.
 
 To call a PEP Proxy, the various values of a request are defined in the `/_check_oauth2_token` block. The proxy_pass
-directive is a url of a PEP Proxy.
+directive is a URL of a PEP Proxy.
 
 Update the values of the two proxy_pass directives to suit your system environment.
 
