@@ -1,66 +1,92 @@
-ARG NODE_VERSION=10.17.0-slim
-FROM node:${NODE_VERSION}
+ARG NODE_VERSION=10
+ARG GITHUB_ACCOUNT=ging
+ARG GITHUB_REPOSITORY=fiware-pep-proxy
 
-# Automated Docker file for Docker Hub
-# This will retrieve the source code of the latest tagged release from GitHub
-
-MAINTAINER FIWARE Wilma PEP Proxy Team. DIT-UPM
-
-WORKDIR /opt
-
-
-WORKDIR /
-
-
+########################################################################################
 #
-# The following line retrieves the latest source code from GitHub.
-# 
-# To obtain the latest stable release run this Docker file with the parameters
-# --no-cache --build-arg DOWNLOAD_TYPE=stable
+# This build stage retrieves the source code and sets up node-SAAS
 #
-# Alternatively for local development, just copy this Dockerfile into file the
-# root of the repository and copy over your local source using : 
-#
+######################################################################################## 
+
+FROM node:${NODE_VERSION} as builder
 COPY . /opt/fiware-pep-proxy
+WORKDIR /opt/fiware-pep-proxy
+RUN npm install --only=prod --no-package-lock --no-optional
+
+########################################################################################
 #
-#RUN if [ ${DOWNLOAD_TYPE} = "latest" ] ; then RELEASE="master"; else RELEASE=$(curl -s https://api.github.com/repos/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4); fi && \
-#    if [ ${DOWNLOAD_TYPE} = "latest" ] ; then echo "INFO: Building Latest Development"; else echo "INFO: Building Release: ${RELEASE}"; fi && \
-#  	apt-get update && \
-#  	apt-get install -y  --no-install-recommends unzip && \
-#  	curl https://github.com/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/archive/"${RELEASE}".zip -L -s -o source.zip  && \
-#  	unzip source.zip && \
-#	rm source.zip && \
-#	mv "${GITHUB_REPOSITORY}"-"${RELEASE}" /opt/fiware-pep-proxy && \
-#	rm -rf "${GITHUB_REPOSITORY}"-"${RELEASE}" && \
-#	apt-get clean && \
-#	apt-get remove -y unzip && \
-#    apt-get -y autoremove
+# This build stage creates an anonymous user to be used with the distroless build
+# as defined below.
+#
+########################################################################################
+FROM node:${NODE_VERSION} AS anon-user
+RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
+    && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
 
+########################################################################################
+#
+# This build stage creates a distroless image for production.
+#
+# IMPORTANT: For production environments use Docker Secrets to protect values of the 
+# sensitive ENV variables defined below, by adding _FILE to the name of the relevant 
+# variable.
+#
+# -  PEP_PROXY_USERNAME
+# -  PEP_PASSWORD
+# -  PEP_TOKEN_SECRET
+#
+########################################################################################
 
+FROM gcr.io/distroless/nodejs:${NODE_VERSION}
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+ARG NODE_VERSION
 
-# For local development, when running the Dockerfile from the root of the repository
-# use the following commands to configure Keyrock, the database and add an entrypoint:
-# 
-COPY extras/docker/config.js.template  /opt/fiware-pep-proxy/config.js
+LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "org.opencontainers.image.authors"=""
+LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
+LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
+LABEL "org.opencontainers.image.licenses"="MIT"
+LABEL "org.opencontainers.image.title"="PEP Proxy - Wilma"
+LABEL "org.opencontainers.image.description"="Support for proxy functions within OAuth2-based authentication schemas. Also implements PEP functions within an XACML-based access control schema."
+LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}
+LABEL "org.nodejs.version"=${NODE_VERSION}
 
-# Copy config file from the same Directory.
-#COPY config.js.template /opt/fiware-pep-proxy/config.js
-
-# Run PEP Proxy
+COPY --from=builder /opt/fiware-pep-proxy /opt/fiware-pep-proxy
+COPY --from=anon-user /etc/passwd /etc/shadow /etc/group /etc/
 WORKDIR /opt/fiware-pep-proxy
 
-RUN apt-get update && apt-get install -y  --no-install-recommends make gcc g++ python && \
-	npm install --production --silent && \
-	rm -rf /root/.npm/cache/* && \
-	apt-get clean && \
-	apt-get remove -y make gcc g++ python  && \
-	apt-get -y autoremove
-
-# Ports used by idm
+USER nobody
+ENV NODE_ENV=production
+# Ports used by application
 EXPOSE ${PEP_PROXY_PORT:-1027}
+CMD ["./bin/www"]
+HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
+  CMD ["/nodejs/bin/node", "./bin/healthcheck"]
 
-# Run Idm Keyrock
-COPY extras/docker/docker-entrypoint.sh /opt/fiware-pep-proxy/docker-entrypoint.sh
-RUN chmod 755 docker-entrypoint.sh
-
-ENTRYPOINT ["/opt/fiware-pep-proxy/docker-entrypoint.sh"]
+# 
+# ALL ENVIRONMENT VARIABLES
+#
+#    PEP_PROXY_PORT
+#    PEP_PROXY_HTTPS_ENABLED
+#    PEP_PROXY_HTTPS_PORT
+#    PEP_PROXY_IDM_HOST
+#    PEP_PROXY_IDM_PORT
+#    PEP_PROXY_IDM_SSL_ENABLED
+#    PEP_PROXY_APP_HOST
+#    PEP_PROXY_APP_PORT
+#    PEP_PROXY_APP_SSL_ENABLED
+#    PEP_PROXY_ORG_ENABLED
+#    PEP_PROXY_ORG_HEADER
+#    PEP_PROXY_APP_ID
+#    PEP_PROXY_USERNAME
+#    PEP_PASSWORD
+#    PEP_TOKEN_SECRET
+#    PEP_PROXY_AUTH_ENABLED
+#    PEP_PROXY_PDP
+#    PEP_PROXY_AZF_PROTOCOL
+#    PEP_PROXY_AZF_HOST
+#    PEP_PROXY_AZF_PORT
+#    PEP_PROXY_AZF_CUSTOM_POLICY
+#    PEP_PROXY_PUBLIC_PATHS
+#    PEP_PROXY_MAGIC_KEY
