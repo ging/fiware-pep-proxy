@@ -13,7 +13,7 @@ config.https = {
 
 config.idm = {
   host: 'localhost',
-  port: 3000,
+  port: 3005,
   ssl: false,
 };
 
@@ -30,9 +30,9 @@ config.organizations = {
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {
-  app_id: '',
-  username: '',
-  password: '',
+  app_id: '95defe37-519a-4939-befc-37670b9d1411',
+  username: 'pep_proxy_32a8aeac-63e0-46a0-bad0-46f24de1bb68',
+  password: 'pep_proxy_e45c91f5-8b2d-4a5f-8558-b73bc772bcf7',
   token: {
     secret: '', // Secret must be configured in order validate a jwt
   },
@@ -66,6 +66,6 @@ config.authorization = {
 config.public_paths = [];
 
 config.magic_key = undefined;
-config.auth_for_nginx =  false;
+config.auth_for_nginx = false;
 
 module.exports = config;

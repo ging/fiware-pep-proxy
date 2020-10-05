@@ -1,10 +1,11 @@
-const config = require('./../config.js');
-const proxy = require('./../lib/HTTPClient.js');
-const IDM = require('./../lib/idm.js').IDM;
-const AZF = require('./../lib/azf.js').AZF;
+const config_service = require('../lib/config_service.js');
+const config = config_service.get_config();
+const proxy = require('../lib/HTTPClient.js');
+const IDM = require('../lib/idm.js').IDM;
+const AZF = require('../lib/azf.js').AZF;
 const jsonwebtoken = require('jsonwebtoken');
 
-const log = require('./../lib/logger').logger.getLogger('Root');
+const log = require('../lib/logger').logger.getLogger('Root');
 
 const Root = (function() {
   //{token: {userInfo: {}, date: Date, verb1: [res1, res2, ..], verb2: [res3, res4, ...]}}
@@ -208,24 +209,29 @@ const Root = (function() {
     redirRequest(req, res);
   };
 
-  const redirRequest = function(req, res, userInfo) {
-    if (userInfo) {
-      log.info('Access-token OK. Redirecting to app...');
-    } else {
-      log.info('Public path. Redirecting to app...');
-    }
+  const redirRequest = ('auth_for_nginx' in config && config.auth_for_nginx)
+    ? function(req, res, userInfo) {
+        log.info('Access-token OK. Response 204');
+        res.sendStatus(204);
+      }
+    : function(req, res, userInfo) {
+        if (userInfo) {
+          log.info('Access-token OK. Redirecting to app...');
+        } else {
+          log.info('Public path. Redirecting to app...');
+        }
 
-    const protocol = config.app.ssl ? 'https' : 'http';
+        const protocol = config.app.ssl ? 'https' : 'http';
 
-    const options = {
-      host: config.app.host,
-      port: config.app.port,
-      path: req.url,
-      method: req.method,
-      headers: proxy.getClientIp(req, req.headers),
-    };
-    proxy.sendData(protocol, options, req.body, res);
-  };
+        const options = {
+          host: config.app.host,
+          port: config.app.port,
+          path: req.url,
+          method: req.method,
+          headers: proxy.getClientIp(req, req.headers),
+        };
+        proxy.sendData(protocol, options, req.body, res);
+      };
 
   return {
     pep,

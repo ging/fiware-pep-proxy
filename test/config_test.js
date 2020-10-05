@@ -4,8 +4,8 @@ function toBoolean(env, defaultValue) {
   return env !== undefined ? env.toLowerCase() === 'true' : defaultValue;
 }
 
-function to_array(env, default_value){
-    return (env !== undefined) ? env.split(',') : default_value;
+function to_array(env, default_value) {
+  return env !== undefined ? env.split(',') : default_value;
 }
 
 // Used only if https is disabled
@@ -33,17 +33,14 @@ config.app = {
 
 config.organizations = {
   enabled: toBoolean(process.env.PEP_PROXY_ORG_ENABLED, false),
-  header: process.env.PEP_PROXY_ORG_HEADER || 'fiware-service'
+  header: process.env.PEP_PROXY_ORG_HEADER || 'fiware-service',
 };
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
 config.pep = {
-  app_id:
-    process.env.PEP_PROXY_APP_ID || '',
-  username:
-    process.env.PEP_PROXY_USERNAME || '',
-  password:
-    process.env.PEP_PASSWORD || '',
+  app_id: process.env.PEP_PROXY_APP_ID || '',
+  username: process.env.PEP_PROXY_USERNAME || '',
+  password: process.env.PEP_PASSWORD || '',
   token: {
     secret: process.env.PEP_TOKEN_SECRET || '', // Secret must be configured in order validate a jwt
   },

@@ -8,7 +8,9 @@ process.env.PEP_PROXY_USERNAME =
   'pep_proxy_00000000-0000-0000-0000-000000000000';
 process.env.PEP_PASSWORD = 'test';
 
-const config = require('./../../config');
+const config_service = require('../../lib/config_service.js');
+config_service.set_config(require('../config_test.js'));
+const config = config_service.get_config();
 const IDM = require('./../../lib/idm.js').IDM;
 const AZF = require('./../../lib/azf.js').AZF;
 

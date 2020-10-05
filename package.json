@@ -57,7 +57,8 @@
     }
   ],
   "scripts": {
-    "start": "node server.js",
+    "start": "node ./bin/www",
+    "healthcheck": "node ./bin/healthcheck.js",
     "pretest": "npm run lint",
     "lint": "eslint . --cache --fix",
     "lint:text": "textlint '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md'",
