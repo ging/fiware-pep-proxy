@@ -112,7 +112,7 @@ function connect() {
       if (err) {
         retry--;
         if (retry === 0) {
-          log.error('Error found after [%d] attempts: %s', retries, error);
+          log.error('Error found after [%d] attempts: %s', 20, error);
           process.exit(1);
         } else {
           console.log('retry after 5 seconds.');
