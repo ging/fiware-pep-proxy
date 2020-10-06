@@ -210,7 +210,9 @@ const Root = (function() {
   };
 
   const redirRequest = ('auth_for_nginx' in config && config.auth_for_nginx)
-    ? function(req, res, userInfo) {
+    ? 
+      // eslint-disable-next-line no-unused-vars
+      function(req, res, userInfo) {
         log.info('Access-token OK. Response 204');
         res.sendStatus(204);
       }
