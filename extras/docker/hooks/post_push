@@ -1,0 +1,2 @@
+#!/bin/bash
+docker image push $IMAGE_NAME-distroless
