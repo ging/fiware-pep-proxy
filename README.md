@@ -9,6 +9,7 @@
 [![Build Status](https://travis-ci.org/ging/fiware-pep-proxy.svg?branch=master)](https://travis-ci.org/ging/fiware-pep-proxy)
 [![Coverage Status](https://coveralls.io/repos/github/ging/fiware-pep-proxy/badge.svg?branch=master)](https://coveralls.io/github/ging/fiware-pep-proxy?branch=master)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/static/badges/statuses/wilma.svg)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4417/badge)](https://bestpractices.coreinfrastructure.org/projects/4417)
 
 Wilma is a PEP Proxy - it can be combined with other security components such as
 [Keyrock](https://github.com/ging/fiware-idm) and [Authzforce](https://github.com/authzforce/server) to enforce access
