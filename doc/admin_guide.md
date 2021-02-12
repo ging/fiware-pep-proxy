@@ -377,8 +377,8 @@ script template is included there. This functionality is only compatible with an
     values:
     -   Boolean - set origin to `true` to reflect the request origin, as defined by `req.header('Origin')`, or set it to
         `false` to disable CORS.
-    -   String - set origin to a specific origin. For example if you set it to "http://example.com" only requests from
-        "http://example.com" will be allowed.
+    -   String - set origin to a specific origin. For example if you set it to `"http://example.com"` only requests from
+        `"http://example.com"` will be allowed.
     -   RegExp - set origin to a regular expression pattern which will be used to test the request origin. If it's a
         match, the request origin will be reflected. For example the pattern `/example\.com$/` will reflect any request
         that is coming from an origin ending with `"example.com"`.
