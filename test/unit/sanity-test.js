@@ -14,7 +14,7 @@ const config = config_service.get_config();
 const IDM = require('./../../lib/idm.js').IDM;
 const AZF = require('./../../lib/azf.js').AZF;
 
-const log = require('./../../lib/logger').logger.getLogger('Test');
+const debug = require('debug')('pep-proxy:sanity-test');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function() {
@@ -37,7 +37,7 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
           }
         },
         function(status, e) {
-          log.error('Error in Keyrock communication', e);
+          debug('Error in Keyrock communication', e);
         }
       );
     });
@@ -48,7 +48,7 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
           done();
         },
         function(status, e) {
-          log.error('Error in Keyrock communication', e);
+          debug('Error in Keyrock communication', e);
         }
       );
     });

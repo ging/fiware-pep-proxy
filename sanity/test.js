@@ -5,7 +5,7 @@ const config = require('../test/config_test.js');
 const IDM = require('../lib/idm.js').IDM;
 const AZF = require('../lib/azf.js').AZF;
 
-const log = require('../lib/logger').logger.getLogger('Test');
+const debug = require('debug')('pep-proxy:test');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function() {
@@ -28,7 +28,7 @@ describe('Sanity Checks for Wilma PEP Proxy - Identity Manager Checks', function
           }
         },
         function(status, e) {
-          log.error('Error in keystone communication', e);
+          debug('Error in keystone communication', e);
         }
       );
     });
