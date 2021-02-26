@@ -2,7 +2,6 @@ const config_service = require('../lib/config_service.js');
 config_service.set_config(require('../config.js'), true);
 const config = config_service.get_config();
 
-
 const fs = require('fs');
 const https = require('https');
 const Root = require('../controllers/root').Root;
@@ -12,16 +11,21 @@ const errorhandler = require('errorhandler');
 config.azf = config.azf || {};
 config.https = config.https || {};
 
-const log = require('../lib/logger').logger.getLogger('Server');
-
+const logger = require('morgan');
+const debug = require('debug')('pep-proxy:app');
 const express = require('express');
 
 process.on('uncaughtException', function(err) {
-  log.error('Caught exception: ' + err);
+  debug('Caught exception: ' + err);
 });
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const app = express();
+
+// Set logs in development
+if (config.debug) {
+  app.use(logger('dev'));
+}
 
 //app.use(express.bodyParser());
 
@@ -39,7 +43,8 @@ app.use(function(req, res, next) {
   });
 });
 
-app.use(errorhandler({ log: log.error }));
+app.disable('x-powered-by');
+app.use(errorhandler({ log: debug }));
 
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -51,9 +56,9 @@ app.use(function(req, res, next) {
     'Access-Control-Allow-Headers',
     'origin, content-type, X-Auth-Token, Tenant-ID, Authorization, Fiware-Service, Fiware-ServicePath'
   );
-  //log.debug("New Request: ", req.method);
+  //debug("New Request: ", req.method);
   if (req.method === 'OPTIONS') {
-    log.debug('CORS request');
+    debug('CORS request');
     res.statusCode = 200;
     res.header('Content-Length', '0');
     res.send();
@@ -70,7 +75,7 @@ if (config.https.enabled) {
 app.set('port', port);
 
 for (const p in config.public_paths) {
-  log.debug('Public paths', config.public_paths[p]);
+  debug('Public paths', config.public_paths[p]);
   app.all(config.public_paths[p], Root.public);
 }
 
@@ -80,11 +85,11 @@ app.all('/*', Root.pep);
 function connectIDM(callback) {
   IDM.authenticate(
     function(token) {
-      log.info('Success authenticating PEP proxy. Proxy Auth-token: ', token);
+      debug('Success authenticating PEP proxy. Proxy Auth-token: ', token);
       callback();
     },
     function(status, e) {
-      log.error('Error in IDM communication', e);
+      debug('Error in IDM communication', e);
       callback(e);
     }
   );
@@ -112,7 +117,7 @@ function connect() {
       if (err) {
         retry--;
         if (retry === 0) {
-          log.error('Error found after [%d] attempts: %s', 20, error);
+          debug('Error found after [%d] attempts: %s', 20, error);
           process.exit(1);
         } else {
           console.log('retry after 5 seconds.');
@@ -120,12 +125,12 @@ function connect() {
           setTimeout(connect_with_retry, 5000);
         }
       } else {
-        log.info('Success authenticating PEP proxy.');
+        debug('Success authenticating PEP proxy.');
       }
     });
   };
   connect_with_retry();
 }
 
-log.info('Starting PEP proxy in port ' + port + '. IdM authentication ...');
+debug('Starting PEP proxy in port ' + port + '. IdM authentication ...');
 connect();
