@@ -99,6 +99,15 @@ sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-
 -   `PEP_PROXY_AZF_PORT` - default value is `8080`
 -   `PEP_PROXY_AZF_CUSTOM_POLICY` - default value is `undefined` which impliesthe usage of default policy checks (HTTP
     verb + path).
--   `PEP_PROXY_PUBLIC_PATHS` - default value is `[]` - Use `,` to split paths - example: PEP_PROXY_PUBLIC_PATHS=/public/*,/static/css/
+-   `PEP_PROXY_PUBLIC_PATHS` - default value is `[]` - Use `,` to split paths - example:
+    `PEP_PROXY_PUBLIC_PATHS=/public/*,/static/css/`
+
+-   `PEP_PROXY_CORS_ORIGIN` - default value is `*`
+-   `PEP_PROXY_CORS_METHODS` - default value is `GET,HEAD,PUT,PATCH,POST,DELETE`
+-   `PEP_PROXY_CORS_OPTIONS_SUCCESS_STATUS` - default value is `204`
+-   `PEP_PROXY_CORS_ALLOWED_HEADERS` - all headers area allowed by default, set to a comma delimited list to restrict
+    this.
+-   `PEP_PROXY_CORS_CREDENTIALS` - The `Access-Control-Allow-Credentials`
+-   `PEP_PROXY_CORS_MAX_AGE` - The `Access-Control-Max-Age` header is not sent by default. set to `true` to enable it.
 -   `PEP_PROXY_MAGIC_KEY` - default value is `undefined` - should be overridden
 -   `PEP_PROXY_AUTH_FOR_NGINX` - default value is `false`

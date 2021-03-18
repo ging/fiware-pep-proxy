@@ -1,6 +1,7 @@
 const config_service = require('../lib/config_service.js');
 config_service.set_config(require('../config.js'), true);
 const config = config_service.get_config();
+const cors = require('cors');
 
 
 const fs = require('fs');
@@ -23,6 +24,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const app = express();
 
+
 //app.use(express.bodyParser());
 
 app.use(function(req, res, next) {
@@ -39,29 +41,9 @@ app.use(function(req, res, next) {
   });
 });
 
+app.disable('x-powered-by');
 app.use(errorhandler({ log: log.error }));
-
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Methods',
-    'HEAD, POST, PUT, GET, OPTIONS, DELETE'
-  );
-  res.header(
-    'Access-Control-Allow-Headers',
-    'origin, content-type, X-Auth-Token, Tenant-ID, Authorization, Fiware-Service, Fiware-ServicePath'
-  );
-  //log.debug("New Request: ", req.method);
-  if (req.method === 'OPTIONS') {
-    log.debug('CORS request');
-    res.statusCode = 200;
-    res.header('Content-Length', '0');
-    res.send();
-    res.end();
-  } else {
-    next();
-  }
-});
+app.use(cors(config.cors));
 
 let port = config.pep_port || 80;
 if (config.https.enabled) {
