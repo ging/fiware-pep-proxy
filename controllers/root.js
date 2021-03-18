@@ -5,7 +5,7 @@ const IDM = require('../lib/idm.js').IDM;
 const AZF = require('../lib/azf.js').AZF;
 const jsonwebtoken = require('jsonwebtoken');
 
-const log = require('../lib/logger').logger.getLogger('Root');
+const debug = require('debug')('pep-proxy:root');
 
 const Root = (function() {
   //{token: {userInfo: {}, date: Date, verb1: [res1, res2, ..], verb2: [res3, res4, ...]}}
@@ -27,7 +27,7 @@ const Root = (function() {
       : null;
 
     if (authToken === undefined) {
-      log.error('Auth-token not found in request header');
+      debug('Auth-token not found in request header');
       const authHeader = 'IDM uri = ' + config.idm_host;
       res.set('WWW-Authenticate', authHeader);
       res.status(401).send('Auth-token not found in request header');
@@ -67,9 +67,9 @@ const Root = (function() {
             if (err.name === 'TokenExpiredError') {
               res.status(401).send('Invalid token: jwt token has expired');
             } else {
-              log.error('Error in JWT ', err.message);
-              log.error('Or JWT secret bad configured');
-              log.error('Validate Token with Keyrock');
+              debug('Error in JWT ', err.message);
+              debug('Or JWT secret bad configured');
+              debug('Validate Token with Keyrock');
               checkToken(
                 req,
                 res,
@@ -151,10 +151,10 @@ const Root = (function() {
       },
       function(status, e) {
         if (status === 404 || status === 401) {
-          log.error(e);
+          debug(e);
           res.status(401).send(e);
         } else {
-          log.error('Error in IDM communication ', e);
+          debug('Error in IDM communication ', e);
           res.status(503).send('Error in IDM communication');
         }
       },
@@ -191,13 +191,13 @@ const Root = (function() {
       },
       function(status, e) {
         if (status === 401) {
-          log.error('User access-token not authorized: ', e);
+          debug('User access-token not authorized: ', e);
           res.status(401).send('User token not authorized');
         } else if (status === 404) {
-          log.error('Domain not found: ', e);
+          debug('Domain not found: ', e);
           res.status(404).send(e);
         } else {
-          log.error('Error in AZF communication ', e);
+          debug('Error in AZF communication ', e);
           res.status(503).send('Error in AZF communication');
         }
       },
@@ -213,14 +213,14 @@ const Root = (function() {
     ? 
       // eslint-disable-next-line no-unused-vars
       function(req, res, userInfo) {
-        log.info('Access-token OK. Response 204');
+        debug('Access-token OK. Response 204');
         res.sendStatus(204);
       }
     : function(req, res, userInfo) {
         if (userInfo) {
-          log.info('Access-token OK. Redirecting to app...');
+          debug('Access-token OK. Redirecting to app...');
         } else {
-          log.info('Public path. Redirecting to app...');
+          debug('Public path. Redirecting to app...');
         }
 
         const protocol = config.app.ssl ? 'https' : 'http';
