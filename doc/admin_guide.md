@@ -29,7 +29,7 @@ FIWARE backends.
 
 In order to execute the PEP Proxy GE, it is needed to have previously installed the following software of framework:
 
--   Node.js Server v0.8.17 or greater - [Download](http://nodejs.org/download/).
+-   Node.js Server 10 or greater - [Download](http://nodejs.org/download/).
 -   Node Packaged Modules. It is usually included within [Node.js](https://www.npmjs.com/).
 
 ## System Installation
@@ -57,14 +57,14 @@ info. Below you can see an example:
 ```javascript
 var config = {};
 
-config.idm_host = "https://account.lab.fiware.org";
+config.idm_host = 'https://account.lab.fiware.org';
 
-config.app.host = "www.google.es";
-config.app.port = "80";
+config.app.host = 'www.google.es';
+config.app.port = '80';
 
-config.pep.app_id = "my_app_id";
-config.pep.username = "pepProxy";
-config.pep.password = "pepProxy";
+config.pep.app_id = 'my_app_id';
+config.pep.username = 'pepProxy';
+config.pep.password = 'pepProxy';
 
 config.check_permissions = false;
 
@@ -88,10 +88,10 @@ ways:
 ```javascript
 config.authorization = {
     enabled: false,
-    pdp: "idm", // idm|authzforce
+    pdp: 'idm', // idm|authzforce
     azf: {
-        protocol: "http",
-        host: "localhost",
+        protocol: 'http',
+        host: 'localhost',
         port: 8080,
         custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
     }
@@ -272,3 +272,183 @@ It also consumes TCP sockets and the amount of them increases depending again on
 
 Applications access the PEP Proxy through a REST API. This is simple HTTP traffic. PEP Proxy sends REST requests to
 Identity Management and Authorization PDP GEs.
+
+## Configuration
+
+The PEP Proxy starts up with configuration from the `config.js` file.
+
+### Global Configuration
+
+These are the parameters that can be configured in the global section:
+
+-   **pep_port**: Port to use if HTTPS is disabled
+-   **https**: HTTPS configuration. Disable or leave undefined if you are testing without an HTTPS certificate
+
+```json
+{
+    "enabled": false,
+    "cert_file": "cert/cert.crt",
+    "key_file": "cert/key.key",
+    "port": 443
+}
+```
+
+-   **idm**: Configuration of the identity manager that is linked to the PEP Proxy
+
+```json
+{
+    "host": "localhost",
+    "port": 3005,
+    "ssl": false
+}
+```
+
+-   **app**: Definition of the application that is being protected
+
+```json
+{
+    "host": "www.fiware.org",
+    "port": "80",
+    "ssl": false // Use true if the app server listens in https
+}
+```
+
+-   **organizations**: Organization used with the application
+
+```json
+{
+    "enabled": false,
+    "header": "fiware-service"
+}
+```
+
+-   **pep**: configures all the information needed to register the PEP Proxy in the Identity Manager. A Secret must be
+    configured in order validate a JWT.
+
+```json
+{
+    "app_id": "",
+    "username": "",
+    "password": "",
+    "token": {
+        "secret": ""
+    },
+    "trusted_apps": []
+}
+```
+
+-   **cache_time**: length of time in seconds to allow between verifications
+
+-   **authorization**: if enabled PEP checks permissions in two ways:
+    -   With IdM: only allow basic authorization
+    -   With Authzforce: allow basic and advanced authorization.
+
+For advanced authorization, you can use custom policy checks by including programatic scripts in policies folder. An
+script template is included there. This functionality is only compatible with an oauth2 token engine. Set the
+`custom_policy` to undefined use default policy checks (HTTP verb + path).
+
+```json
+{
+    "enabled": false,
+    "pdp": "idm", // idm|authzforce
+    "azf": {
+        "protocol": "http",
+        "host": "localhost",
+        "port": 8080,
+        "custom_policy": undefined
+    }
+}
+```
+
+-   **corsOptions**: Configurs the defaults for Cross-Origin Resource Sharing (CORS).
+
+```json
+{
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204,
+    "allowedHeaders": "content-type,X-Auth-Token,Tenant-ID,Authorization,Fiware-Service,Fiware-ServicePath,NGSILD-Tenant,NGSILD-Path",
+    "credentials": true
+}
+```
+
+-   **origin**: Configures the Access-Control-Allow-Origin CORS header. The default is to allow all traffic. Possible
+    values:
+    -   Boolean - set origin to `true` to reflect the request origin, as defined by `req.header('Origin')`, or set it to
+        `false` to disable CORS.
+    -   String - set origin to a specific origin. For example if you set it to `"http://example.com"` only requests from
+        `"http://example.com"` will be allowed.
+    -   RegExp - set origin to a regular expression pattern which will be used to test the request origin. If it's a
+        match, the request origin will be reflected. For example the pattern `/example\.com$/` will reflect any request
+        that is coming from an origin ending with `"example.com"`.
+    -   Array - set origin to an array of valid origins. Each origin can be a String or a RegExp. For example
+        `["http://example1.com", /\.example2\.com$/]` will accept any request from `"http://example1.com"` or from a
+        subdomain of `"example2.com"`.
+-   **methods**: Configures the `Access-Control-Allow-Methods CORS` header. Expects a comma-delimited string (ex:
+    `'GET,PUT,POST'`) or an array (ex: `['GET', 'PUT', 'POST']`).
+-   **allowedHeaders**: Configures the `Access-Control-Allow-Headers` CORS header. Expects a comma-delimited string (ex:
+    `'Content-Type,Authorization')` or an array (ex: `['Content-Type', 'Authorization']`). If not specified, defaults to
+    reflecting the headers specified in the request's `Access-Control-Request-Headers` header.
+-   **exposedHeaders**: Configures the `Access-Control-Expose-Headers` CORS header. Expects a comma-delimited string
+    (ex: `'Content-Range,X-Content-Range'`) or an array (ex: `['Content-Range', 'X-Content-Range']`). If not specified,
+    no custom headers are exposed.
+-   **credentials**: Configures the `Access-Control-Allow-Credentials` CORS header. Set to `true` to pass the header,
+    otherwise it is omitted.
+-   **maxAge**: Configures the `Access-Control-Max-Age` CORS header. Set to an integer to pass the header, otherwise it
+    is omitted.
+-   **optionsSuccessStatus**: Provides a status code to use for successful OPTIONS requests, since some legacy browsers.
+
+For details on the effect of each CORS header, read [this article](https://web.dev/cross-origin-resource-sharing/) on
+HTML5 Rocks.
+
+-   **public_paths**: list of paths that will not be checked for authentication or authorization. For example:
+    `['/public/*', '/static/css/']`
+-   **magic_key**: A magic key for use within the PEP Proxy
+-   **auth_for_nginx**: Boolean flag as to whether authentication for NGINX is enabled.
+
+### Configuration using environment variables
+
+Some of the configuration parameters can be overriden with environment variables, to ease the use of those parameters
+with container-based technologies, like Docker, Heroku, etc...
+
+The following table shows the accepted environment variables, as well as the configuration parameter the variable
+overrides.
+
+| Environment variable                  | Configuration attribute           |
+| :------------------------------------ | :-------------------------------- |
+| PEP_PROXY_PORT                        | `pep_port`                        |
+| PEP_PROXY_HTTPS_ENABLED               | `https`                           |
+| PEP_PROXY_HTTPS_PORT                  | `https.port`                      |
+| PEP_PROXY_IDM_HOST                    | `idm.host`                        |
+| PEP_PROXY_IDM_PORT                    | `idm.port`                        |
+| PEP_PROXY_IDM_SSL_ENABLED             | `idm.ssl`                         |
+| PEP_PROXY_APP_HOST                    | `app.host`                        |
+| PEP_PROXY_APP_PORT                    | `app.port`                        |
+| PEP_PROXY_APP_SSL_ENABLED             | `app.ssl`                         |
+| PEP_PROXY_ORG_ENABLED                 | `organizations.enabled`           |
+| PEP_PROXY_ORG_HEADER                  | `organizations.header`            |
+| PEP_PROXY_APP_ID                      | `pep.app_id`                      |
+| PEP_PROXY_USERNAME                    | `pep.username`                    |
+| PEP_PASSWORD                          | `pep.password`                    |
+| PEP_TOKEN_SECRET                      | `pep.token`                       |
+| PEP_PROXY_AUTH_ENABLED                | `authorization.enabled`           |
+| PEP_PROXY_PDP                         | `authorization.pdp`               |
+| PEP_PROXY_AZF_PROTOCOL                | `authorization.azf.protocol`      |
+| PEP_PROXY_AZF_HOST                    | `authorization.azf.host`          |
+| PEP_PROXY_AZF_PORT                    | `authorization.azf.port`          |
+| PEP_PROXY_AZF_CUSTOM_POLICY           | `authorization.azf.custom_policy` |
+| PEP_PROXY_PUBLIC_PATHS                | `public_path`                     |
+| PEP_PROXY_CORS_ORIGIN                 | `cors.origin`                     |
+| PEP_PROXY_CORS_METHODS                | `cors.methods`                    |
+| PEP_PROXY_CORS_OPTIONS_SUCCESS_STATUS | `cors.optionsSuccessStatus`       |
+| PEP_PROXY_CORS_ALLOWED_HEADERS        | `cors.allowedHeaders`             |
+| PEP_PROXY_CORS_CREDENTIALS            | `cors.credentials`                |
+| PEP_PROXY_CORS_MAX_AGE                | `cors.maxAge`                     |
+| PEP_PROXY_AUTH_FOR_NGINX              | `config.auth_for_nginx`           |
+| PEP_PROXY_MAGIC_KEY                   | `config.magic_key`                |
+
+Note:
+
+-   If you need to pass more than one variable in an array, you can define the environment variable as a comma separated
+    list (e.g. `'http://example.com,http://test.com'`)

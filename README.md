@@ -59,8 +59,8 @@ npm install
 -   Duplicate config.template in `config.js` and configure app host there.
 
 ```javascript
-config.app_host = "www.google.es"; // Hostname to forward authenticated requests
-config.app_port = "80"; // Port where the HTTP server is running
+config.app_host = 'www.google.es'; // Hostname to forward authenticated requests
+config.app_port = '80'; // Port where the HTTP server is running
 ```
 
 -   Start proxy server
