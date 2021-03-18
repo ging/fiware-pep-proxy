@@ -28,8 +28,7 @@ release(s) generated in the next 9 months after next planned release:
 
 -   Unit tests: to be run in CI
 
--   COAP compatibility: supporting this protocol as an alternative of HTTP could improve the performance of IoT devices
-    authentication process.
+-   Integration with Alastria identity, Hyperledger Indy: for supporting blockchain-based authentication mechanisms.
 
 -   Integration with Context Broker Service Path: to support a better integration of authorization mechanisms with
     Context Broker, requests will take into account the CB service path in HTTP headers.
@@ -42,3 +41,8 @@ wish to get involved in the implementation or influence the roadmap
 
 -   Integration with API management tools: in the same way the logic of Wilma is available in API Umbrella, the
     implementation in other tools such us KONG and/or Proxy42 will be studied.
+
+-   COAP compatibility: supporting this protocol as an alternative of HTTP could improve the performance of IoT devices
+    authentication process.
+
+-   Analysis/Improvement Keyrock Production performance
