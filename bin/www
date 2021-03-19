@@ -45,7 +45,7 @@ app.use(function(req, res, next) {
 });
 
 app.disable('x-powered-by');
-app.use(errorhandler({ log: log.error }));
+app.use(errorhandler({ log: debug}));
 app.use(cors(config.cors));
 
 let port = config.pep_port || 80;
