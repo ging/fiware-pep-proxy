@@ -59,6 +59,7 @@
   ],
   "scripts": {
     "start": "node ./bin/www",
+    "debug": "DEBUG=pep-proxy:* node ./bin/www",
     "healthcheck": "node ./bin/healthcheck.js",
     "pretest": "npm run lint",
     "lint": "eslint . --cache --fix",
