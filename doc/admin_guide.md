@@ -432,6 +432,7 @@ overrides.
 | PEP_PROXY_USERNAME                    | `pep.username`                    |
 | PEP_PASSWORD                          | `pep.password`                    |
 | PEP_TOKEN_SECRET                      | `pep.token`                       |
+| PEP_TRUSTED_APPS                      | `pep.trusted_apps`                |
 | PEP_PROXY_AUTH_ENABLED                | `authorization.enabled`           |
 | PEP_PROXY_PDP                         | `authorization.pdp`               |
 | PEP_PROXY_AZF_PROTOCOL                | `authorization.azf.protocol`      |
