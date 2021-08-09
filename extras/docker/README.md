@@ -93,7 +93,8 @@ sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-
 -   `PEP_PROXY_USERNAME` - default value is left blank and must be overridden
 -   `PEP_PASSWORD` - default value is left blank and must be overridden
 -   `PEP_PROXY_AUTH_ENABLED` - default value is `false`
--   `PEP_PROXY_PDP` - default value is `idm` can be set tp `authzforce`
+-   `PEP_PROXY_PDP` - default value is `idm` can be set to `authzforce`, `iShare` or `xacml`
+-   `PEP_PROXY_TENANT_HEADER` - default value is left blank. Typically set to `NGSILD-Tenant` or `fiware-service`.
 -   `PEP_PROXY_AZF_PROTOCOL` - default value is `http`
 -   `PEP_PROXY_AZF_HOST` - default value is `localhost`
 -   `PEP_PROXY_AZF_PORT` - default value is `8080`

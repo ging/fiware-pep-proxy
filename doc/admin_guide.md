@@ -76,19 +76,24 @@ you have to first register an application. The steps can be found
 [here](https://fiware-idm.readthedocs.io/en/latest/user_and_programmers_guide/application_guide/index.html#register-pep-proxy-and-iot-agents).
 
 You can also configure Pep Proxy to validate authorization in your application
-([levels 2 and 3 of authorization](user_guide.md#level-2-basic-authorization)). If enabled PEP checks permissions in two
+([levels 2 and 3 of authorization](user_guide.md#level-2-basic-authorization)). If enabled PEP checks permissions in multiple ways:
 ways:
 
 -   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): only allow basic
     authorization
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute level authorizationrequests in iShare format.
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute level authorization requests in XACML 3.0 JSON format.
 -   With [Authzforce Authorization PDP](https://github.com/Fiware/catalogue/tree/master/security#authzforce): allow
     basic and advanced authorization. For advanced authorization, you can use custom policy checks by including
     programatic scripts in policies folder. An script template is included there.
 
+The `config.authorization.header` can be passed to Keyrock IDM to reduce permissions to a single tenant and if used should correspond to the tenant header (`NGSILD-Tenant` or `fiware-service`) when authorizing a multi-tenant system such as FIWARE
+
 ```javascript
 config.authorization = {
     enabled: false,
-    pdp: 'idm', // idm|authzforce
+    pdp: 'idm', // idm|iShare|xacml|authzforce
+    header: undefined,
     azf: {
         protocol: 'http',
         host: 'localhost',
@@ -435,6 +440,7 @@ overrides.
 | PEP_TRUSTED_APPS                      | `pep.trusted_apps`                |
 | PEP_PROXY_AUTH_ENABLED                | `authorization.enabled`           |
 | PEP_PROXY_PDP                         | `authorization.pdp`               |
+| PEP_PROXY_TENANT_HEADER               | `authorization.header`            |
 | PEP_PROXY_AZF_PROTOCOL                | `authorization.azf.protocol`      |
 | PEP_PROXY_AZF_HOST                    | `authorization.azf.host`          |
 | PEP_PROXY_AZF_PORT                    | `authorization.azf.port`          |

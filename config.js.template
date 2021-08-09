@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const config = {};
 
 // Used only if https is disabled
@@ -52,7 +53,8 @@ config.cache_time = 300;
 
 config.authorization = {
   enabled: false,
-  pdp: 'idm', // idm|authzforce
+  pdp: 'idm', // idm|iShare|xacml|authzforce
+  header: undefined, // NGSILD-Tenant|fiware-service
   azf: {
     protocol: 'http',
     host: 'localhost',
