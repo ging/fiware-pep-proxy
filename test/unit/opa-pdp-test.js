@@ -61,8 +61,8 @@ const request_with_headers_and_body = {
   json: ngsiPayload
 };
 
-const open_policy_agent_permit_response = "true";
-const open_policy_agent_deny_response = "false";
+const open_policy_agent_permit_response = 'true';
+const open_policy_agent_deny_response = 'false';
 
 const config = {
   pep_port: 80,
@@ -122,7 +122,9 @@ describe('Authorization: Open Policy Agent PDP', function () {
   describe('When a restricted URL is requested by a legitimate user', function () {
     beforeEach(function () {
       contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(200, {});
-      openPolicyAgentMock = nock('http://openpolicyagent.com:8080').post('/query').reply(200, open_policy_agent_permit_response);
+      openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
+        .post('/query')
+        .reply(200, open_policy_agent_permit_response);
     });
 
     it('should allow access', function (done) {
@@ -138,7 +140,9 @@ describe('Authorization: Open Policy Agent PDP', function () {
 
   describe('When a restricted URL is requested by a forbidden user', function () {
     beforeEach(function () {
-      openPolicyAgentMock = nock('http://openpolicyagent.com:8080').post('/query').reply(200, open_policy_agent_deny_response);
+      openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
+        .post('/query')
+        .reply(200, open_policy_agent_deny_response);
     });
 
     it('should deny access', function (done) {
@@ -156,7 +160,9 @@ describe('Authorization: Open Policy Agent PDP', function () {
       contextBrokerMock = nock('http://fiware.org:1026')
         .get('/path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity')
         .reply(200, {});
-      openPolicyAgentMock = nock('http://openpolicyagent.com:8080').post('/query').reply(200, open_policy_agent_permit_response);
+      openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
+        .post('/query')
+        .reply(200, open_policy_agent_permit_response);
     });
 
     it('should allow access based on entities', function (done) {
@@ -172,7 +178,9 @@ describe('Authorization: Open Policy Agent PDP', function () {
 
   describe('When a restricted URL with a payload body is requested', function () {
     beforeEach(function () {
-      openPolicyAgentMock = nock('http://openpolicyagent.com:8080').post('/query').reply(200, open_policy_agent_permit_response);
+      openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
+        .post('/query')
+        .reply(200, open_policy_agent_permit_response);
       contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(200, {});
     });
 
