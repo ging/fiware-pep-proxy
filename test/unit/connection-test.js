@@ -1,7 +1,7 @@
 /*
  * Copyright 2021 -  Universidad Politécnica de Madrid.
  *
- * This file is part of Keyrock
+ * This file is part of PEP-Proxy
  *
  */
 

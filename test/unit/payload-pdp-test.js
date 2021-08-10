@@ -49,12 +49,12 @@ const keyrock_user_response = {
   ]
 };
 
-const pep_proxy_with_headers = {
+const request_with_headers = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111', 'fiware-service': 'smart-gondor' , 'x-forwarded-for': 'example.com'}
 };
-const pep_proxy_with_headers_and_body = {
+const request_with_headers_and_body = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111', 'fiware-service': 'smart-gondor' },
@@ -147,7 +147,7 @@ describe('Authorization: Payload PDP', function () {
     });
 
     it('should allow access', function (done) {
-      got.get('path/entities/urn:ngsi-ld:entity:1111', pep_proxy_with_headers).then((response) => {
+      got.get('path/entities/urn:ngsi-ld:entity:1111', request_with_headers).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
         should.equal(response.statusCode, 200);
@@ -168,7 +168,7 @@ describe('Authorization: Payload PDP', function () {
     });
 
     it('should deny access', function (done) {
-      got.get('path/entities/urn:ngsi-ld:entity:1111', pep_proxy_with_headers).then((response) => {
+      got.get('path/entities/urn:ngsi-ld:entity:1111', request_with_headers).then((response) => {
         idmMock.done();
         should.equal(response.statusCode, 401);
         done();
@@ -191,7 +191,7 @@ describe('Authorization: Payload PDP', function () {
     });
 
     it('should allow access based on entities', function (done) {
-      got.get('path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity', pep_proxy_with_headers).then((response) => {
+      got.get('path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity', request_with_headers).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
         should.equal(response.statusCode, 200);
@@ -213,7 +213,7 @@ describe('Authorization: Payload PDP', function () {
     });
 
     it('should allow access based on entities', function (done) {
-      got.patch('path/entityOperations/upsert', pep_proxy_with_headers_and_body).then((response) => {
+      got.patch('path/entityOperations/upsert', request_with_headers_and_body).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
         should.equal(response.statusCode, 200);

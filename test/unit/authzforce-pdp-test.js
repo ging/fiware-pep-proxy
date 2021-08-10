@@ -10,7 +10,7 @@ const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
 
-const pep_proxy_with_header = {
+const request_with_header = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111' }
@@ -127,7 +127,7 @@ describe('Authorization: Authzforce PDP', function () {
     });
 
     it('should allow access', function (done) {
-      got.get('restricted', pep_proxy_with_header).then((response) => {
+      got.get('restricted', request_with_header).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
         authzforceMock.done();
@@ -151,7 +151,7 @@ describe('Authorization: Authzforce PDP', function () {
     });
 
     it('should deny access when denied', function (done) {
-      got.get('restricted', pep_proxy_with_header).then((response) => {
+      got.get('restricted', request_with_header).then((response) => {
         idmMock.done();
         authzforceMock.done();
         should.equal(response.statusCode, 401);
@@ -172,7 +172,7 @@ describe('Authorization: Authzforce PDP', function () {
         });
     });
     it('should deny access', function (done) {
-      got.get('restricted', pep_proxy_with_header).then((response) => {
+      got.get('restricted', request_with_header).then((response) => {
         idmMock.done();
         should.equal(response.statusCode, 401);
         done();

@@ -9,30 +9,47 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
+const jwt = require('jsonwebtoken');
+const token = jwt.sign({
+  app_id: 'application_id',
+  trusted_apps: [],
+  id : 'username',
+  displayName: 'Some User'
+}, 'shhhhh');
 
-const request_no_header = {
+const invalid_token = jwt.sign({
+  app_id: 'application_id',
+  trusted_apps: [],
+  id : 'username',
+  displayName: 'Some User'
+}, 'wrong_secret');
+
+const request_with_jwt = {
+  prefixUrl: 'http:/localhost:80',
+  throwHttpErrors: false,
+  headers: {'x-auth-token': token}
+};
+
+const request_with_invalid_jwt = {
+  prefixUrl: 'http:/localhost:80',
+  throwHttpErrors: false,
+  headers: {'x-auth-token': invalid_token},
+  retry: 0
+};
+
+const request_no_jwt = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false
 };
 
-const request_with_header = {
-  prefixUrl: 'http:/localhost:80',
-  throwHttpErrors: false,
-  headers: { 'x-auth-token': '111111111' }
-};
-
-const request_with_magic_key = {
-  prefixUrl: 'http:/localhost:80',
-  throwHttpErrors: false,
-  headers: { 'x-auth-token': '999999999' }
-};
 
 const config = {
   magic_key: '999999999',
   pep_port: 80,
   pep: {
     app_id: 'application_id',
-    trusted_apps: []
+    trusted_apps: [],
+    token: {secret: 'shhhhh'}
   },
   idm: {
     host: 'keyrock.com',
@@ -69,7 +86,7 @@ const keyrock_user_response = {
   displayName: 'Some User'
 };
 
-describe('Authentication: Keyrock IDM', function () {
+describe('Authentication: JWT Token', function () {
   let pep;
   let contextBrokerMock;
   let idmMock;
@@ -83,15 +100,16 @@ describe('Authentication: Keyrock IDM', function () {
 
   afterEach(function (done) {
     pep.close(config.pep_port);
+    config.pep.secret = undefined;
     done();
   });
 
-  describe('When a URL is requested and no token is present', function () {
+  describe('When a URL is requested and no JWT token is present', function () {
     beforeEach(function () {
       // Set Up
     });
     it('should deny access', function (done) {
-      got.get('restricted_path', request_no_header).then((response) => {
+      got.get('restricted_path', request_no_jwt).then((response) => {
         should.equal(response.statusCode, 401);
         done();
       });
@@ -105,7 +123,7 @@ describe('Authentication: Keyrock IDM', function () {
       contextBrokerMock = nock('http://fiware.org:1026').get('/public').reply(200, {});
     });
     it('should allow access', function (done) {
-      got.get('public', request_no_header).then((response) => {
+      got.get('public', request_with_jwt).then((response) => {
         contextBrokerMock.done();
         should.equal(response.statusCode, 200);
         done();
@@ -113,50 +131,34 @@ describe('Authentication: Keyrock IDM', function () {
     });
   });
 
-  describe('When a restricted path is requested and the token matches the magic key', function () {
-    beforeEach(function () {
-      nock.cleanAll();
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
-    });
-    it('should allow access', function (done) {
-      got.get('restricted', request_with_magic_key).then((response) => {
-        contextBrokerMock.done();
-        should.equal(response.statusCode, 200);
-        done();
-      });
-    });
-  });
+
 
   describe('When a restricted path is requested for a legitimate user', function () {
     beforeEach(function () {
       // Set Up
       nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
-      idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id')
-        .reply(200, keyrock_user_response);
+      
     });
     it('should authenticate the user and allow access', function (done) {
-      got.get('restricted', request_with_header).then((response) => {
+      got.get('restricted', request_with_jwt).then((response) => {
         contextBrokerMock.done();
-        idmMock.done();
         should.equal(response.statusCode, 200);
         done();
       });
     });
   });
 
-  describe('When a restricted path is requested for a forbidden user', function () {
+  describe('When a restricted path is requested for an unrecognized JWT', function () {
     beforeEach(function () {
       // Set Up
       nock.cleanAll();
-      idmMock = nock('http://keyrock.com:3000').get('/user?access_token=111111111&app_id=application_id').reply(401);
+      idmMock = nock('http://keyrock.com:3000').get('/user?access_token='+ invalid_token +'&app_id=application_id').reply(401);
     });
-    it('should authenticate the user and deny access', function (done) {
-      got.get('restricted', request_with_header).then((response) => {
-        contextBrokerMock.done();
-        idmMock.done();
+    it('should fallback to Keyrock and deny access', function (done) {
+      got.get('restricted', request_with_invalid_jwt).then((response) => {
         should.equal(response.statusCode, 401);
+        idmMock.done();
         done();
       });
     });
@@ -167,42 +169,13 @@ describe('Authentication: Keyrock IDM', function () {
       // Set Up
       nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(404);
-      idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id')
-        .reply(200, keyrock_user_response);
     });
     it('should authenticate the user and proxy the error', function (done) {
-      got.get('restricted', request_with_header).then((response) => {
+      got.get('restricted', request_with_jwt).then((response) => {
         contextBrokerMock.done();
-        idmMock.done();
         should.equal(response.statusCode, 404);
         done();
       });
-    });
-  });
-
-  describe('When the same restricted path is requested multiple times', function () {
-    beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(2).reply(200, {});
-      idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id')
-        .reply(200, keyrock_user_response);
-    });
-    it('should access the user from cache', function (done) {
-      got
-        .get('restricted', request_with_header)
-        .then((firstResponse) => {
-          should.equal(firstResponse.statusCode, 200);
-          return got.get('restricted', request_with_header);
-        })
-        .then((secondResponse) => {
-          contextBrokerMock.done();
-          idmMock.done();
-          should.equal(secondResponse.statusCode, 200);
-          done();
-        });
     });
   });
 });

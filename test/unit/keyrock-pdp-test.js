@@ -10,13 +10,13 @@ const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
 
-const pep_proxy_with_header = {
+const request_with_header = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111' }
 };
 
-const pep_proxy_with_header_and_body = {
+const request_with_header_and_body = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111' },
@@ -89,7 +89,7 @@ describe('Authorization: Keyrock PDP', function () {
         .reply(200, keyrock_permit_response);
     });
     it('should allow access', function (done) {
-      got.get('restricted', pep_proxy_with_header).then((response) => {
+      got.get('restricted', request_with_header).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
         should.equal(response.statusCode, 200);
@@ -111,7 +111,7 @@ describe('Authorization: Keyrock PDP', function () {
         });
     });
     it('should deny access', function (done) {
-      got.get('restricted', pep_proxy_with_header).then((response) => {
+      got.get('restricted', request_with_header).then((response) => {
         idmMock.done();
         should.equal(response.statusCode, 401);
         done();
@@ -128,7 +128,7 @@ describe('Authorization: Keyrock PDP', function () {
         .reply(200, keyrock_deny_response);
     });
     it('should deny access', function (done) {
-      got.get('restricted', pep_proxy_with_header).then((response) => {
+      got.get('restricted', request_with_header).then((response) => {
         idmMock.done();
         should.equal(response.statusCode, 401);
         done();
@@ -147,10 +147,10 @@ describe('Authorization: Keyrock PDP', function () {
     });
     it('should access the user action from cache', function (done) {
       got
-        .get('restricted', pep_proxy_with_header)
+        .get('restricted', request_with_header)
         .then((firstResponse) => {
           should.equal(firstResponse.statusCode, 200);
-          return got.get('restricted', pep_proxy_with_header);
+          return got.get('restricted', request_with_header);
         })
         .then((secondResponse) => {
           contextBrokerMock.done();
@@ -178,10 +178,10 @@ describe('Authorization: Keyrock PDP', function () {
     });
     it('should not access the user from cache', function (done) {
       got
-        .get('restricted', pep_proxy_with_header)
+        .get('restricted', request_with_header)
         .then((firstResponse) => {
           should.equal(firstResponse.statusCode, 200);
-          return got.post('restricted', pep_proxy_with_header_and_body);
+          return got.post('restricted', request_with_header_and_body);
         })
         .then((secondResponse) => {
           contextBrokerMock.done();
