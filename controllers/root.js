@@ -22,35 +22,33 @@ const debug = require('debug')('pep-proxy:root');
  * @param tokens - a collection of auth tokens to use for this verification
  */
 function validateAccessJWT(req, res, tokens) {
-  jsonwebtoken.verify(tokens.authToken, config.pep.token.secret, function (err, userInfo) {
+  return jsonwebtoken.verify(tokens.authToken, config.pep.token.secret, function (err, userInfo) {
     if (err) {
       if (err.name === 'TokenExpiredError') {
-        access.deny(res, 'Invalid token: jwt token has expired');
+        return access.deny(res, 'Invalid token: jwt token has expired');
       } else {
         debug('Error in JWT ', err.message);
         debug('Or JWT secret misconfigured');
         debug('Validate Token with Keyrock');
         // Fallback to AuthToken access validation
-        validateAccessIDM(req, res, tokens);
-        return;
+        return validateAccessIDM(req, res, tokens);
       }
     }
     req.user = userInfo;
     if (!config.authorization.enabled) {
       // JWT Authentication Access granted
       setHeaders(req);
-      access.permit(req, res);
-      return;
+      return access.permit(req, res);
     }
 
     const policy_decision_point = config.authorization.pdp;
     if (policy_decision_point === 'authzforce') {
       // JWT Authorization by Authzforce
-      authorize(req, res, tokens.authToken);
+      return authorize(req, res, tokens.authToken);
     } else {
       // JWT Authorization by IDM, the user will already exist.
       tokens.jwtExpiry = userInfo.exp;
-      validateAccessIDM(req, res, tokens);
+      return validateAccessIDM(req, res, tokens);
     }
   });
 }
@@ -70,17 +68,17 @@ async function validateAccessIDM(req, res, tokens) {
     req.user = await IDM.authenticateUser(tokens, req.method, req.path, tenant_header);
     setHeaders(req);
     if (config.authorization.enabled) {
-      authorize(req, res, tokens.authToken);
+      return authorize(req, res, tokens.authToken);
     } else {
       //  Authentication only.
-      access.permit(req, res);
+      return access.permit(req, res);
     }
   } catch (e) {
     debug(e);
     if (e.status === 404 || e.status === 401) {
-      access.deny(res);
+      return access.deny(res);
     } else {
-      access.internalError(res, e, 'IDM');
+      return access.internalError(res, e, 'IDM');
     }
   }
 }
@@ -90,7 +88,7 @@ async function validateAccessIDM(req, res, tokens) {
  * @param req - the incoming request
  */
 function setHeaders(req) {
-  const user = req.user;
+  const user = req.user || {};
   req.headers['X-Nick-Name'] = user.id ? user.id : '';
   req.headers['X-Display-Name'] = user.displayName ? user.displayName : '';
   req.headers['X-Roles'] = user.roles ? JSON.stringify(user.roles) : [];

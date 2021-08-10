@@ -10,6 +10,14 @@ const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
 const jwt = require('jsonwebtoken');
+
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+} 
+
 const token = jwt.sign({
   app_id: 'application_id',
   trusted_apps: [],
@@ -23,6 +31,13 @@ const invalid_token = jwt.sign({
   id : 'username',
   displayName: 'Some User'
 }, 'wrong_secret');
+
+const expired_token = jwt.sign({
+  app_id: 'application_id',
+  trusted_apps: [],
+  id : 'username',
+  displayName: 'Some User'
+}, 'shhhhh', {expiresIn: '1ms'});
 
 const request_with_jwt = {
   prefixUrl: 'http:/localhost:80',
@@ -40,6 +55,12 @@ const request_with_invalid_jwt = {
 const request_no_jwt = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false
+};
+
+const request_with_expired_jwt = {
+  prefixUrl: 'http:/localhost:80',
+  throwHttpErrors: false,
+  headers: {'x-auth-token': expired_token}
 };
 
 
@@ -77,13 +98,6 @@ const config = {
       custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
     }
   }
-};
-
-const keyrock_user_response = {
-  app_id: 'application_id',
-  trusted_apps: [],
-  id : 'username',
-  displayName: 'Some User'
 };
 
 describe('Authentication: JWT Token', function () {
@@ -133,7 +147,7 @@ describe('Authentication: JWT Token', function () {
 
 
 
-  describe('When a restricted path is requested for a legitimate user', function () {
+  describe('When a restricted path is requested with a legitimate JWT', function () {
     beforeEach(function () {
       // Set Up
       nock.cleanAll();
@@ -144,6 +158,21 @@ describe('Authentication: JWT Token', function () {
       got.get('restricted', request_with_jwt).then((response) => {
         contextBrokerMock.done();
         should.equal(response.statusCode, 200);
+        done();
+      });
+    });
+  });
+
+  describe('When a restricted path is requested with an expired JWT', function () {
+    beforeEach(async function () {
+      // Set Up
+      nock.cleanAll();
+      await sleep(1000);
+    });
+    it('should deny access', function (done) {
+      got.get('restricted', request_with_expired_jwt).then((response) => {
+        contextBrokerMock.done();
+        should.equal(response.statusCode, 401);
         done();
       });
     });
