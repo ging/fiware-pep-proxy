@@ -10,7 +10,7 @@ let config;
 const IDM = require('../lib/pdp/keyrock');
 const jsonwebtoken = require('jsonwebtoken');
 const access = require('../lib/access_functions');
-const authorize = require('../lib/authorization_functions').authorize;
+const PDP = require('../lib/authorization_functions');
 
 const debug = require('debug')('pep-proxy:root');
 
@@ -41,10 +41,9 @@ function validateAccessJWT(req, res, tokens) {
       return access.permit(req, res);
     }
 
-    const policy_decision_point = config.authorization.pdp;
-    if (policy_decision_point === 'azf') {
-      // JWT Authorization by Authzforce
-      return authorize(req, res, tokens.authToken);
+    if (PDP.validateJWT()) {
+      // JWT Authorization by PDP
+      return PDP.authorize(req, res, tokens.authToken);
     } else {
       // JWT Authorization by IDM, the user will already exist.
       tokens.jwtExpiry = userInfo.exp;
@@ -67,7 +66,7 @@ async function validateAccessIDM(req, res, tokens) {
     req.user = await IDM.authenticateUser(tokens, req.method, req.path, tenant_header);
     setHeaders(req);
     if (config.authorization.enabled) {
-      return authorize(req, res, tokens.authToken);
+      return PDP.authorize(req, res, tokens.authToken);
     } else {
       //  Authentication only.
       return access.permit(req, res);
