@@ -10,7 +10,7 @@
 const config_service = require('../lib/config_service');
 config_service.set_config(require('../config'), true);
 const config = config_service.get_config();
-const IDM = require('../lib/pdp/idm');
+const IDM = require('../lib/pdp/keyrock');
 const app = require('../app');
 const Authorize = require('../lib/authorization_functions');
 const errorhandler = require('errorhandler');

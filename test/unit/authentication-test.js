@@ -51,7 +51,7 @@ const config = {
   public_paths: ['/public'],
   authorization: {
     enabled: false,
-    pdp: 'idm', // idm|iShare|xacml|authzforce
+    pdp: 'idm', // idm|iShare|xacml|authzforce|opa|azf
     header: undefined, // NGSILD-Tenant|fiware-service
     azf: {
       protocol: 'http',
@@ -65,7 +65,7 @@ const config = {
 const keyrock_user_response = {
   app_id: 'application_id',
   trusted_apps: [],
-  id : 'username',
+  id: 'username',
   displayName: 'Some User'
 };
 
@@ -78,6 +78,7 @@ describe('Authentication: Keyrock IDM', function () {
     const app = require('../../app');
     pep = app.start_server('12345', config);
     cache.flush();
+    nock.cleanAll();
     done();
   });
 
@@ -100,8 +101,6 @@ describe('Authentication: Keyrock IDM', function () {
 
   describe('When a public path is requested', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/public').reply(200, {});
     });
     it('should allow access', function (done) {
@@ -115,7 +114,6 @@ describe('Authentication: Keyrock IDM', function () {
 
   describe('When a restricted path is requested and the token matches the magic key', function () {
     beforeEach(function () {
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
     });
     it('should allow access', function (done) {
@@ -129,8 +127,6 @@ describe('Authentication: Keyrock IDM', function () {
 
   describe('When a restricted path is requested for a legitimate user', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id')
@@ -148,8 +144,6 @@ describe('Authentication: Keyrock IDM', function () {
 
   describe('When a restricted path is requested for a forbidden user', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       idmMock = nock('http://keyrock.com:3000').get('/user?access_token=111111111&app_id=application_id').reply(401);
     });
     it('should authenticate the user and deny access', function (done) {
@@ -164,8 +158,6 @@ describe('Authentication: Keyrock IDM', function () {
 
   describe('When a non-existant restricted path is requested', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(404);
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id')
@@ -183,8 +175,6 @@ describe('Authentication: Keyrock IDM', function () {
 
   describe('When the same restricted path is requested multiple times', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(2).reply(200, {});
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id')

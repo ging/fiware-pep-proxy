@@ -8,8 +8,8 @@
 const config_service = require('../../lib/config_service');
 const should = require('should');
 const nock = require('nock');
-const IDM = require('../../lib/pdp/idm');
-const Authzforce = require('../../lib/pdp/azf');
+const IDM = require('../../lib/pdp/keyrock');
+const Authzforce = require('../../lib/pdp/authzforce');
 const cache = require('../../lib/cache');
 
 const config = {
@@ -37,8 +37,7 @@ const config = {
   public_paths: [],
   authorization: {
     enabled: true,
-    pdp: 'idm', // idm|iShare|xacml|authzforce
-    header: undefined, // NGSILD-Tenant|fiware-service
+    pdp: 'azf',
     azf: {
       protocol: 'http',
       host: 'authzforce.com',
@@ -55,6 +54,7 @@ describe('Connection Tests', function () {
   beforeEach(function (done) {
     config_service.set_config(config, true);
     cache.flush();
+    nock.cleanAll();
     done();
   });
 
@@ -64,7 +64,6 @@ describe('Connection Tests', function () {
 
   describe('When connecting to Authzforce and it is present', function () {
     beforeEach(function () {
-      // Set Up
       authzforceMock = nock('http://authzforce.com:8080').get('/').reply(200, {});
     });
     it('should not error', function (done) {
@@ -81,7 +80,6 @@ describe('Connection Tests', function () {
 
   describe('When connecting to Keyrock and it is present', function () {
     beforeEach(function () {
-      // Set Up
       idmMock = nock('http://keyrock.com:3000').get('/version').reply(200, {});
     });
     it('should not error', function (done) {
@@ -98,7 +96,6 @@ describe('Connection Tests', function () {
 
   describe('When authenticating the PEP with Keyrock', function () {
     beforeEach(function () {
-      // Set Up
       idmMock = nock('http://keyrock.com:3000').post('/v3/auth/tokens').reply(200, {});
     });
     it('should not error', function (done) {
@@ -115,7 +112,6 @@ describe('Connection Tests', function () {
 
   describe('When authenticating a misconfigured PEP with Keyrock', function () {
     beforeEach(function () {
-      // Set Up
       idmMock = nock('http://keyrock.com:3000').post('/v3/auth/tokens').reply(401);
     });
     it('should error', function (done) {

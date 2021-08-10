@@ -11,44 +11,53 @@ const nock = require('nock');
 const cache = require('../../lib/cache');
 const jwt = require('jsonwebtoken');
 
-
 function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
-} 
+}
 
-const token = jwt.sign({
-  app_id: 'application_id',
-  trusted_apps: [],
-  id : 'username',
-  displayName: 'Some User'
-}, 'shhhhh');
+const token = jwt.sign(
+  {
+    app_id: 'application_id',
+    trusted_apps: [],
+    id: 'username',
+    displayName: 'Some User'
+  },
+  'shhhhh'
+);
 
-const invalid_token = jwt.sign({
-  app_id: 'application_id',
-  trusted_apps: [],
-  id : 'username',
-  displayName: 'Some User'
-}, 'wrong_secret');
+const invalid_token = jwt.sign(
+  {
+    app_id: 'application_id',
+    trusted_apps: [],
+    id: 'username',
+    displayName: 'Some User'
+  },
+  'wrong_secret'
+);
 
-const expired_token = jwt.sign({
-  app_id: 'application_id',
-  trusted_apps: [],
-  id : 'username',
-  displayName: 'Some User'
-}, 'shhhhh', {expiresIn: '1ms'});
+const expired_token = jwt.sign(
+  {
+    app_id: 'application_id',
+    trusted_apps: [],
+    id: 'username',
+    displayName: 'Some User'
+  },
+  'shhhhh',
+  { expiresIn: '1ms' }
+);
 
 const request_with_jwt = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
-  headers: {'x-auth-token': token}
+  headers: { 'x-auth-token': token }
 };
 
 const request_with_invalid_jwt = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
-  headers: {'x-auth-token': invalid_token},
+  headers: { 'x-auth-token': invalid_token },
   retry: 0
 };
 
@@ -60,9 +69,8 @@ const request_no_jwt = {
 const request_with_expired_jwt = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
-  headers: {'x-auth-token': expired_token}
+  headers: { 'x-auth-token': expired_token }
 };
-
 
 const config = {
   magic_key: '999999999',
@@ -70,7 +78,7 @@ const config = {
   pep: {
     app_id: 'application_id',
     trusted_apps: [],
-    token: {secret: 'shhhhh'}
+    token: { secret: 'shhhhh' }
   },
   idm: {
     host: 'keyrock.com',
@@ -89,7 +97,7 @@ const config = {
   public_paths: ['/public'],
   authorization: {
     enabled: false,
-    pdp: 'idm', // idm|iShare|xacml|authzforce
+    pdp: 'idm', // idm|iShare|xacml|authzforce|opa|azf
     header: undefined, // NGSILD-Tenant|fiware-service
     azf: {
       protocol: 'http',
@@ -108,6 +116,7 @@ describe('Authentication: JWT Token', function () {
   beforeEach(function (done) {
     const app = require('../../app');
     pep = app.start_server('12345', config);
+    nock.cleanAll();
     cache.flush();
     done();
   });
@@ -119,9 +128,6 @@ describe('Authentication: JWT Token', function () {
   });
 
   describe('When a URL is requested and no JWT token is present', function () {
-    beforeEach(function () {
-      // Set Up
-    });
     it('should deny access', function (done) {
       got.get('restricted_path', request_no_jwt).then((response) => {
         should.equal(response.statusCode, 401);
@@ -132,8 +138,6 @@ describe('Authentication: JWT Token', function () {
 
   describe('When a public path is requested', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/public').reply(200, {});
     });
     it('should allow access', function (done) {
@@ -145,14 +149,9 @@ describe('Authentication: JWT Token', function () {
     });
   });
 
-
-
   describe('When a restricted path is requested with a legitimate JWT', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
-      
     });
     it('should authenticate the user and allow access', function (done) {
       got.get('restricted', request_with_jwt).then((response) => {
@@ -165,9 +164,7 @@ describe('Authentication: JWT Token', function () {
 
   describe('When a restricted path is requested with an expired JWT', function () {
     beforeEach(async function () {
-      // Set Up
-      nock.cleanAll();
-      await sleep(1000);
+      await sleep(100);
     });
     it('should deny access', function (done) {
       got.get('restricted', request_with_expired_jwt).then((response) => {
@@ -180,9 +177,9 @@ describe('Authentication: JWT Token', function () {
 
   describe('When a restricted path is requested for an unrecognized JWT', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
-      idmMock = nock('http://keyrock.com:3000').get('/user?access_token='+ invalid_token +'&app_id=application_id').reply(401);
+      idmMock = nock('http://keyrock.com:3000')
+        .get('/user?access_token=' + invalid_token + '&app_id=application_id')
+        .reply(401);
     });
     it('should fallback to Keyrock and deny access', function (done) {
       got.get('restricted', request_with_invalid_jwt).then((response) => {
@@ -195,8 +192,6 @@ describe('Authentication: JWT Token', function () {
 
   describe('When a non-existant restricted path is requested', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(404);
     });
     it('should authenticate the user and proxy the error', function (done) {

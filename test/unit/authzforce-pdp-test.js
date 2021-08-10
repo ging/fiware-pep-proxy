@@ -83,7 +83,7 @@ const config = {
   public_paths: [],
   authorization: {
     enabled: true,
-    pdp: 'authzforce', // idm|iShare|xacml|authzforce
+    pdp: 'authzforce', // idm|iShare|xacml|authzforce|opa|azf
     header: undefined, // NGSILD-Tenant|fiware-service
     azf: {
       protocol: 'http',
@@ -104,6 +104,10 @@ describe('Authorization: Authzforce PDP', function () {
     const app = require('../../app');
     pep = app.start_server('12345', config);
     cache.flush();
+    nock.cleanAll();
+    idmMock = nock('http://keyrock.com:3000')
+      .get('/user?access_token=111111111&app_id=application_id&authzforce=true')
+      .reply(200, keyrock_user_with_azf);
     done();
   });
 
@@ -114,13 +118,7 @@ describe('Authorization: Authzforce PDP', function () {
 
   describe('When a restricted path is requested for a legitimate user', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
-      idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id&authzforce=true')
-        .reply(200, keyrock_user_with_azf);
-
       authzforceMock = nock('http://authzforce.com:8080')
         .post('/authzforce-ce/domains/authzforce/pdp')
         .reply(200, authzforce_permit_response);
@@ -139,12 +137,6 @@ describe('Authorization: Authzforce PDP', function () {
 
   describe('When a restricted path is requested for a forbidden user', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
-      idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id&authzforce=true')
-        .reply(200, keyrock_user_with_azf);
-
       authzforceMock = nock('http://authzforce.com:8080')
         .post('/authzforce-ce/domains/authzforce/pdp')
         .reply(200, authzforce_deny_response);
@@ -162,7 +154,6 @@ describe('Authorization: Authzforce PDP', function () {
 
   describe('When no AZF domain is returned', function () {
     beforeEach(function () {
-      // Set Up
       nock.cleanAll();
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id&authzforce=true')

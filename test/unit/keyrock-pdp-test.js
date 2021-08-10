@@ -58,7 +58,7 @@ const config = {
   public_paths: [],
   authorization: {
     enabled: true,
-    pdp: 'idm' // idm|iShare|xacml|authzforce
+    pdp: 'idm' // idm|iShare|xacml|authzforce|opa|azf
   }
 };
 
@@ -68,6 +68,7 @@ describe('Authorization: Keyrock PDP', function () {
   let idmMock;
 
   beforeEach(function (done) {
+    nock.cleanAll();
     const app = require('../../app');
     pep = app.start_server('12345', config);
     cache.flush();
@@ -81,8 +82,6 @@ describe('Authorization: Keyrock PDP', function () {
 
   describe('When a restricted path is requested for a legitimate user', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
@@ -100,8 +99,6 @@ describe('Authorization: Keyrock PDP', function () {
 
   describe('When a restricted path is requested and the app-id is not found', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
         .reply(200, {
@@ -121,8 +118,6 @@ describe('Authorization: Keyrock PDP', function () {
 
   describe('When a restricted path is requested for a forbidden user', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
         .reply(200, keyrock_deny_response);
@@ -138,8 +133,6 @@ describe('Authorization: Keyrock PDP', function () {
 
   describe('When the same action on a restricted path multiple times', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(2).reply(200, {});
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
@@ -163,10 +156,7 @@ describe('Authorization: Keyrock PDP', function () {
 
   describe('When the same user request two different actions on a restricted path', function () {
     beforeEach(function () {
-      // Set Up
-      nock.cleanAll();
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
-
       contextBrokerMock.post('/restricted').reply(204);
 
       idmMock = nock('http://keyrock.com:3000')

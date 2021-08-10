@@ -81,8 +81,9 @@ ways:
 
 -   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): only allow basic
     authorization
--   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute level authorizationrequests in iShare format.
--   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute level authorization requests in XACML 3.0 JSON format.
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute level authorization requests in iShare format.
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute level authorization requests in [XACML 3.0 JSON](https://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html) format.
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute level authorization requests in [Open Policy Agent](https://www.openpolicyagent.org/) format.
 -   With [Authzforce Authorization PDP](https://github.com/Fiware/catalogue/tree/master/security#authzforce): allow
     basic and advanced authorization. For advanced authorization, you can use custom policy checks by including
     programatic scripts in policies folder. An script template is included there.
@@ -92,7 +93,7 @@ The `config.authorization.header` can be passed to Keyrock IDM to reduce permiss
 ```javascript
 config.authorization = {
     enabled: false,
-    pdp: 'idm', // idm|iShare|xacml|authzforce
+    pdp: 'idm', // idm|iShare|xacml|authzforce|opa
     header: undefined,
     azf: {
         protocol: 'http',

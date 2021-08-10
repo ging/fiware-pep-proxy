@@ -5,12 +5,12 @@
  *
  */
 
-const config_service = require('../lib/config_service.js');
+const config_service = require('../lib/config_service');
 let config;
-const IDM = require('../lib/pdp/idm.js');
+const IDM = require('../lib/pdp/keyrock');
 const jsonwebtoken = require('jsonwebtoken');
-const access = require('../lib/access_functions.js');
-const authorize = require('../lib/authorization_functions.js').authorize;
+const access = require('../lib/access_functions');
+const authorize = require('../lib/authorization_functions').authorize;
 
 const debug = require('debug')('pep-proxy:root');
 
@@ -42,7 +42,7 @@ function validateAccessJWT(req, res, tokens) {
     }
 
     const policy_decision_point = config.authorization.pdp;
-    if (policy_decision_point === 'authzforce') {
+    if (policy_decision_point === 'azf') {
       // JWT Authorization by Authzforce
       return authorize(req, res, tokens.authToken);
     } else {
@@ -61,8 +61,7 @@ function validateAccessJWT(req, res, tokens) {
  * @param tokens - a collection of auth tokens to use for this verification
  */
 async function validateAccessIDM(req, res, tokens) {
-  const tenant_header =
-    config.authorization.enabled && config.authorization.header ? req.get(config.authorization.header) : undefined;
+  const tenant_header = config.authorization.header ? req.get(config.authorization.header) : undefined;
 
   try {
     req.user = await IDM.authenticateUser(tokens, req.method, req.path, tenant_header);
