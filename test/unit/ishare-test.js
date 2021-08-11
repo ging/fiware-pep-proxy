@@ -174,13 +174,13 @@ describe('Authorization: iSHARE PDP', function () {
   describe('When a restricted URL matches the JWT policy and is legitimate', function () {
     beforeEach(function () {
       contextBrokerMock = nock('http://fiware.org:1026')
-        .get('/path/entities/urn:ngsi-ld:SoilSensor:1111')
+        .get('/path/entities/urn:ngsi-ld:SoilSensor:1111?type=SoilSensor')
         .reply(200, {});
       iShareMock = nock('http://ishare.com:8080').post('/delegate').reply(200, ishare_policy_recognized);
     });
 
     it('should allow access', function (done) {
-      got.get('path/entities/urn:ngsi-ld:SoilSensor:1111', request_with_jwt).then((response) => {
+      got.get('path/entities/urn:ngsi-ld:SoilSensor:1111?type=SoilSensor', request_with_jwt).then((response) => {
         contextBrokerMock.done();
         //iShareMock.done();
         should.equal(response.statusCode, 200);
