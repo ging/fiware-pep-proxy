@@ -24,7 +24,7 @@ const request_with_header = {
 const request_with_auth_header = {
   prefixUrl: 'http:/localhost:80',
   throwHttpErrors: false,
-  headers: { authorization: 'Bearer: '+ Buffer.from('111111111' , 'utf-8').toString('base64')}
+  headers: { authorization: 'Bearer: ' + Buffer.from('111111111', 'utf-8').toString('base64') }
 };
 
 const request_with_magic_key = {

@@ -97,7 +97,7 @@ const config = {
       protocol: 'http',
       host: 'openpolicyagent.com',
       port: 8080,
-      path: 'query'
+      path: '/query'
     }
   }
 };

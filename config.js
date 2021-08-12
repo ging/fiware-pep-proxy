@@ -58,8 +58,8 @@ config.authorization = {
     protocol: 'http',
     host: 'localhost',
     port: 8080,
-    path: '' 
-  }
+    path: ''
+  },
   azf: {
     custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
   }

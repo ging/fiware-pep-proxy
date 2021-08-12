@@ -118,7 +118,7 @@ const config = {
       protocol: 'http',
       host: 'xacml.com',
       port: 8080,
-      path: 'xacml'
+      path: '/xacml'
     }
   }
 };
