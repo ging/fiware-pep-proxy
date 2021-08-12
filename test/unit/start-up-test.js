@@ -28,8 +28,8 @@ const config = {
   }
 };
 
-describe('When the PEP Proxy is started with environment variables', function () {
-  beforeEach(function () {
+describe('When the PEP Proxy is started with environment variables', () => {
+  beforeEach(() => {
     process.env.PEP_PROXY_PORT = 8080;
     process.env.PEP_PROXY_HTTPS_ENABLED = 'true';
     process.env.PEP_PROXY_HTTPS_PORT = 443;
@@ -53,7 +53,7 @@ describe('When the PEP Proxy is started with environment variables', function ()
     process.env.PEP_PROXY_DEBUG = 'PEP-Proxy:*';
   });
 
-  afterEach(function () {
+  afterEach(() => {
     delete process.env.IOTA_CB_HOST;
     delete process.env.PEP_PROXY_PORT;
     delete process.env.PEP_PROXY_HTTPS_ENABLED;
@@ -78,7 +78,7 @@ describe('When the PEP Proxy is started with environment variables', function ()
     delete process.env.PEP_PROXY_DEBUG;
   });
 
-  it('should amend the configuration', function (done) {
+  it('should amend the configuration', (done) => {
     config_service.set_config(config, true);
     const pep_config = config_service.get_config();
 
@@ -102,8 +102,8 @@ describe('When the PEP Proxy is started with environment variables', function ()
   });
 });
 
-describe('When any PDP is configured with environment variables', function () {
-  beforeEach(function () {
+describe('When any PDP is configured with environment variables', () => {
+  beforeEach(() => {
     process.env.PEP_PROXY_AUTH_ENABLED = 'true';
     process.env.PEP_PROXY_PDP = 'opa';
     process.env.PEP_PROXY_PDP_PROTOCOL = 'https';
@@ -111,14 +111,14 @@ describe('When any PDP is configured with environment variables', function () {
     process.env.PEP_PROXY_PDP_PORT = 443;
   });
 
-  afterEach(function () {
+  afterEach(() => {
     delete process.env.PEP_PROXY_PDP;
     delete process.env.PEP_PROXY_PDP_PROTOCOL;
     delete process.env.PEP_PROXY_PDP_HOST;
     delete process.env.PEP_PROXY_PDP_PORT;
   });
 
-  it('should amend the PDP configuration', function (done) {
+  it('should amend the PDP configuration', (done) => {
     config_service.set_config(config, true);
     const authorization = config_service.get_config().authorization;
     const pdp = config_service.get_config().authorization.opa;
@@ -132,22 +132,22 @@ describe('When any PDP is configured with environment variables', function () {
   });
 });
 
-describe('When the Authzforce PDP is started with environment variables', function () {
-  beforeEach(function () {
+describe('When the Authzforce PDP is started with environment variables', () => {
+  beforeEach(() => {
     process.env.PEP_PROXY_AZF_PROTOCOL = 'http';
     process.env.PEP_PROXY_AZF_HOST = 'authzforce.com';
     process.env.PEP_PROXY_AZF_PORT = 9090;
     process.env.PEP_PROXY_AZF_CUSTOM_POLICY = 'policy';
   });
 
-  afterEach(function () {
+  afterEach(() => {
     delete process.env.PEP_PROXY_AZF_PROTOCOL;
     delete process.env.PEP_PROXY_AZF_HOST;
     delete process.env.PEP_PROXY_AZF_PORT;
     delete process.env.PEP_PROXY_AZF_CUSTOM_POLICY;
   });
 
-  it('should amend the PDP configuration', function (done) {
+  it('should amend the PDP configuration', (done) => {
     config_service.set_config(config, true);
     const azf = config_service.get_config().authorization.azf;
 
@@ -159,15 +159,15 @@ describe('When the Authzforce PDP is started with environment variables', functi
   });
 });
 
-describe('When authorization is disabled with environment variables', function () {
-  beforeEach(function () {
+describe('When authorization is disabled with environment variables', () => {
+  beforeEach(() => {
     process.env.PEP_PROXY_AUTH_ENABLED = 'false';
   });
 
-  afterEach(function () {
+  afterEach(() => {
     delete process.env.PEP_PROXY_AUTH_ENABLED;
   });
-  it('should remove the authorization config', function (done) {
+  it('should remove the authorization config', (done) => {
     config_service.set_config(config, true);
     const authorization = config_service.get_config().authorization;
     authorization.should.be.empty();

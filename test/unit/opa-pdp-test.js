@@ -61,8 +61,12 @@ const request_with_headers_and_body = {
   json: ngsiPayload
 };
 
-const open_policy_agent_permit_response = 'true';
-const open_policy_agent_deny_response = 'false';
+const open_policy_agent_permit_response = {
+  allow: true
+};
+const open_policy_agent_deny_response = {
+  allow: false
+};
 
 const config = {
   pep_port: 80,
@@ -92,18 +96,19 @@ const config = {
     opa: {
       protocol: 'http',
       host: 'openpolicyagent.com',
-      port: 8080
+      port: 8080,
+      path: 'query'
     }
   }
 };
 
-describe('Authorization: Open Policy Agent PDP', function () {
+describe('Authorization: Open Policy Agent PDP', () => {
   let pep;
   let contextBrokerMock;
   let idmMock;
   let openPolicyAgentMock;
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     const app = require('../../app');
     pep = app.start_server('12345', config);
     cache.flush();
@@ -114,20 +119,20 @@ describe('Authorization: Open Policy Agent PDP', function () {
     done();
   });
 
-  afterEach(function (done) {
+  afterEach((done) => {
     pep.close(config.pep_port);
     done();
   });
 
-  describe('When a restricted URL is requested by a legitimate user', function () {
-    beforeEach(function () {
+  describe('When a restricted URL is requested by a legitimate user', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(200, {});
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
         .reply(200, open_policy_agent_permit_response);
     });
 
-    it('should allow access', function (done) {
+    it('should allow access', (done) => {
       got.get('path/entities/urn:ngsi-ld:entity:1111', request_with_headers).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
@@ -138,14 +143,14 @@ describe('Authorization: Open Policy Agent PDP', function () {
     });
   });
 
-  describe('When a restricted URL is requested by a forbidden user', function () {
-    beforeEach(function () {
+  describe('When a restricted URL is requested by a forbidden user', () => {
+    beforeEach(() => {
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
         .reply(200, open_policy_agent_deny_response);
     });
 
-    it('should deny access', function (done) {
+    it('should deny access', (done) => {
       got.get('path/entities/urn:ngsi-ld:entity:1111', request_with_headers).then((response) => {
         idmMock.done();
         openPolicyAgentMock.done();
@@ -155,8 +160,8 @@ describe('Authorization: Open Policy Agent PDP', function () {
     });
   });
 
-  describe('When a restricted URL with a query string is requested', function () {
-    beforeEach(function () {
+  describe('When a restricted URL with a query string is requested', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026')
         .get('/path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity')
         .reply(200, {});
@@ -165,7 +170,7 @@ describe('Authorization: Open Policy Agent PDP', function () {
         .reply(200, open_policy_agent_permit_response);
     });
 
-    it('should allow access based on entities', function (done) {
+    it('should allow access based on entities', (done) => {
       got.get('path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity', request_with_headers).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
@@ -176,15 +181,15 @@ describe('Authorization: Open Policy Agent PDP', function () {
     });
   });
 
-  describe('When a restricted URL with a payload body is requested', function () {
-    beforeEach(function () {
+  describe('When a restricted URL with a payload body is requested', () => {
+    beforeEach(() => {
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
         .reply(200, open_policy_agent_permit_response);
       contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(200, {});
     });
 
-    it('should allow access based on entities', function (done) {
+    it('should allow access based on entities', (done) => {
       got.patch('path/entityOperations/upsert', request_with_headers_and_body).then((response) => {
         contextBrokerMock.done();
         idmMock.done();

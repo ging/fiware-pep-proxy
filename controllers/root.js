@@ -108,7 +108,7 @@ function getTokens(req) {
 
   if (authToken === undefined && req.headers.authorization !== undefined) {
     const headerAuth = req.headers.authorization.split(' ')[1];
-    authToken = new Buffer(headerAuth, 'base64').toString();
+    authToken = Buffer.from(headerAuth, 'base64').toString();
   }
 
   return { authToken, authOrgToken, pepToken };

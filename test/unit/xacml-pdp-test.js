@@ -117,18 +117,19 @@ const config = {
     xacml: {
       protocol: 'http',
       host: 'xacml.com',
-      port: 8080
+      port: 8080,
+      path: 'xacml'
     }
   }
 };
 
-describe('Authorization: XACML PDP', function () {
+describe('Authorization: XACML PDP', () => {
   let pep;
   let contextBrokerMock;
   let idmMock;
   let xacmlMock;
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     const app = require('../../app');
     pep = app.start_server('12345', config);
     cache.flush();
@@ -139,18 +140,18 @@ describe('Authorization: XACML PDP', function () {
     done();
   });
 
-  afterEach(function (done) {
+  afterEach((done) => {
     pep.close(config.pep_port);
     done();
   });
 
-  describe('When a restricted URL is requested by a legitimate user', function () {
-    beforeEach(function () {
+  describe('When a restricted URL is requested by a legitimate user', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(200, {});
       xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(200, xacml_permit_response);
     });
 
-    it('should allow access', function (done) {
+    it('should allow access', (done) => {
       got.get('path/entities/urn:ngsi-ld:entity:1111', request_with_headers).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
@@ -161,12 +162,12 @@ describe('Authorization: XACML PDP', function () {
     });
   });
 
-  describe('When a restricted URL is requested by a forbidden user', function () {
-    beforeEach(function () {
+  describe('When a restricted URL is requested by a forbidden user', () => {
+    beforeEach(() => {
       xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(200, xacml_deny_response);
     });
 
-    it('should deny access', function (done) {
+    it('should deny access', (done) => {
       got.get('path/entities/urn:ngsi-ld:entity:1111', request_with_headers).then((response) => {
         idmMock.done();
         xacmlMock.done();
@@ -176,15 +177,15 @@ describe('Authorization: XACML PDP', function () {
     });
   });
 
-  describe('When a restricted URL with a query string is requested', function () {
-    beforeEach(function () {
+  describe('When a restricted URL with a query string is requested', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026')
         .get('/path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity')
         .reply(200, {});
       xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(200, xacml_permit_response);
     });
 
-    it('should allow access based on entities', function (done) {
+    it('should allow access based on entities', (done) => {
       got.get('path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity', request_with_headers).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
@@ -195,13 +196,13 @@ describe('Authorization: XACML PDP', function () {
     });
   });
 
-  describe('When a restricted URL with a payload body is requested', function () {
-    beforeEach(function () {
+  describe('When a restricted URL with a payload body is requested', () => {
+    beforeEach(() => {
       xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(200, xacml_permit_response);
       contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(200, {});
     });
 
-    it('should allow access based on entities', function (done) {
+    it('should allow access based on entities', (done) => {
       got.patch('path/entityOperations/upsert', request_with_headers_and_body).then((response) => {
         contextBrokerMock.done();
         idmMock.done();

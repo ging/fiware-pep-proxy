@@ -47,26 +47,26 @@ const config = {
   }
 };
 
-describe('Connection Tests', function () {
+describe('Connection Tests', () => {
   let idmMock;
   let authzforceMock;
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     config_service.set_config(config, true);
     cache.flush();
     nock.cleanAll();
     done();
   });
 
-  afterEach(function (done) {
+  afterEach((done) => {
     done();
   });
 
-  describe('When connecting to Authzforce and it is present', function () {
-    beforeEach(function () {
+  describe('When connecting to Authzforce and it is present', () => {
+    beforeEach(() => {
       authzforceMock = nock('http://authzforce.com:8080').get('/').reply(200, {});
     });
-    it('should not error', function (done) {
+    it('should not error', (done) => {
       Authzforce.checkConnectivity()
         .then(() => {
           authzforceMock.done();
@@ -78,11 +78,11 @@ describe('Connection Tests', function () {
     });
   });
 
-  describe('When connecting to Keyrock and it is present', function () {
-    beforeEach(function () {
+  describe('When connecting to Keyrock and it is present', () => {
+    beforeEach(() => {
       idmMock = nock('http://keyrock.com:3000').get('/version').reply(200, {});
     });
-    it('should not error', function (done) {
+    it('should not error', (done) => {
       IDM.checkConnectivity()
         .then(() => {
           idmMock.done();
@@ -94,11 +94,11 @@ describe('Connection Tests', function () {
     });
   });
 
-  describe('When authenticating the PEP with Keyrock', function () {
-    beforeEach(function () {
+  describe('When authenticating the PEP with Keyrock', () => {
+    beforeEach(() => {
       idmMock = nock('http://keyrock.com:3000').post('/v3/auth/tokens').reply(200, {});
     });
-    it('should not error', function (done) {
+    it('should not error', (done) => {
       IDM.authenticatePEP()
         .then(() => {
           idmMock.done();
@@ -110,11 +110,11 @@ describe('Connection Tests', function () {
     });
   });
 
-  describe('When authenticating a misconfigured PEP with Keyrock', function () {
-    beforeEach(function () {
+  describe('When authenticating a misconfigured PEP with Keyrock', () => {
+    beforeEach(() => {
       idmMock = nock('http://keyrock.com:3000').post('/v3/auth/tokens').reply(401);
     });
-    it('should error', function (done) {
+    it('should error', (done) => {
       IDM.authenticatePEP()
         .then(() => {
           should.fail('no error was thrown when it should have been');

@@ -153,12 +153,12 @@ const config = {
 const ishare_policy_recognized = 'HELLO';
 const ishare_policy_not_recognized = 'WORLD';
 
-describe('Authorization: iSHARE PDP', function () {
+describe('Authorization: iSHARE PDP', () => {
   let pep;
   let contextBrokerMock;
   let iShareMock;
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     const app = require('../../app');
     pep = app.start_server('12345', config);
     nock.cleanAll();
@@ -166,20 +166,20 @@ describe('Authorization: iSHARE PDP', function () {
     done();
   });
 
-  afterEach(function (done) {
+  afterEach((done) => {
     pep.close(config.pep_port);
     done();
   });
 
-  describe('When a restricted URL matches the JWT policy and is legitimate', function () {
-    beforeEach(function () {
+  describe('When a restricted URL matches the JWT policy and is legitimate', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026')
         .get('/path/entities/urn:ngsi-ld:SoilSensor:1111?type=SoilSensor')
         .reply(200, {});
       iShareMock = nock('http://ishare.com:8080').post('/delegate').reply(200, ishare_policy_recognized);
     });
 
-    it('should allow access', function (done) {
+    it('should allow access', (done) => {
       got.get('path/entities/urn:ngsi-ld:SoilSensor:1111?type=SoilSensor', request_with_jwt).then((response) => {
         contextBrokerMock.done();
         //iShareMock.done();
@@ -189,8 +189,8 @@ describe('Authorization: iSHARE PDP', function () {
     });
   });
 
-  describe('When a restricted URL does not match the attached JWT policy', function () {
-    it('should deny access', function (done) {
+  describe('When a restricted URL does not match the attached JWT policy', () => {
+    it('should deny access', (done) => {
       got.get('path/entities/urn:ngsi-ld:Tractor:1111?type=Tractor', request_with_jwt).then((response) => {
         //iShareMock.done();
         should.equal(response.statusCode, 401);
@@ -199,12 +199,12 @@ describe('Authorization: iSHARE PDP', function () {
     });
   });
 
-  xdescribe('When a JWT policy is not recognized by the iSHARE delegate', function () {
-    beforeEach(function () {
+  xdescribe('When a JWT policy is not recognized by the iSHARE delegate', () => {
+    beforeEach(() => {
       iShareMock = nock('http://ishare.com:8080').post('/delegate').reply(200, ishare_policy_not_recognized);
     });
 
-    it('should deny access', function (done) {
+    it('should deny access', (done) => {
       got.get('path/entities/urn:ngsi-ld:SoilSensor:1111', request_with_jwt).then((response) => {
         //iShareMock.done();
         should.equal(response.statusCode, 401);
@@ -213,15 +213,15 @@ describe('Authorization: iSHARE PDP', function () {
     });
   });
 
-  describe('When a restricted URL with a string is requested', function () {
-    beforeEach(function () {
+  describe('When a restricted URL with a string is requested', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026')
         .get('/path/entities/?ids=urn:ngsi-ld:SoilSensor:1111&type=SoilSensor')
         .reply(200, {});
       iShareMock = nock('http://ishare.com:8080').post('/delegate').reply(200, ishare_policy_recognized);
     });
 
-    it('should allow access based on the JWT policy and entities', function (done) {
+    it('should allow access based on the JWT policy and entities', (done) => {
       got.get('path/entities/?ids=urn:ngsi-ld:SoilSensor:1111&type=SoilSensor', request_with_jwt).then((response) => {
         contextBrokerMock.done();
         //iShareMock.done();
@@ -231,13 +231,13 @@ describe('Authorization: iSHARE PDP', function () {
     });
   });
 
-  describe('When a restricted URL with a payload body is requested', function () {
-    beforeEach(function () {
+  describe('When a restricted URL with a payload body is requested', () => {
+    beforeEach(() => {
       iShareMock = nock('http://ishare.com:8080').post('/delegate').reply(200, ishare_policy_recognized);
       contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(200, {});
     });
 
-    it('should allow access based on the JWT policy and entities', function (done) {
+    it('should allow access based on the JWT policy and entities', (done) => {
       got.patch('path/entityOperations/upsert', request_with_jwt_and_body).then((response) => {
         contextBrokerMock.done();
         //iShareMock.done();

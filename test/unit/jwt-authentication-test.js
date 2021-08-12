@@ -108,12 +108,12 @@ const config = {
   }
 };
 
-describe('Authentication: JWT Token', function () {
+describe('Authentication: JWT Token', () => {
   let pep;
   let contextBrokerMock;
   let idmMock;
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     const app = require('../../app');
     pep = app.start_server('12345', config);
     nock.cleanAll();
@@ -121,14 +121,14 @@ describe('Authentication: JWT Token', function () {
     done();
   });
 
-  afterEach(function (done) {
+  afterEach((done) => {
     pep.close(config.pep_port);
     config.pep.secret = undefined;
     done();
   });
 
-  describe('When a URL is requested and no JWT token is present', function () {
-    it('should deny access', function (done) {
+  describe('When a URL is requested and no JWT token is present', () => {
+    it('should deny access', (done) => {
       got.get('restricted_path', request_no_jwt).then((response) => {
         should.equal(response.statusCode, 401);
         done();
@@ -136,11 +136,11 @@ describe('Authentication: JWT Token', function () {
     });
   });
 
-  describe('When a public path is requested', function () {
-    beforeEach(function () {
+  describe('When a public path is requested', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/public').reply(200, {});
     });
-    it('should allow access', function (done) {
+    it('should allow access', (done) => {
       got.get('public', request_with_jwt).then((response) => {
         contextBrokerMock.done();
         should.equal(response.statusCode, 200);
@@ -149,11 +149,11 @@ describe('Authentication: JWT Token', function () {
     });
   });
 
-  describe('When a restricted path is requested with a legitimate JWT', function () {
-    beforeEach(function () {
+  describe('When a restricted path is requested with a legitimate JWT', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
     });
-    it('should authenticate the user and allow access', function (done) {
+    it('should authenticate the user and allow access', (done) => {
       got.get('restricted', request_with_jwt).then((response) => {
         contextBrokerMock.done();
         should.equal(response.statusCode, 200);
@@ -162,11 +162,11 @@ describe('Authentication: JWT Token', function () {
     });
   });
 
-  describe('When a restricted path is requested with an expired JWT', function () {
-    beforeEach(async function () {
+  describe('When a restricted path is requested with an expired JWT', () => {
+    beforeEach(async () => {
       await sleep(100);
     });
-    it('should deny access', function (done) {
+    it('should deny access', (done) => {
       got.get('restricted', request_with_expired_jwt).then((response) => {
         contextBrokerMock.done();
         should.equal(response.statusCode, 401);
@@ -175,13 +175,13 @@ describe('Authentication: JWT Token', function () {
     });
   });
 
-  describe('When a restricted path is requested for an unrecognized JWT', function () {
-    beforeEach(function () {
+  describe('When a restricted path is requested for an unrecognized JWT', () => {
+    beforeEach(() => {
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=' + invalid_token + '&app_id=application_id')
         .reply(401);
     });
-    it('should fallback to Keyrock and deny access', function (done) {
+    it('should fallback to Keyrock and deny access', (done) => {
       got.get('restricted', request_with_invalid_jwt).then((response) => {
         should.equal(response.statusCode, 401);
         idmMock.done();
@@ -190,11 +190,11 @@ describe('Authentication: JWT Token', function () {
     });
   });
 
-  describe('When a non-existant restricted path is requested', function () {
-    beforeEach(function () {
+  describe('When a non-existant restricted path is requested', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(404);
     });
-    it('should authenticate the user and proxy the error', function (done) {
+    it('should authenticate the user and proxy the error', (done) => {
       got.get('restricted', request_with_jwt).then((response) => {
         contextBrokerMock.done();
         should.equal(response.statusCode, 404);

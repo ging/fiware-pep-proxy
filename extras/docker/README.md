@@ -94,10 +94,14 @@ sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-
 -   `PEP_PASSWORD` - default value is left blank and must be overridden
 -   `PEP_PROXY_AUTH_ENABLED` - default value is `false`
 -   `PEP_PROXY_PDP` - default value is `idm` can be set to `authzforce`, `iShare` or `xacml`
+-   `PEP_PROXY_PDP_PROTOCOL` - default value is `http`
+-   `PEP_PROXY_PDP_HOST` - default value is `localhost`
+-   `PEP_PROXY_PDP_PORT` - default value is `8080`
+-   `PEP_PROXY_PDP_PATH` - default value is blank
 -   `PEP_PROXY_TENANT_HEADER` - default value is left blank. Typically set to `NGSILD-Tenant` or `fiware-service`.
--   `PEP_PROXY_AZF_PROTOCOL` - default value is `http`
--   `PEP_PROXY_AZF_HOST` - default value is `localhost`
--   `PEP_PROXY_AZF_PORT` - default value is `8080`
+-   `PEP_PROXY_AZF_PROTOCOL` - _deprecated_ use `PEP_PROXY_PDP_PROTOCOL`
+-   `PEP_PROXY_AZF_HOST` - _deprecated_ use `PEP_PROXY_PDP_HOST`
+-   `PEP_PROXY_AZF_PORT` - _deprecated_ use `PEP_PROXY_PDP_PORT`
 -   `PEP_PROXY_AZF_CUSTOM_POLICY` - default value is `undefined` which impliesthe usage of default policy checks (HTTP
     verb + path).
 -   `PEP_PROXY_PUBLIC_PATHS` - default value is `[]` - Use `,` to split paths - example:

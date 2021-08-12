@@ -94,13 +94,13 @@ const config = {
   }
 };
 
-describe('Authorization: Authzforce PDP', function () {
+describe('Authorization: Authzforce PDP', () => {
   let pep;
   let contextBrokerMock;
   let idmMock;
   let authzforceMock;
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     const app = require('../../app');
     pep = app.start_server('12345', config);
     cache.flush();
@@ -111,20 +111,20 @@ describe('Authorization: Authzforce PDP', function () {
     done();
   });
 
-  afterEach(function (done) {
+  afterEach((done) => {
     pep.close(config.pep_port);
     done();
   });
 
-  describe('When a restricted path is requested for a legitimate user', function () {
-    beforeEach(function () {
+  describe('When a restricted path is requested for a legitimate user', () => {
+    beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
       authzforceMock = nock('http://authzforce.com:8080')
         .post('/authzforce-ce/domains/authzforce/pdp')
         .reply(200, authzforce_permit_response);
     });
 
-    it('should allow access', function (done) {
+    it('should allow access', (done) => {
       got.get('restricted', request_with_header).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
@@ -135,14 +135,14 @@ describe('Authorization: Authzforce PDP', function () {
     });
   });
 
-  describe('When a restricted path is requested for a forbidden user', function () {
-    beforeEach(function () {
+  describe('When a restricted path is requested for a forbidden user', () => {
+    beforeEach(() => {
       authzforceMock = nock('http://authzforce.com:8080')
         .post('/authzforce-ce/domains/authzforce/pdp')
         .reply(200, authzforce_deny_response);
     });
 
-    it('should deny access when denied', function (done) {
+    it('should deny access when denied', (done) => {
       got.get('restricted', request_with_header).then((response) => {
         idmMock.done();
         authzforceMock.done();
@@ -152,8 +152,8 @@ describe('Authorization: Authzforce PDP', function () {
     });
   });
 
-  describe('When no AZF domain is returned', function () {
-    beforeEach(function () {
+  describe('When no AZF domain is returned', () => {
+    beforeEach(() => {
       nock.cleanAll();
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id&authzforce=true')
@@ -162,7 +162,7 @@ describe('Authorization: Authzforce PDP', function () {
           trusted_apps: []
         });
     });
-    it('should deny access', function (done) {
+    it('should deny access', (done) => {
       got.get('restricted', request_with_header).then((response) => {
         idmMock.done();
         should.equal(response.statusCode, 401);

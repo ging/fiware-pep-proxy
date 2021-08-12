@@ -52,12 +52,15 @@ config.cache_time = 300;
 
 config.authorization = {
   enabled: false,
-  pdp: 'idm', // idm|iShare|xacml|authzforce
+  pdp: 'idm', // idm|iShare|xacml|authzforce|opa|azf
   header: undefined, // NGSILD-Tenant|fiware-service
-  azf: {
+  pdp: {
     protocol: 'http',
     host: 'localhost',
     port: 8080,
+    path: '' 
+  }
+  azf: {
     custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
   }
 };
