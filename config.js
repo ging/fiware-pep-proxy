@@ -54,13 +54,12 @@ config.authorization = {
   enabled: false,
   pdp: 'idm', // idm|iShare|xacml|authzforce|opa|azf
   header: undefined, // NGSILD-Tenant|fiware-service
-  pdp: {
+  azf: {
+    // iShare|xacml|authzforce|opa|azf
     protocol: 'http',
     host: 'localhost',
     port: 8080,
-    path: ''
-  },
-  azf: {
+    path: '',
     custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
   }
 };
