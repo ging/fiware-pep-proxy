@@ -50,12 +50,12 @@ const keyrock_user_response = {
 };
 
 const request_with_headers = {
-  prefixUrl: 'http:/localhost:80',
+  prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111', 'fiware-service': 'smart-gondor', 'x-forwarded-for': 'example.com' }
 };
 const request_with_headers_and_body = {
-  prefixUrl: 'http:/localhost:80',
+  prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111', 'fiware-service': 'smart-gondor' },
   json: ngsiPayload
@@ -90,7 +90,7 @@ const xacml_deny_response = {
 };
 
 const config = {
-  pep_port: 80,
+  pep_port: 1026,
   pep: {
     app_id: 'application_id',
     trusted_apps: []

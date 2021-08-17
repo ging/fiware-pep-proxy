@@ -101,14 +101,14 @@ const token = jwt.sign(
 );
 
 const request_with_jwt = {
-  prefixUrl: 'http:/localhost:80',
+  prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
   headers: { 'x-auth-token': token },
   retry: 0
 };
 
 const request_with_jwt_and_body = {
-  prefixUrl: 'http:/localhost:80',
+  prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
   headers: { 'x-auth-token': token },
   json: ngsiPayload,
@@ -117,7 +117,7 @@ const request_with_jwt_and_body = {
 
 const config = {
   magic_key: '999999999',
-  pep_port: 80,
+  pep_port: 1026,
   pep: {
     app_id: 'application_id',
     trusted_apps: [],

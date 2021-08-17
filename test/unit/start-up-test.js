@@ -2,7 +2,7 @@ const config_service = require('../../lib/config_service');
 const should = require('should');
 
 const config = {
-  pep_port: 80,
+  pep_port: 1026,
   pep: {
     app_id: 'application_id',
     trusted_apps: []

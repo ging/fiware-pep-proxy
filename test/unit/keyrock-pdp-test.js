@@ -11,13 +11,13 @@ const nock = require('nock');
 const cache = require('../../lib/cache');
 
 const request_with_header = {
-  prefixUrl: 'http:/localhost:80',
+  prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111' }
 };
 
 const request_with_header_and_body = {
-  prefixUrl: 'http:/localhost:80',
+  prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111' },
   body: 'HELLO'
@@ -36,7 +36,7 @@ const keyrock_permit_response = {
 };
 
 const config = {
-  pep_port: 80,
+  pep_port: 1026,
   pep: {
     app_id: 'application_id',
     trusted_apps: []

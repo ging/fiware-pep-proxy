@@ -13,7 +13,7 @@ const Authzforce = require('../../lib/pdp/authzforce');
 const cache = require('../../lib/cache');
 
 const config = {
-  pep_port: 80,
+  pep_port: 1026,
   pep: {
     app_id: 'application_id',
     trusted_apps: [],
