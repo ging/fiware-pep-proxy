@@ -77,7 +77,7 @@ you have to first register an application. The steps can be found
 
 You can also configure Pep Proxy to validate authorization in your application
 ([levels 2 and 3 of authorization](user_guide.md#level-2-basic-authorization)). If enabled PEP checks permissions in
-multiple ways: ways:
+multiple ways:
 
 -   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): only allow basic
     authorization
