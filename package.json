@@ -45,6 +45,9 @@
     "textlint-rule-terminology": "^2.1.4",
     "textlint-rule-write-good": "^1.6.2"
   },
+  "engines": {
+    "node": ">=12"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ging/fiware-pep-proxy"
