@@ -79,4 +79,11 @@ config.public_paths = [];
 config.magic_key = undefined;
 config.auth_for_nginx = false;
 
+config.error_template = `{
+    "type": "{{type}}",
+    "title": "{{title}}",
+    "detail": "{{message}}"
+  }`;
+config.error_content_type = "application/json";
+
 module.exports = config;

@@ -116,3 +116,5 @@ sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-
 -   `PEP_PROXY_CORS_MAX_AGE` - The `Access-Control-Max-Age` header is not sent by default. set to `true` to enable it.
 -   `PEP_PROXY_MAGIC_KEY` - default value is `undefined` - should be overridden
 -   `PEP_PROXY_AUTH_FOR_NGINX` - default value is `false`
+-   `PEP_PROXY_ERROR_TEMPLATE` - default value is an NGSI error payload.
+-   `PEP_PROXY_ERROR_CONTENT_TYPE` - default value is `application/json`

@@ -51,6 +51,8 @@ describe('When the PEP Proxy is started with environment variables', () => {
     process.env.PEP_PROXY_AUTH_FOR_NGINX = 'false';
     process.env.PEP_PROXY_MAGIC_KEY = '54321';
     process.env.PEP_PROXY_DEBUG = 'PEP-Proxy:*';
+    process.env.PEP_PROXY_ERROR_TEMPLATE ='{{message}}';
+    process.env.PEP_PROXY_ERROR_CONTENT_TYPE="text/html";
   });
 
   afterEach(() => {
@@ -76,6 +78,8 @@ describe('When the PEP Proxy is started with environment variables', () => {
     delete process.env.PEP_PROXY_AUTH_FOR_NGINX;
     delete process.env.PEP_PROXY_MAGIC_KEY;
     delete process.env.PEP_PROXY_DEBUG;
+    delete process.env.PEP_PROXY_ERROR_TEMPLATE;
+    delete process.env.PEP_PROXY_ERROR_CONTENT_TYPE;
   });
 
   it('should amend the configuration', (done) => {

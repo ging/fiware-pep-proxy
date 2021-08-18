@@ -295,13 +295,17 @@ These are the parameters that can be configured in the global section:
 
 -   **pep_port**: Port to use if HTTPS is disabled
 -   **https**: HTTPS configuration. Disable or leave undefined if you are testing without an HTTPS certificate
+-   **error_template**: A [Handlebars](https://handlebarsjs.com/) template defining the format of an error message payload
+-   **error_content_type**: The content-type header of the error message
 
 ```json
 {
     "enabled": false,
     "cert_file": "cert/cert.crt",
     "key_file": "cert/key.key",
-    "port": 443
+    "port": 443,
+    "error_template" : "{\"type\": \"{{type}}\", \"title\": \"{{title}}\", \"detail\": \"{{message}}\"}",
+    "error_content_type" "application/json"
 }
 ```
 
@@ -464,7 +468,9 @@ overrides.
 | PEP_PROXY_CORS_CREDENTIALS            | `cors.credentials`                |                                             |
 | PEP_PROXY_CORS_MAX_AGE                | `cors.maxAge`                     |                                             |
 | PEP_PROXY_AUTH_FOR_NGINX              | `config.auth_for_nginx`           |                                             |
-| PEP_PROXY_MAGIC_KEY                   | `config.magic_key`                |
+| PEP_PROXY_MAGIC_KEY                   | `config.magic_key`                                              |
+| PEP_PROXY_ERROR_TEMPLATE              | `config.error_template`                                              |
+
 
 Note:
 
