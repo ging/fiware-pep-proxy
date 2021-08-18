@@ -9,7 +9,7 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
-const StatusCodes =  require('http-status-codes').StatusCodes;
+const StatusCodes = require('http-status-codes').StatusCodes;
 
 const ngsiPayload = [
   {
@@ -39,6 +39,28 @@ const ngsiPayload = [
     }
   }
 ];
+
+const ngsi_subscription = {
+  description: 'Notify me of low feedstock on Farm:001',
+  type: 'Subscription',
+  entities: [
+    { type: 'FillingLevelSensor' },
+    { id: 'urn:ngsi-ld:FillingLevelSensor001' },
+    { idPattern: 'urn:ngsi-ld:*' }
+  ],
+  watchedAttributes: ['filling'],
+  q: 'filling>0.6;filling<0.8;controlledAsset==urn:ngsi-ld:Building:farm001',
+  notification: {
+    attributes: ['filling', 'controlledAsset'],
+    format: 'keyValues',
+    endpoint: {
+      uri: 'http://tutorial:3000/subscription/low-stock-farm001',
+      accept: 'application/json'
+    }
+  },
+  '@context': 'http://context/ngsi-context.jsonld'
+};
+
 const keyrock_user_response = {
   app_id: 'application_id',
   trusted_apps: [],
@@ -60,6 +82,12 @@ const request_with_headers_and_body = {
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111', 'fiware-service': 'smart-gondor' },
   json: ngsiPayload
+};
+const request_with_headers_and_subscription_body = {
+  prefixUrl: 'http:/localhost:1026',
+  throwHttpErrors: false,
+  headers: { 'x-auth-token': '111111111', 'fiware-service': 'smart-gondor' },
+  json: ngsi_subscription
 };
 
 const open_policy_agent_permit_response = {
@@ -127,7 +155,9 @@ describe('Authorization: Open Policy Agent PDP', () => {
 
   describe('When a restricted URL is requested by a legitimate user', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(StatusCodes.OK, {});
+      contextBrokerMock = nock('http://fiware.org:1026')
+        .get('/path/entities/urn:ngsi-ld:entity:1111')
+        .reply(StatusCodes.OK, {});
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
         .reply(StatusCodes.OK, open_policy_agent_permit_response);
@@ -187,11 +217,34 @@ describe('Authorization: Open Policy Agent PDP', () => {
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
         .reply(StatusCodes.OK, open_policy_agent_permit_response);
-      contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(StatusCodes.OK, {});
+      contextBrokerMock = nock('http://fiware.org:1026')
+        .patch('/path/entityOperations/upsert')
+        .reply(StatusCodes.OK, {});
     });
 
     it('should allow access based on entities', (done) => {
       got.patch('path/entityOperations/upsert', request_with_headers_and_body).then((response) => {
+        contextBrokerMock.done();
+        idmMock.done();
+        openPolicyAgentMock.done();
+        should.equal(response.statusCode, StatusCodes.OK);
+        done();
+      });
+    });
+  });
+
+  describe('When a restricted subscription URL with a payload body is requested', () => {
+    beforeEach(() => {
+      openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
+        .post('/query')
+        .reply(StatusCodes.OK, open_policy_agent_permit_response);
+      contextBrokerMock = nock('http://fiware.org:1026')
+        .post('/path/ngsi-ld/v1/subscriptions')
+        .reply(StatusCodes.OK, {});
+    });
+
+    it('should allow access based on entities', (done) => {
+      got.post('path/ngsi-ld/v1/subscriptions', request_with_headers_and_subscription_body).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
         openPolicyAgentMock.done();

@@ -84,6 +84,6 @@ config.error_template = `{
     "title": "{{title}}",
     "detail": "{{message}}"
   }`;
-config.error_content_type = "application/json";
+config.error_content_type = 'application/json';
 
 module.exports = config;

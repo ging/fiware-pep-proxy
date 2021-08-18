@@ -10,7 +10,7 @@ const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
 const jwt = require('jsonwebtoken');
-const StatusCodes =  require('http-status-codes').StatusCodes;
+const StatusCodes = require('http-status-codes').StatusCodes;
 
 const ngsiPayload = [
   {
@@ -41,6 +41,26 @@ const ngsiPayload = [
   }
 ];
 
+const ngsi_subscription = {
+  description: 'Notify me of low feedstock on Farm:001',
+  type: 'Subscription',
+  entities: [
+    { type: 'TemperatureSensor' },
+    { id: 'urn:ngsi-ld:TemperatureSensor001' }
+  ],
+  watchedAttributes: ['temperature'],
+  q: 'temperature>0.6;temperature<0.8;controlledAsset==urn:ngsi-ld:Building:farm001',
+  notification: {
+    attributes: ['temperature', 'controlledAsset'],
+    format: 'keyValues',
+    endpoint: {
+      uri: 'http://tutorial:3000/subscription/low-stock-farm001',
+      accept: 'application/json'
+    }
+  },
+  '@context': 'http://context/ngsi-context.jsonld'
+};
+
 const token = jwt.sign(
   {
     app_id: 'application_id',
@@ -67,10 +87,10 @@ const token = jwt.sign(
               target: {
                 resource: {
                   type: 'TemperatureSensor',
-                  identifiers: ['*'],
-                  attributes: ['*']
+                  identifiers: ['.*'],
+                  attributes: ['.*']
                 },
-                actions: ['GET', 'PATCH']
+                actions: ['GET', 'PATCH', 'POST']
               },
               rules: [
                 {
@@ -82,8 +102,8 @@ const token = jwt.sign(
               target: {
                 resource: {
                   type: 'SoilSensor',
-                  identifiers: ['*'],
-                  attributes: ['*']
+                  identifiers: ['.*'],
+                  attributes: ['.*']
                 },
                 actions: ['GET']
               },
@@ -113,6 +133,14 @@ const request_with_jwt_and_body = {
   throwHttpErrors: false,
   headers: { 'x-auth-token': token },
   json: ngsiPayload,
+  retry: 0
+};
+
+const request_with_jwt_and_subscription_body = {
+  prefixUrl: 'http:/localhost:1026',
+  throwHttpErrors: false,
+  headers: { 'x-auth-token': token },
+  json: ngsi_subscription,
   retry: 0
 };
 
@@ -224,11 +252,29 @@ describe('Authorization: iSHARE PDP', () => {
 
   describe('When a restricted URL with a payload body is requested', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(StatusCodes.OK, {});
+      contextBrokerMock = nock('http://fiware.org:1026')
+        .patch('/path/entityOperations/upsert')
+        .reply(StatusCodes.OK, {});
     });
 
     it('should allow access based on the JWT policy and entities', (done) => {
       got.patch('path/entityOperations/upsert', request_with_jwt_and_body).then((response) => {
+        contextBrokerMock.done();
+        should.equal(response.statusCode, StatusCodes.OK);
+        done();
+      });
+    });
+  });
+
+  describe('When a restricted subscription URL with a payload body is requested', () => {
+    beforeEach(() => {
+      contextBrokerMock = nock('http://fiware.org:1026')
+        .post('/path/ngsi-ld/v1/subscriptions')
+        .reply(StatusCodes.OK, {});
+    });
+
+    it('should allow access based on entities', (done) => {
+      got.post('path/ngsi-ld/v1/subscriptions', request_with_jwt_and_subscription_body).then((response) => {
         contextBrokerMock.done();
         should.equal(response.statusCode, StatusCodes.OK);
         done();

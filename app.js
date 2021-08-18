@@ -30,7 +30,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 exports.start_server = function (token, config) {
   config_service.set_config(config, true);
   const Root = require('./controllers/root');
-  const Payload = require('./lib/payload');
+  const Payload = require('./lib/payload_analyse');
   const Authorize = require('./lib/authorization_functions');
   const app = express();
   let server;
@@ -82,14 +82,16 @@ exports.start_server = function (token, config) {
   }
 
   if (Authorize.checkPayload()) {
-    app.use(Payload.queryAnalyse);
+    app.post('/*/subscriptions/', Payload.subscription, Root.restricted_access);
+    app.patch('/*/subscriptions/*', Payload.subscription, Root.restricted_access);
+    app.use(Payload.query);
     // Oddity for NGSI-v2
-    //payload.all('/*/op/*', Payload.queryAnalyse;
+    //payload.all('/*/op/*', Payload.query;
 
-    app.use(Payload.bodyAnalyse);
-    app.all('/*/entities/:id', Payload.paramsAnalyse, Root.restricted_access);
-    app.all('/*/entities/:id/attrs', Payload.paramsAnalyse, Root.restricted_access);
-    app.all('/*/entities/:id/attrs/:attr', Payload.paramsAnalyse, Root.restricted_access);
+    app.use(Payload.body);
+    app.all('/*/entities/:id', Payload.params, Root.restricted_access);
+    app.all('/*/entities/:id/attrs', Payload.params, Root.restricted_access);
+    app.all('/*/entities/:id/attrs/:attr', Payload.params, Root.restricted_access);
   }
 
   app.all('/*', Root.restricted_access);

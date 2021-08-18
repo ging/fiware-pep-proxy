@@ -9,7 +9,7 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
-const StatusCodes =  require('http-status-codes').StatusCodes;
+const StatusCodes = require('http-status-codes').StatusCodes;
 
 const request_no_header = {
   prefixUrl: 'http:/localhost:1026',
@@ -168,7 +168,9 @@ describe('Authentication: Keyrock IDM', () => {
 
   describe('When a restricted path is requested for a forbidden user', () => {
     beforeEach(() => {
-      idmMock = nock('http://keyrock.com:3000').get('/user?access_token=111111111&app_id=application_id').reply(StatusCodes.UNAUTHORIZED);
+      idmMock = nock('http://keyrock.com:3000')
+        .get('/user?access_token=111111111&app_id=application_id')
+        .reply(StatusCodes.UNAUTHORIZED);
     });
     it('should authenticate the user and deny access', (done) => {
       got.get('restricted', request_with_header).then((response) => {

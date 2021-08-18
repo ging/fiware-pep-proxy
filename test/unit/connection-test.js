@@ -11,7 +11,7 @@ const nock = require('nock');
 const IDM = require('../../lib/pdp/keyrock');
 const Authzforce = require('../../lib/pdp/authzforce');
 const cache = require('../../lib/cache');
-const StatusCodes =  require('http-status-codes').StatusCodes;
+const StatusCodes = require('http-status-codes').StatusCodes;
 
 const config = {
   pep_port: 1026,

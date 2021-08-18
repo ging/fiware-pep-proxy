@@ -10,7 +10,7 @@ const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
 const jwt = require('jsonwebtoken');
-const StatusCodes =  require('http-status-codes').StatusCodes;
+const StatusCodes = require('http-status-codes').StatusCodes;
 
 function sleep(ms) {
   return new Promise((resolve) => {

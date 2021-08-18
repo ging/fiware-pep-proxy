@@ -9,7 +9,7 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
-const StatusCodes =  require('http-status-codes').StatusCodes;
+const StatusCodes = require('http-status-codes').StatusCodes;
 
 const ngsiPayload = [
   {
@@ -148,7 +148,9 @@ describe('Authorization: XACML PDP', () => {
 
   describe('When a restricted URL is requested by a legitimate user', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(StatusCodes.OK, {});
+      contextBrokerMock = nock('http://fiware.org:1026')
+        .get('/path/entities/urn:ngsi-ld:entity:1111')
+        .reply(StatusCodes.OK, {});
       xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(StatusCodes.OK, xacml_permit_response);
     });
 
@@ -200,7 +202,9 @@ describe('Authorization: XACML PDP', () => {
   describe('When a restricted URL with a payload body is requested', () => {
     beforeEach(() => {
       xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(StatusCodes.OK, xacml_permit_response);
-      contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(StatusCodes.OK, {});
+      contextBrokerMock = nock('http://fiware.org:1026')
+        .patch('/path/entityOperations/upsert')
+        .reply(StatusCodes.OK, {});
     });
 
     it('should allow access based on entities', (done) => {

@@ -9,7 +9,7 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
-const StatusCodes =  require('http-status-codes').StatusCodes;
+const StatusCodes = require('http-status-codes').StatusCodes;
 
 const request_with_header = {
   prefixUrl: 'http:/localhost:1026',
