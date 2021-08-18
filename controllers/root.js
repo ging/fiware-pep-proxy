@@ -11,8 +11,6 @@ const IDM = require('../lib/pdp/keyrock');
 const jsonwebtoken = require('jsonwebtoken');
 const access = require('../lib/access_functions');
 const PDP = require('../lib/authorization_functions');
-const StatusCodes =  require('http-status-codes').StatusCodes;
-
 const debug = require('debug')('pep-proxy:root');
 
 /**
