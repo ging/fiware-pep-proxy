@@ -11,6 +11,7 @@ const nock = require('nock');
 const IDM = require('../../lib/pdp/keyrock');
 const Authzforce = require('../../lib/pdp/authzforce');
 const cache = require('../../lib/cache');
+const StatusCodes =  require('http-status-codes').StatusCodes;
 
 const config = {
   pep_port: 1026,
@@ -64,7 +65,7 @@ describe('Connection Tests', () => {
 
   describe('When connecting to Authzforce and it is present', () => {
     beforeEach(() => {
-      authzforceMock = nock('http://authzforce.com:8080').get('/').reply(200, {});
+      authzforceMock = nock('http://authzforce.com:8080').get('/').reply(StatusCodes.OK, {});
     });
     it('should not error', (done) => {
       Authzforce.checkConnectivity()
@@ -80,7 +81,7 @@ describe('Connection Tests', () => {
 
   describe('When connecting to Keyrock and it is present', () => {
     beforeEach(() => {
-      idmMock = nock('http://keyrock.com:3000').get('/version').reply(200, {});
+      idmMock = nock('http://keyrock.com:3000').get('/version').reply(StatusCodes.OK, {});
     });
     it('should not error', (done) => {
       IDM.checkConnectivity()
@@ -96,7 +97,7 @@ describe('Connection Tests', () => {
 
   describe('When authenticating the PEP with Keyrock', () => {
     beforeEach(() => {
-      idmMock = nock('http://keyrock.com:3000').post('/v3/auth/tokens').reply(200, {});
+      idmMock = nock('http://keyrock.com:3000').post('/v3/auth/tokens').reply(StatusCodes.OK, {});
     });
     it('should not error', (done) => {
       IDM.authenticatePEP()
@@ -112,7 +113,7 @@ describe('Connection Tests', () => {
 
   describe('When authenticating a misconfigured PEP with Keyrock', () => {
     beforeEach(() => {
-      idmMock = nock('http://keyrock.com:3000').post('/v3/auth/tokens').reply(401);
+      idmMock = nock('http://keyrock.com:3000').post('/v3/auth/tokens').reply(StatusCodes.UNAUTHORIZED);
     });
     it('should error', (done) => {
       IDM.authenticatePEP()

@@ -9,6 +9,7 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
+const StatusCodes =  require('http-status-codes').StatusCodes;
 
 const ngsiPayload = [
   {
@@ -115,7 +116,7 @@ describe('Authorization: Open Policy Agent PDP', () => {
     nock.cleanAll();
     idmMock = nock('http://keyrock.com:3000')
       .get('/user?access_token=111111111&app_id=application_id')
-      .reply(200, keyrock_user_response);
+      .reply(StatusCodes.OK, keyrock_user_response);
     done();
   });
 
@@ -126,10 +127,10 @@ describe('Authorization: Open Policy Agent PDP', () => {
 
   describe('When a restricted URL is requested by a legitimate user', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(StatusCodes.OK, {});
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
-        .reply(200, open_policy_agent_permit_response);
+        .reply(StatusCodes.OK, open_policy_agent_permit_response);
     });
 
     it('should allow access', (done) => {
@@ -137,7 +138,7 @@ describe('Authorization: Open Policy Agent PDP', () => {
         contextBrokerMock.done();
         idmMock.done();
         openPolicyAgentMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -147,14 +148,14 @@ describe('Authorization: Open Policy Agent PDP', () => {
     beforeEach(() => {
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
-        .reply(200, open_policy_agent_deny_response);
+        .reply(StatusCodes.OK, open_policy_agent_deny_response);
     });
 
     it('should deny access', (done) => {
       got.get('path/entities/urn:ngsi-ld:entity:1111', request_with_headers).then((response) => {
         idmMock.done();
         openPolicyAgentMock.done();
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
       });
     });
@@ -164,10 +165,10 @@ describe('Authorization: Open Policy Agent PDP', () => {
     beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026')
         .get('/path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity')
-        .reply(200, {});
+        .reply(StatusCodes.OK, {});
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
-        .reply(200, open_policy_agent_permit_response);
+        .reply(StatusCodes.OK, open_policy_agent_permit_response);
     });
 
     it('should allow access based on entities', (done) => {
@@ -175,7 +176,7 @@ describe('Authorization: Open Policy Agent PDP', () => {
         contextBrokerMock.done();
         idmMock.done();
         openPolicyAgentMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -185,8 +186,8 @@ describe('Authorization: Open Policy Agent PDP', () => {
     beforeEach(() => {
       openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
         .post('/query')
-        .reply(200, open_policy_agent_permit_response);
-      contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(200, {});
+        .reply(StatusCodes.OK, open_policy_agent_permit_response);
+      contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(StatusCodes.OK, {});
     });
 
     it('should allow access based on entities', (done) => {
@@ -194,7 +195,7 @@ describe('Authorization: Open Policy Agent PDP', () => {
         contextBrokerMock.done();
         idmMock.done();
         openPolicyAgentMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });

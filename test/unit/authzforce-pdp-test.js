@@ -9,6 +9,7 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
+const StatusCodes =  require('http-status-codes').StatusCodes;
 
 const request_with_header = {
   prefixUrl: 'http:/localhost:1026',
@@ -40,7 +41,7 @@ const keyrock_user_with_azf = {
 
 const authzforce_permit_response = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns3:Response xmlns="http://authzforce.github.io/rest-api-model/xmlns/authz/5"
-  xmlns:ns2="http://www.w3.org/2005/Atom"
+  xmlns:ns2="http://www.w3.org/StatusCodes.OK5/Atom"
   xmlns:ns3="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
   xmlns:ns4="http://authzforce.github.io/core/xmlns/pdp/6.0"
   xmlns:ns5="http://authzforce.github.io/pap-dao-flat-file/xmlns/properties/3.6">
@@ -51,7 +52,7 @@ const authzforce_permit_response = `<?xml version="1.0" encoding="UTF-8" standal
 
 const authzforce_deny_response = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns3:Response xmlns="http://authzforce.github.io/rest-api-model/xmlns/authz/5"
-  xmlns:ns2="http://www.w3.org/2005/Atom"
+  xmlns:ns2="http://www.w3.org/StatusCodes.OK5/Atom"
   xmlns:ns3="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
   xmlns:ns4="http://authzforce.github.io/core/xmlns/pdp/6.0"
   xmlns:ns5="http://authzforce.github.io/pap-dao-flat-file/xmlns/properties/3.6">
@@ -107,7 +108,7 @@ describe('Authorization: Authzforce PDP', () => {
     nock.cleanAll();
     idmMock = nock('http://keyrock.com:3000')
       .get('/user?access_token=111111111&app_id=application_id&authzforce=true')
-      .reply(200, keyrock_user_with_azf);
+      .reply(StatusCodes.OK, keyrock_user_with_azf);
     done();
   });
 
@@ -118,10 +119,10 @@ describe('Authorization: Authzforce PDP', () => {
 
   describe('When a restricted path is requested for a legitimate user', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(StatusCodes.OK, {});
       authzforceMock = nock('http://authzforce.com:8080')
         .post('/authzforce-ce/domains/authzforce/pdp')
-        .reply(200, authzforce_permit_response);
+        .reply(StatusCodes.OK, authzforce_permit_response);
     });
 
     it('should allow access', (done) => {
@@ -129,7 +130,7 @@ describe('Authorization: Authzforce PDP', () => {
         contextBrokerMock.done();
         idmMock.done();
         authzforceMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -139,14 +140,14 @@ describe('Authorization: Authzforce PDP', () => {
     beforeEach(() => {
       authzforceMock = nock('http://authzforce.com:8080')
         .post('/authzforce-ce/domains/authzforce/pdp')
-        .reply(200, authzforce_deny_response);
+        .reply(StatusCodes.OK, authzforce_deny_response);
     });
 
     it('should deny access when denied', (done) => {
       got.get('restricted', request_with_header).then((response) => {
         idmMock.done();
         authzforceMock.done();
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
       });
     });
@@ -157,7 +158,7 @@ describe('Authorization: Authzforce PDP', () => {
       nock.cleanAll();
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id&authzforce=true')
-        .reply(200, {
+        .reply(StatusCodes.OK, {
           app_id: 'application_id',
           trusted_apps: []
         });
@@ -165,7 +166,7 @@ describe('Authorization: Authzforce PDP', () => {
     it('should deny access', (done) => {
       got.get('restricted', request_with_header).then((response) => {
         idmMock.done();
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
       });
     });

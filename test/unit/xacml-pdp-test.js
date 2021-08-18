@@ -9,6 +9,7 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
+const StatusCodes =  require('http-status-codes').StatusCodes;
 
 const ngsiPayload = [
   {
@@ -136,7 +137,7 @@ describe('Authorization: XACML PDP', () => {
     nock.cleanAll();
     idmMock = nock('http://keyrock.com:3000')
       .get('/user?access_token=111111111&app_id=application_id')
-      .reply(200, keyrock_user_response);
+      .reply(StatusCodes.OK, keyrock_user_response);
     done();
   });
 
@@ -147,8 +148,8 @@ describe('Authorization: XACML PDP', () => {
 
   describe('When a restricted URL is requested by a legitimate user', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(200, {});
-      xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(200, xacml_permit_response);
+      contextBrokerMock = nock('http://fiware.org:1026').get('/path/entities/urn:ngsi-ld:entity:1111').reply(StatusCodes.OK, {});
+      xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(StatusCodes.OK, xacml_permit_response);
     });
 
     it('should allow access', (done) => {
@@ -156,7 +157,7 @@ describe('Authorization: XACML PDP', () => {
         contextBrokerMock.done();
         idmMock.done();
         xacmlMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -164,14 +165,14 @@ describe('Authorization: XACML PDP', () => {
 
   describe('When a restricted URL is requested by a forbidden user', () => {
     beforeEach(() => {
-      xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(200, xacml_deny_response);
+      xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(StatusCodes.OK, xacml_deny_response);
     });
 
     it('should deny access', (done) => {
       got.get('path/entities/urn:ngsi-ld:entity:1111', request_with_headers).then((response) => {
         idmMock.done();
         xacmlMock.done();
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
       });
     });
@@ -181,8 +182,8 @@ describe('Authorization: XACML PDP', () => {
     beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026')
         .get('/path/entities/?ids=urn:ngsi-ld:entity:1111&type=entity')
-        .reply(200, {});
-      xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(200, xacml_permit_response);
+        .reply(StatusCodes.OK, {});
+      xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(StatusCodes.OK, xacml_permit_response);
     });
 
     it('should allow access based on entities', (done) => {
@@ -190,7 +191,7 @@ describe('Authorization: XACML PDP', () => {
         contextBrokerMock.done();
         idmMock.done();
         xacmlMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -198,8 +199,8 @@ describe('Authorization: XACML PDP', () => {
 
   describe('When a restricted URL with a payload body is requested', () => {
     beforeEach(() => {
-      xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(200, xacml_permit_response);
-      contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(200, {});
+      xacmlMock = nock('http://xacml.com:8080').post('/xacml').reply(StatusCodes.OK, xacml_permit_response);
+      contextBrokerMock = nock('http://fiware.org:1026').patch('/path/entityOperations/upsert').reply(StatusCodes.OK, {});
     });
 
     it('should allow access based on entities', (done) => {
@@ -207,7 +208,7 @@ describe('Authorization: XACML PDP', () => {
         contextBrokerMock.done();
         idmMock.done();
         xacmlMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });

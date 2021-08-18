@@ -10,6 +10,7 @@ const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
 const jwt = require('jsonwebtoken');
+const StatusCodes =  require('http-status-codes').StatusCodes;
 
 function sleep(ms) {
   return new Promise((resolve) => {
@@ -130,7 +131,7 @@ describe('Authentication: JWT Token', () => {
   describe('When a URL is requested and no JWT token is present', () => {
     it('should deny access', (done) => {
       got.get('restricted_path', request_no_jwt).then((response) => {
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
       });
     });
@@ -138,12 +139,12 @@ describe('Authentication: JWT Token', () => {
 
   describe('When a public path is requested', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/public').reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/public').reply(StatusCodes.OK, {});
     });
     it('should allow access', (done) => {
       got.get('public', request_with_jwt).then((response) => {
         contextBrokerMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -151,12 +152,12 @@ describe('Authentication: JWT Token', () => {
 
   describe('When a restricted path is requested with a legitimate JWT', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(StatusCodes.OK, {});
     });
     it('should authenticate the user and allow access', (done) => {
       got.get('restricted', request_with_jwt).then((response) => {
         contextBrokerMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -169,7 +170,7 @@ describe('Authentication: JWT Token', () => {
     it('should deny access', (done) => {
       got.get('restricted', request_with_expired_jwt).then((response) => {
         contextBrokerMock.done();
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
       });
     });
@@ -179,11 +180,11 @@ describe('Authentication: JWT Token', () => {
     beforeEach(() => {
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=' + invalid_token + '&app_id=application_id')
-        .reply(401);
+        .reply(StatusCodes.UNAUTHORIZED);
     });
     it('should fallback to Keyrock and deny access', (done) => {
       got.get('restricted', request_with_invalid_jwt).then((response) => {
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         idmMock.done();
         done();
       });

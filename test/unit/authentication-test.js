@@ -9,6 +9,7 @@ const got = require('got');
 const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
+const StatusCodes =  require('http-status-codes').StatusCodes;
 
 const request_no_header = {
   prefixUrl: 'http:/localhost:1026',
@@ -99,7 +100,7 @@ describe('Authentication: Keyrock IDM', () => {
     });
     it('should deny access', (done) => {
       got.get('restricted_path', request_no_header).then((response) => {
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
       });
     });
@@ -107,12 +108,12 @@ describe('Authentication: Keyrock IDM', () => {
 
   describe('When a public path is requested', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/public').reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/public').reply(StatusCodes.OK, {});
     });
     it('should allow access', (done) => {
       got.get('public', request_no_header).then((response) => {
         contextBrokerMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -120,12 +121,12 @@ describe('Authentication: Keyrock IDM', () => {
 
   describe('When a restricted path is requested and the token matches the magic key', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(StatusCodes.OK, {});
     });
     it('should allow access', (done) => {
       got.get('restricted', request_with_magic_key).then((response) => {
         contextBrokerMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -133,16 +134,16 @@ describe('Authentication: Keyrock IDM', () => {
 
   describe('When a restricted path is requested for a legitimate user with an x-auth-token', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(StatusCodes.OK, {});
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id')
-        .reply(200, keyrock_user_response);
+        .reply(StatusCodes.OK, keyrock_user_response);
     });
     it('should authenticate the user and allow access', (done) => {
       got.get('restricted', request_with_header).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -150,16 +151,16 @@ describe('Authentication: Keyrock IDM', () => {
 
   describe('When a restricted path is requested for a legitimate user with a bearer token', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(StatusCodes.OK, {});
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id')
-        .reply(200, keyrock_user_response);
+        .reply(StatusCodes.OK, keyrock_user_response);
     });
     it('should authenticate the user and allow access', (done) => {
       got.get('restricted', request_with_auth_header).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
-        should.equal(response.statusCode, 200);
+        should.equal(response.statusCode, StatusCodes.OK);
         done();
       });
     });
@@ -167,13 +168,13 @@ describe('Authentication: Keyrock IDM', () => {
 
   describe('When a restricted path is requested for a forbidden user', () => {
     beforeEach(() => {
-      idmMock = nock('http://keyrock.com:3000').get('/user?access_token=111111111&app_id=application_id').reply(401);
+      idmMock = nock('http://keyrock.com:3000').get('/user?access_token=111111111&app_id=application_id').reply(StatusCodes.UNAUTHORIZED);
     });
     it('should authenticate the user and deny access', (done) => {
       got.get('restricted', request_with_header).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
-        should.equal(response.statusCode, 401);
+        should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
       });
     });
@@ -184,7 +185,7 @@ describe('Authentication: Keyrock IDM', () => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(404);
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id')
-        .reply(200, keyrock_user_response);
+        .reply(StatusCodes.OK, keyrock_user_response);
     });
     it('should authenticate the user and proxy the error', (done) => {
       got.get('restricted', request_with_header).then((response) => {
@@ -198,22 +199,22 @@ describe('Authentication: Keyrock IDM', () => {
 
   describe('When the same restricted path is requested multiple times', () => {
     beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(2).reply(200, {});
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(2).reply(StatusCodes.OK, {});
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=111111111&app_id=application_id')
-        .reply(200, keyrock_user_response);
+        .reply(StatusCodes.OK, keyrock_user_response);
     });
     it('should access the user from cache', (done) => {
       got
         .get('restricted', request_with_header)
         .then((firstResponse) => {
-          should.equal(firstResponse.statusCode, 200);
+          should.equal(firstResponse.statusCode, StatusCodes.OK);
           return got.get('restricted', request_with_header);
         })
         .then((secondResponse) => {
           contextBrokerMock.done();
           idmMock.done();
-          should.equal(secondResponse.statusCode, 200);
+          should.equal(secondResponse.statusCode, StatusCodes.OK);
           done();
         });
     });

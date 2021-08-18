@@ -11,6 +11,7 @@ const IDM = require('../lib/pdp/keyrock');
 const jsonwebtoken = require('jsonwebtoken');
 const access = require('../lib/access_functions');
 const PDP = require('../lib/authorization_functions');
+const StatusCodes =  require('http-status-codes').StatusCodes;
 
 const debug = require('debug')('pep-proxy:root');
 
@@ -25,7 +26,7 @@ function validateAccessJWT(req, res, tokens) {
   return jsonwebtoken.verify(tokens.authToken, config.pep.token.secret, function (err, userInfo) {
     if (err) {
       if (err.name === 'TokenExpiredError') {
-        return access.deny(res, 'Invalid token: jwt token has expired');
+        return access.deny(res, 'Invalid token: jwt token has expired', 'urn:dx:as:ExpiredAuthenticationToken');
       } else {
         debug('Error in JWT ', err.message);
         debug('Or JWT secret misconfigured');
@@ -73,8 +74,8 @@ async function validateAccessIDM(req, res, tokens) {
     }
   } catch (e) {
     debug(e);
-    if (e.status === 404 || e.status === 401) {
-      return access.deny(res);
+    if (e.type) {
+      return access.deny(res, e.message, e.type);
     } else {
       return access.internalError(res, e, 'IDM');
     }
@@ -127,7 +128,7 @@ exports.restricted_access = function (req, res) {
   if (tokens.authToken === undefined) {
     debug('Auth-token not found in request header');
     res.set('WWW-Authenticate', 'IDM uri = ' + config.idm_host);
-    access.deny(res, 'Auth-token not found in request header');
+    access.deny(res, 'Auth-token not found in request header', 'urn:dx:as:MissingAuthenticationToken');
     return;
   }
   if (config.magic_key && config.magic_key === tokens.authToken) {
