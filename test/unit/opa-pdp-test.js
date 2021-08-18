@@ -61,6 +61,24 @@ const ngsi_subscription = {
   '@context': 'http://context/ngsi-context.jsonld'
 };
 
+const ngsi_v2_batch_operation = {
+  actionType: 'append_strict',
+  entities: [
+    {
+      id: 'urn:ngsi-ld:TemperatureSensor:004',
+      type: 'TemperatureSensor',
+      category: { type: 'Text', value: 'sensor' },
+      temperature: { type: 'Integer', value: 25, metadata: { unitCode: { type: 'Text', value: 'CEL' } } }
+    },
+    {
+      id: 'urn:ngsi-ld:TemperatureSensor:005',
+      type: 'TemperatureSensor',
+      category: { type: 'Text', value: 'sensor' },
+      temperature: { type: 'Integer', value: 30, metadata: { unitCode: { type: 'Text', value: 'CEL' } } }
+    }
+  ]
+};
+
 const keyrock_user_response = {
   app_id: 'application_id',
   trusted_apps: [],
@@ -88,6 +106,12 @@ const request_with_headers_and_subscription_body = {
   throwHttpErrors: false,
   headers: { 'x-auth-token': '111111111', 'fiware-service': 'smart-gondor' },
   json: ngsi_subscription
+};
+const request_with_headers_and_v2_batch_body = {
+  prefixUrl: 'http:/localhost:1026',
+  throwHttpErrors: false,
+  headers: { 'x-auth-token': '111111111', 'fiware-service': 'smart-gondor' },
+  json: ngsi_v2_batch_operation
 };
 
 const open_policy_agent_permit_response = {
@@ -245,6 +269,25 @@ describe('Authorization: Open Policy Agent PDP', () => {
 
     it('should allow access based on entities', (done) => {
       got.post('path/ngsi-ld/v1/subscriptions', request_with_headers_and_subscription_body).then((response) => {
+        contextBrokerMock.done();
+        idmMock.done();
+        openPolicyAgentMock.done();
+        should.equal(response.statusCode, StatusCodes.OK);
+        done();
+      });
+    });
+  });
+
+  describe('When a restricted NGSI-v2 batch operation with a payload body is requested', () => {
+    beforeEach(() => {
+      openPolicyAgentMock = nock('http://openpolicyagent.com:8080')
+        .post('/query')
+        .reply(StatusCodes.OK, open_policy_agent_permit_response);
+      contextBrokerMock = nock('http://fiware.org:1026').post('/path/v2/op/update').reply(StatusCodes.OK, {});
+    });
+
+    it('should allow access based on entities', (done) => {
+      got.post('path/v2/op/update', request_with_headers_and_v2_batch_body).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
         openPolicyAgentMock.done();

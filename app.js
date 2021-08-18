@@ -82,12 +82,12 @@ exports.start_server = function (token, config) {
   }
 
   if (Authorize.checkPayload()) {
-    app.post('/*/subscriptions/', Payload.subscription, Root.restricted_access);
+    // Oddity for Subscriptions
+    app.post('/*/subscriptions', Payload.subscription, Root.restricted_access);
     app.patch('/*/subscriptions/*', Payload.subscription, Root.restricted_access);
-    app.use(Payload.query);
     // Oddity for NGSI-v2
-    //payload.all('/*/op/*', Payload.query;
-
+    app.all('/*/op/*', Payload.v2batch, Root.restricted_access);
+    app.use(Payload.query);
     app.use(Payload.body);
     app.all('/*/entities/:id', Payload.params, Root.restricted_access);
     app.all('/*/entities/:id/attrs', Payload.params, Root.restricted_access);
