@@ -46,7 +46,8 @@ const ngsi_subscription = {
   type: 'Subscription',
   entities: [
     { type: 'TemperatureSensor' },
-    { id: 'urn:ngsi-ld:TemperatureSensor001' }
+    { id: 'urn:ngsi-ld:TemperatureSensor001' },
+    { idPattern: 'urn:ngsi-ld:.*' }
   ],
   watchedAttributes: ['temperature'],
   q: 'temperature>0.6;temperature<0.8;controlledAsset==urn:ngsi-ld:Building:farm001',
@@ -87,7 +88,7 @@ const token = jwt.sign(
               target: {
                 resource: {
                   type: 'TemperatureSensor',
-                  identifiers: ['.*'],
+                  identifiers: ['urn:ngsi-ld:.*'],
                   attributes: ['.*']
                 },
                 actions: ['GET', 'PATCH', 'POST']
