@@ -85,8 +85,8 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 # variable.
 #
 # -  PEP_PROXY_USERNAME
-# -  PEP_PASSWORD
-# -  PEP_TOKEN_SECRET
+# -  PEP_PROXY_ASSWORD
+# -  PEP_PROXY_TOKEN_SECRET
 #
 ########################################################################################
 
@@ -174,8 +174,8 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
 #    PEP_PROXY_ORG_HEADER
 #    PEP_PROXY_APP_ID
 #    PEP_PROXY_USERNAME
-#    PEP_PASSWORD
-#    PEP_TOKEN_SECRET
+#    PEP_PROXY_PASSWORD
+#    PEP_PROXY_TOKEN_SECRET
 #    PEP_PROXY_AUTH_ENABLED
 #    PEP_PROXY_PDP
 #    PEP_PROXY_AZF_PROTOCOL
