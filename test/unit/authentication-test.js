@@ -221,4 +221,27 @@ describe('Authentication: Keyrock IDM', () => {
         });
     });
   });
+
+  describe('When the same restricted path is requested multiple times with a bearer token', () => {
+    beforeEach(() => {
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(2).reply(StatusCodes.OK, {});
+      idmMock = nock('http://keyrock.com:3000')
+        .get('/user?access_token=111111111&app_id=application_id')
+        .reply(StatusCodes.OK, keyrock_user_response);
+    });
+    it('should access the user from cache', (done) => {
+      got
+        .get('restricted', request_with_auth_header)
+        .then((firstResponse) => {
+          should.equal(firstResponse.statusCode, StatusCodes.OK);
+          return got.get('restricted', request_with_auth_header);
+        })
+        .then((secondResponse) => {
+          contextBrokerMock.done();
+          idmMock.done();
+          should.equal(secondResponse.statusCode, StatusCodes.OK);
+          done();
+        });
+    });
+  });
 });
