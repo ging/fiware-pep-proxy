@@ -12,12 +12,7 @@ const cache = require('../../lib/cache');
 const StatusCodes = require('http-status-codes').StatusCodes;
 const shortToken = '111111111';
 const longToken = '11111111111111111111111111111111111111111111111111111111111111';
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+const utils = require('./utils');
 
 const auth_token = {
   prefixUrl: 'http:/localhost:1026',
@@ -36,6 +31,13 @@ const bearer_token_long = {
   prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
   headers: { authorization: 'Bearer: ' + Buffer.from(longToken, 'utf-8').toString('base64') }
+};
+
+const jwt = utils.createJWT();
+const bearer_jwt_token = {
+  prefixUrl: 'http:/localhost:1026',
+  throwHttpErrors: false,
+  headers: { authorization: 'Bearer: ' + Buffer.from(jwt, 'utf-8').toString('base64') }
 };
 
 const keyrock_deny_response = {
@@ -186,13 +188,42 @@ describe('Authorization: Keyrock PDP', () => {
         })
         .then(async function (secondResponse) {
           should.equal(secondResponse.statusCode, StatusCodes.OK);
-          await sleep(2000);
+          await utils.sleep(2000);
           return got.get('restricted', bearer_token_long);
         })
-        .then((thitdResponse) => {
+        .then((thirdResponse) => {
           contextBrokerMock.done();
           idmMock.done();
-          should.equal(thitdResponse.statusCode, StatusCodes.OK);
+          should.equal(thirdResponse.statusCode, StatusCodes.OK);
+          done();
+        });
+    });
+  });
+
+  describe('When the same action on a restricted path multiple times with a bearer jwt', () => {
+    beforeEach(() => {
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(3).reply(StatusCodes.OK, {});
+      idmMock = nock('http://keyrock.com:3000')
+        .get('/user?access_token=' + jwt + '&app_id=application_id&action=GET&resource=/restricted')
+        .times(2)
+        .reply(StatusCodes.OK, keyrock_permit_response);
+    });
+    it('should access the user action from cache', (done) => {
+      got
+        .get('restricted', bearer_jwt_token)
+        .then((firstResponse) => {
+          should.equal(firstResponse.statusCode, StatusCodes.OK);
+          return got.get('restricted', bearer_jwt_token);
+        })
+        .then(async function (secondResponse) {
+          should.equal(secondResponse.statusCode, StatusCodes.OK);
+          await utils.sleep(2000);
+          return got.get('restricted', bearer_jwt_token);
+        })
+        .then((thirdResponse) => {
+          contextBrokerMock.done();
+          idmMock.done();
+          should.equal(thirdResponse.statusCode, StatusCodes.OK);
           done();
         });
     });

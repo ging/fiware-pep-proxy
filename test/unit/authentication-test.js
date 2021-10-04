@@ -10,6 +10,8 @@ const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
 const StatusCodes = require('http-status-codes').StatusCodes;
+const utils = require('./utils');
+
 const shortToken = '111111111';
 const longToken = '11111111111111111111111111111111111111111111111111111111111111';
 
@@ -83,12 +85,6 @@ const keyrock_user_response = {
   id: 'username',
   displayName: 'Some User'
 };
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
 
 describe('Authentication: Keyrock IDM', () => {
   let pep;
@@ -253,7 +249,7 @@ describe('Authentication: Keyrock IDM', () => {
         })
         .then(async function (secondResponse) {
           should.equal(secondResponse.statusCode, StatusCodes.OK);
-          await sleep(2000);
+          await utils.sleep(2000);
           return got.get('restricted', bearer_token_long);
         })
         .then((thirdResponse) => {
