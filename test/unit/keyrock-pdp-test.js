@@ -33,7 +33,17 @@ const bearer_token_long = {
   headers: { authorization: 'Bearer: ' + Buffer.from(longToken, 'utf-8').toString('base64') }
 };
 
-const jwt = utils.createJWT();
+const jwt = utils.createJWT(
+  'shhhhh',
+  {
+    app_id: 'application_id',
+    trusted_apps: [],
+    id: 'username',
+    displayName: 'Some User'
+  },
+  { expiresIn: '20000ms' }
+);
+
 const bearer_jwt_token = {
   prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
@@ -200,6 +210,55 @@ describe('Authorization: Keyrock PDP', () => {
     });
   });
 
+  describe('When the same user request two different actions on a restricted path', () => {
+    beforeEach(() => {
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(StatusCodes.OK, {});
+      contextBrokerMock.post('/restricted').reply(204);
+
+      idmMock = nock('http://keyrock.com:3000')
+        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=GET&resource=/restricted')
+        .reply(StatusCodes.OK, keyrock_permit_response);
+      idmMock
+        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=POST&resource=/restricted')
+        .reply(StatusCodes.OK, keyrock_permit_response);
+    });
+    it('should not access the user from cache', (done) => {
+      got
+        .get('restricted', auth_token)
+        .then((firstResponse) => {
+          should.equal(firstResponse.statusCode, StatusCodes.OK);
+          return got.post('restricted', auth_token_and_body);
+        })
+        .then((secondResponse) => {
+          contextBrokerMock.done();
+          idmMock.done();
+          should.equal(secondResponse.statusCode, 204);
+          done();
+        });
+    });
+  });
+});
+
+describe('Authorization: Keyrock PDP', () => {
+  let pep;
+  let contextBrokerMock;
+  let idmMock;
+
+  beforeEach((done) => {
+    nock.cleanAll();
+    const app = require('../../app');
+    config.pep.token.secret = 'shhhhh';
+    pep = app.start_server('12345', config);
+    cache.flush();
+    done();
+  });
+
+  afterEach((done) => {
+    delete config.pep.token.secret;
+    pep.close(config.pep_port);
+    done();
+  });
+
   describe('When the same action on a restricted path multiple times with a bearer jwt', () => {
     beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(3).reply(StatusCodes.OK, {});
@@ -224,34 +283,6 @@ describe('Authorization: Keyrock PDP', () => {
           contextBrokerMock.done();
           idmMock.done();
           should.equal(thirdResponse.statusCode, StatusCodes.OK);
-          done();
-        });
-    });
-  });
-
-  describe('When the same user request two different actions on a restricted path', () => {
-    beforeEach(() => {
-      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(StatusCodes.OK, {});
-      contextBrokerMock.post('/restricted').reply(204);
-
-      idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=GET&resource=/restricted')
-        .reply(StatusCodes.OK, keyrock_permit_response);
-      idmMock
-        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=POST&resource=/restricted')
-        .reply(StatusCodes.OK, keyrock_permit_response);
-    });
-    it('should not access the user from cache', (done) => {
-      got
-        .get('restricted', auth_token)
-        .then((firstResponse) => {
-          should.equal(firstResponse.statusCode, StatusCodes.OK);
-          return got.post('restricted', auth_token_and_body);
-        })
-        .then((secondResponse) => {
-          contextBrokerMock.done();
-          idmMock.done();
-          should.equal(secondResponse.statusCode, 204);
           done();
         });
     });
