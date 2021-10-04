@@ -10,18 +10,32 @@ const should = require('should');
 const nock = require('nock');
 const cache = require('../../lib/cache');
 const StatusCodes = require('http-status-codes').StatusCodes;
+const shortToken = '111111111';
+const longToken = '11111111111111111111111111111111111111111111111111111111111111';
 
-const request_with_header = {
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+const auth_token = {
   prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
-  headers: { 'x-auth-token': '111111111' }
+  headers: { 'x-auth-token': shortToken }
 };
 
-const request_with_header_and_body = {
+const auth_token_and_body = {
   prefixUrl: 'http:/localhost:1026',
   throwHttpErrors: false,
-  headers: { 'x-auth-token': '111111111' },
+  headers: { 'x-auth-token': shortToken },
   body: 'HELLO'
+};
+
+const bearer_token_long = {
+  prefixUrl: 'http:/localhost:1026',
+  throwHttpErrors: false,
+  headers: { authorization: 'Bearer: ' + Buffer.from(longToken, 'utf-8').toString('base64') }
 };
 
 const keyrock_deny_response = {
@@ -55,7 +69,7 @@ const config = {
   organizations: {
     enabled: false
   },
-  cache_time: 300,
+  cache_time: 1,
   public_paths: [],
   authorization: {
     enabled: true,
@@ -85,11 +99,11 @@ describe('Authorization: Keyrock PDP', () => {
     beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(StatusCodes.OK, {});
       idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
+        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=GET&resource=/restricted')
         .reply(StatusCodes.OK, keyrock_permit_response);
     });
     it('should allow access', (done) => {
-      got.get('restricted', request_with_header).then((response) => {
+      got.get('restricted', auth_token).then((response) => {
         contextBrokerMock.done();
         idmMock.done();
         should.equal(response.statusCode, StatusCodes.OK);
@@ -101,7 +115,7 @@ describe('Authorization: Keyrock PDP', () => {
   describe('When a restricted path is requested and the app-id is not found', () => {
     beforeEach(() => {
       idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
+        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=GET&resource=/restricted')
         .reply(StatusCodes.OK, {
           app_id: '',
           trusted_apps: [],
@@ -109,7 +123,7 @@ describe('Authorization: Keyrock PDP', () => {
         });
     });
     it('should deny access', (done) => {
-      got.get('restricted', request_with_header).then((response) => {
+      got.get('restricted', auth_token).then((response) => {
         idmMock.done();
         should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
@@ -120,11 +134,11 @@ describe('Authorization: Keyrock PDP', () => {
   describe('When a restricted path is requested for a forbidden user', () => {
     beforeEach(() => {
       idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
+        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=GET&resource=/restricted')
         .reply(StatusCodes.OK, keyrock_deny_response);
     });
     it('should deny access', (done) => {
-      got.get('restricted', request_with_header).then((response) => {
+      got.get('restricted', auth_token).then((response) => {
         idmMock.done();
         should.equal(response.statusCode, StatusCodes.UNAUTHORIZED);
         done();
@@ -136,20 +150,49 @@ describe('Authorization: Keyrock PDP', () => {
     beforeEach(() => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(2).reply(StatusCodes.OK, {});
       idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
+        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=GET&resource=/restricted')
         .reply(StatusCodes.OK, keyrock_permit_response);
     });
     it('should access the user action from cache', (done) => {
       got
-        .get('restricted', request_with_header)
+        .get('restricted', auth_token)
         .then((firstResponse) => {
           should.equal(firstResponse.statusCode, StatusCodes.OK);
-          return got.get('restricted', request_with_header);
+          return got.get('restricted', auth_token);
         })
         .then((secondResponse) => {
           contextBrokerMock.done();
           idmMock.done();
           should.equal(secondResponse.statusCode, StatusCodes.OK);
+          done();
+        });
+    });
+  });
+
+  describe('When the same action on a restricted path multiple times with a bearer token', () => {
+    beforeEach(() => {
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(3).reply(StatusCodes.OK, {});
+      idmMock = nock('http://keyrock.com:3000')
+        .get('/user?access_token=' + longToken + '&app_id=application_id&action=GET&resource=/restricted')
+        .times(2)
+        .reply(StatusCodes.OK, keyrock_permit_response);
+    });
+    it('should access the user action from cache', (done) => {
+      got
+        .get('restricted', bearer_token_long)
+        .then((firstResponse) => {
+          should.equal(firstResponse.statusCode, StatusCodes.OK);
+          return got.get('restricted', bearer_token_long);
+        })
+        .then(async function (secondResponse) {
+          should.equal(secondResponse.statusCode, StatusCodes.OK);
+          await sleep(2000);
+          return got.get('restricted', bearer_token_long);
+        })
+        .then((thitdResponse) => {
+          contextBrokerMock.done();
+          idmMock.done();
+          should.equal(thitdResponse.statusCode, StatusCodes.OK);
           done();
         });
     });
@@ -161,18 +204,18 @@ describe('Authorization: Keyrock PDP', () => {
       contextBrokerMock.post('/restricted').reply(204);
 
       idmMock = nock('http://keyrock.com:3000')
-        .get('/user?access_token=111111111&app_id=application_id&action=GET&resource=/restricted')
+        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=GET&resource=/restricted')
         .reply(StatusCodes.OK, keyrock_permit_response);
       idmMock
-        .get('/user?access_token=111111111&app_id=application_id&action=POST&resource=/restricted')
+        .get('/user?access_token=' + shortToken + '&app_id=application_id&action=POST&resource=/restricted')
         .reply(StatusCodes.OK, keyrock_permit_response);
     });
     it('should not access the user from cache', (done) => {
       got
-        .get('restricted', request_with_header)
+        .get('restricted', auth_token)
         .then((firstResponse) => {
           should.equal(firstResponse.statusCode, StatusCodes.OK);
-          return got.post('restricted', request_with_header_and_body);
+          return got.post('restricted', auth_token_and_body);
         })
         .then((secondResponse) => {
           contextBrokerMock.done();
