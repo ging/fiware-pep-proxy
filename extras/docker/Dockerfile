@@ -9,7 +9,7 @@ ARG BUILDER=node:${NODE_VERSION}
 ARG DISTRO=node:${NODE_VERSION}-slim
 ARG DISTROLESS=gcr.io/distroless/nodejs:${NODE_VERSION}
 ARG PACKAGE_MANAGER=apt
-ARG user=node
+ARG USER=node
 
 ########################################################################################
 #
@@ -159,7 +159,7 @@ FROM ${DISTRO} AS slim
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
-ARG PACKAGE_MANAGER
+ARG USER
 
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
@@ -175,7 +175,7 @@ LABEL "org.nodejs.version"=${NODE_VERSION}
 COPY --from=builder /opt/fiware-pep-proxy /opt/fiware-pep-proxy
 WORKDIR /opt/fiware-pep-proxy
 
-USER ${user}
+USER ${USER}
 ENV NODE_ENV=production
 # Ports used by application
 EXPOSE ${PEP_PROXY_PORT:-1027}
