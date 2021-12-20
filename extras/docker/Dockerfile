@@ -1,8 +1,15 @@
-ARG NODE_VERSION=10
+ARG NODE_VERSION=14
 ARG GITHUB_ACCOUNT=ging
 ARG GITHUB_REPOSITORY=fiware-pep-proxy
 ARG DOWNLOAD=latest
 ARG SOURCE_BRANCH=master
+
+# Default Builder, distro and distroless build version
+ARG BUILDER=node:${NODE_VERSION}
+ARG DISTRO=node:${NODE_VERSION}-slim
+ARG DISTROLESS=gcr.io/distroless/nodejs:${NODE_VERSION}
+ARG PACKAGE_MANAGER=apt
+ARG user=node
 
 ########################################################################################
 #
@@ -21,12 +28,13 @@ ARG SOURCE_BRANCH=master
 # --target=builder
 #
 ######################################################################################## 
-FROM node:${NODE_VERSION} AS builder
+FROM ${BUILDER} AS builder
 ARG TARGET
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG DOWNLOAD
 ARG SOURCE_BRANCH
+ARG PACKAGE_MANAGER
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -38,9 +46,23 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 #
 
 # hadolint ignore=DL3008
+USER root
 RUN \
-	# Ensure that unzip is installed prior to downloading
-	apt-get install -y --no-install-recommends unzip && \
+	# Ensure that the chosen package manger is supported by this Dockerfile
+	# also ensure that unzip is installed prior to downloading sources
+	if [ "${PACKAGE_MANAGER}" = "apt"  ]; then \
+		echo -e "\033[0;34mINFO: Using default \"${PACKAGE_MANAGER}\".\033[0m"; \
+		apt-get install -y --no-install-recommends unzip; \
+	elif [ "${PACKAGE_MANAGER}" = "yum"  ]; then \
+		echo -e "\033[0;33mWARNING: Overriding default package manager. Using \"${PACKAGE_MANAGER}\" .\033[0m"; \
+		yum install -y unzip; \
+		yum clean all; \
+	else \
+	 	echo -e "\033[0;31mERROR: Package Manager \"${PACKAGE_MANAGER}\" not supported.\033[0m"; \
+	 	exit 1; \
+	fi
+
+RUN \
 	if [ "${DOWNLOAD}" = "latest" ] ; \
 	then \
 		RELEASE="${SOURCE_BRANCH}"; \
@@ -64,7 +86,7 @@ WORKDIR /opt/fiware-pep-proxy
 # hadolint ignore=DL3008
 RUN \
 	echo "INFO: npm install --production..." && \
-	npm install --only=prod --no-package-lock --no-optional
+	npm install --only=prod --no-package-lock --no-optional --unsafe-perm
 
 ########################################################################################
 #
@@ -72,7 +94,8 @@ RUN \
 # as defined below.
 #
 ########################################################################################
-FROM node:${NODE_VERSION} AS anon-user
+FROM ${BUILDER} AS anon-user
+USER root
 RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
     && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
 
@@ -90,7 +113,7 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 #
 ########################################################################################
 
-FROM gcr.io/distroless/nodejs:${NODE_VERSION} AS distroless
+FROM ${DISTROLESS} AS distroless
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
@@ -132,10 +155,12 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
 #
 ########################################################################################
 
-FROM node:${NODE_VERSION}-slim AS slim
+FROM ${DISTRO} AS slim
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
+ARG PACKAGE_MANAGER
+
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
 LABEL "org.opencontainers.image.authors"=""
@@ -150,7 +175,7 @@ LABEL "org.nodejs.version"=${NODE_VERSION}
 COPY --from=builder /opt/fiware-pep-proxy /opt/fiware-pep-proxy
 WORKDIR /opt/fiware-pep-proxy
 
-USER node
+USER ${user}
 ENV NODE_ENV=production
 # Ports used by application
 EXPOSE ${PEP_PROXY_PORT:-1027}
