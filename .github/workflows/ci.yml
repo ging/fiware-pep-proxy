@@ -6,6 +6,7 @@ name: CI
     pull_request:
         branches:
             - master
+    workflow_dispatch:
 jobs:
     lint-dockerfile:
         name: Lint Dockerfile
@@ -15,9 +16,9 @@ jobs:
               uses: actions/checkout@v2
             - name: Run Hadolint Dockerfile Linter
               uses: burdzwastaken/hadolint-action@master
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  HADOLINT_ACTION_DOCKERFILE_FOLDER: extras/docker
+              with:
+                  dockerfile: extras/docker
+                  ignore: DL3006 DL3008 DL3033
 
     lint-markdown:
         name: Lint Markdown

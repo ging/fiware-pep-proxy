@@ -45,7 +45,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # COPY . ${TARGET}/
 #
 
-# hadolint ignore=DL3008
+# hadolint ignore=DL3002
 USER root
 RUN \
 	# Ensure that the chosen package manger is supported by this Dockerfile
@@ -95,6 +95,7 @@ RUN \
 #
 ########################################################################################
 FROM ${BUILDER} AS anon-user
+# hadolint ignore=DL3002
 USER root
 RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
     && sed -i -r 's#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd
