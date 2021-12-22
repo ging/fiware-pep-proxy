@@ -43,6 +43,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root
 # Ensure that the chosen package manger is supported by this Dockerfile
 # also ensure that unzip is installed prior to downloading sources
+
+# hadolint ignore=DL3059
 RUN \
 	if [ "${PACKAGE_MANAGER}" = "apt"  ]; then \
 		echo -e "\033[0;34mINFO: Using default \"${PACKAGE_MANAGER}\".\033[0m"; \
@@ -62,7 +64,6 @@ RUN \
 #
 # COPY . ${TARGET}/
 #
-# hadolint ignore=DL3059
 RUN \
 	if [ "${DOWNLOAD}" = "latest" ] ; \
 	then \
