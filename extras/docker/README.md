@@ -32,26 +32,30 @@ sudo docker images
 Now you can run a new container from the image you have just created with:
 
 ```console
-sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-pep-proxy/config.js -p [host_port]:[container_port] pep-proxy-image
+sudo docker run -d --name pep-proxy-container \
+  -v [host_config_file]:/opt/fiware-pep-proxy/config.js \
+  -p [host_port]:[container_port] pep-proxy-image
 ```
 
 Where the different params mean:
 
--   -d indicates that the container runs as a daemon
--   --name is the name of the new container (you can use the name you want)
--   -v stablishes a relation between a local folder (in your host computer) and a container's folder. In this case it is
-    used to pass to the container the configuration file that PEP Proxy needs to work. `host_config_file` has to be the
-    location of a local file with that configuration following the
+-   `-d` indicates that the container runs as a daemon
+-   `--name` is the name of the new container (you can use the name you want)
+-   `-v` stablishes a relation between a local folder (in your host computer) and a container's folder. In this case it
+    is used to pass to the container the configuration file that PEP Proxy needs to work. `host_config_file` has to be
+    the location of a local file with that configuration following the
     [config template](https://github.com/ging/fiware-pep-proxy/blob/master/config.js.template).
--   -p stablishes a relation between a local port and a container's port. You can use the port you want in `host_port`
+-   `-p` stablishes a relation between a local port and a container's port. You can use the port you want in `host_port`
     but `container_port` has to be the same that you have set in `config.app_port` in your config file. If you have set
     `config.https` to `true` you have to use here the HTTPS port.
--   the last param is the name of the image
+-   the final param is the name of the image
 
 Here is an example of this command:
 
 ```console
-sudo docker run -d --name pep-proxy -v /home/root/workspace/fiware-pep-proxy/config.js:/opt/fiware-pep-proxy/config.js -p 80:80 pep-proxy-image
+sudo docker run -d --name pep-proxy \
+   -v /home/root/workspace/fiware-pep-proxy/config.js:/opt/fiware-pep-proxy/config.js \
+   -p 80:80 pep-proxy-image
 ```
 
 Once the container is running you can view the console logs using:
@@ -73,10 +77,44 @@ this case you have only to execute the run command. But now the image name is fi
 is the release you want to use:
 
 ```console
-sudo docker run -d --name pep-proxy-container -v [host_config_file]:/opt/fiware-pep-proxy/config.js -p [host_port]:[container_port] fiware/pep-proxy
+sudo docker run -d --name pep-proxy-container \
+   -v [host_config_file]:/opt/fiware-pep-proxy/config.js \
+   -p [host_port]:[container_port] fiware/pep-proxy
 ```
 
 > **Note** If you do not specify a version you are pulling from `latest` by default.
+
+## Building using an alternative sources and Linux Distros
+
+The `Dockerfile` is flexible enough to be able to use
+[alternative base images](https://kuberty.io/blog/best-os-for-docker/) should you wish. The base image defaults to using
+the `node:slim` distro, but other base images can be injected using `--build-arg` parameters on the commmand line. For
+example, to create a container based on
+[Red Hat UBI (Universal Base Image) 8](https://developers.redhat.com/articles/2021/11/08/optimize-nodejs-images-ubi-8-nodejs-minimal-image)
+add `BUILDER`, `DISTRO`, `PACKAGE_MANAGER` and `USER` parameters as shown:
+
+```console
+sudo docker build -t pep-proxy \
+  --build-arg BUILDER=registry.access.redhat.com/ubi8/nodejs-14 \
+  --build-arg DISTRO=registry.access.redhat.com/ubi8/nodejs-14-minimal \
+  --build-arg PACKAGE_MANAGER=yum \
+  --build-arg USER=1001 . --no-cache
+```
+
+Currently, the following `--build-arg` parameters are supported:
+
+| Parameter           | Description                                                                                                                                                                                                                                                                             |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BUILDER`           | Preferred [linux distro](https://kuberty.io/blog/best-os-for-docker/) to use whilst building the image, defaults to `node:${NODE_VERSION}`                                                                                                                                              |
+| `DISTRO`            | Preferred [linux distro](https://kuberty.io/blog/best-os-for-docker/) to use for the final container image, defaults to `node:${NODE_VERSION}-slim`                                                                                                                                     |
+| `DISTROLESS`        | Preferred [Distroless Image](https://betterprogramming.pub/how-to-harden-your-containers-with-distroless-docker-images-c2abd7c71fdb) to use for the final container. Distroless images can be built using `-target=distroless` , defaults to `gcr.io/distroless/nodejs:${NODE_VERSION}` |
+| `DOWNLOAD`          | The GitHub SHA or tag to download - defaults to `latest`                                                                                                                                                                                                                                |
+| `GITHUB_ACCOUNT`    | The GitHub Action to download the source files from, defaults to `ging`                                                                                                                                                                                                                 |
+| `GITHUB_REPOSITORY` | The name of the GitHub repository to download the source files from, defaults to `fiware-pep-proxy`                                                                                                                                                                                     |
+| `NODE_VERSION`      | the version of Node.js to use                                                                                                                                                                                                                                                           |
+| `PACKAGE_MANAGER`   | Package manager to use whilst creating the build, defaults to `apt`                                                                                                                                                                                                                     |
+| `SOURCE_BRANCH`     | The GitHub repository branch to download the source files from, defaults to `master`                                                                                                                                                                                                    |
+| `USER`              | User in the final container image, defaults to `node`                                                                                                                                                                                                                                   |
 
 ### Docker Environment Variables
 
