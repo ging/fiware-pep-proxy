@@ -15,9 +15,9 @@ jobs:
             - name: Git checkout
               uses: actions/checkout@v2
             - name: Run Hadolint Dockerfile Linter
-              uses: burdzwastaken/hadolint-action@master
+              uses: hadolint/hadolint-action@master
               with:
-                  dockerfile: extras/docker
+                  dockerfile: extras/docker/Dockerfile
                   ignore: DL3006 DL3008 DL3033
 
     lint-markdown:
