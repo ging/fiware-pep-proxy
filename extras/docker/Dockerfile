@@ -38,18 +38,12 @@ ARG PACKAGE_MANAGER
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# As an Alternative for local development, just copy this Dockerfile into file the root of 
-# the repository and replace the whole RUN statement below by the following COPY statement 
-# in your local source using :
-#
-# COPY . ${TARGET}/
-#
 
 # hadolint ignore=DL3002
 USER root
+# Ensure that the chosen package manger is supported by this Dockerfile
+# also ensure that unzip is installed prior to downloading sources
 RUN \
-	# Ensure that the chosen package manger is supported by this Dockerfile
-	# also ensure that unzip is installed prior to downloading sources
 	if [ "${PACKAGE_MANAGER}" = "apt"  ]; then \
 		echo -e "\033[0;34mINFO: Using default \"${PACKAGE_MANAGER}\".\033[0m"; \
 		apt-get install -y --no-install-recommends unzip; \
@@ -62,6 +56,13 @@ RUN \
 	 	exit 1; \
 	fi
 
+# As an Alternative for local development, just copy this Dockerfile into file the root of 
+# the repository and replace the whole RUN statement below by the following COPY statement 
+# in your local source using :
+#
+# COPY . ${TARGET}/
+#
+# hadolint ignore=DL3059
 RUN \
 	if [ "${DOWNLOAD}" = "latest" ] ; \
 	then \
