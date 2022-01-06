@@ -101,6 +101,17 @@ sudo docker build -t pep-proxy \
   --build-arg USER=1001 . --no-cache
 ```
 
+To create a container based on [Alpine Linux](https://alpinelinux.org/about/) add `BUILDER`, `DISTRO`, `PACKAGE_MANAGER`
+and `USER` parameters as shown:
+
+```console
+docker build -t pep-proxy \
+  --build-arg BUILDER=node:16-alpine \
+  --build-arg DISTRO=node:16-alpine \
+  --build-arg PACKAGE_MANAGER=apk . \
+  --build-arg USER=406 . --no-cache
+```
+
 Currently, the following `--build-arg` parameters are supported:
 
 | Parameter           | Description                                                                                                                                                                                                                                                                             |

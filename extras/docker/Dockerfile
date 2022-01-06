@@ -36,9 +36,6 @@ ARG DOWNLOAD
 ARG SOURCE_BRANCH
 ARG PACKAGE_MANAGER
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-
 # hadolint ignore=DL3002
 USER root
 # Ensure that the chosen package manger is supported by this Dockerfile
@@ -53,6 +50,9 @@ RUN \
 		echo -e "\033[0;33mWARNING: Overriding default package manager. Using \"${PACKAGE_MANAGER}\" .\033[0m"; \
 		yum install -y unzip; \
 		yum clean all; \
+	elif [ "${PACKAGE_MANAGER}" = "apk"  ]; then \
+		echo -e "\033[0;33mWARNING: Overriding default package manager. Using \"${PACKAGE_MANAGER}\" .\033[0m"; \
+		apk --no-cache --update-cache add gcc python3 python3-dev py-pip build-base wget curl; \
 	else \
 	 	echo -e "\033[0;31mERROR: Package Manager \"${PACKAGE_MANAGER}\" not supported.\033[0m"; \
 	 	exit 1; \
@@ -178,6 +178,7 @@ LABEL "org.nodejs.version"=${NODE_VERSION}
 COPY --from=builder /opt/fiware-pep-proxy /opt/fiware-pep-proxy
 WORKDIR /opt/fiware-pep-proxy
 
+# Node by default, use 406 for Alpine, 1001 for UBI,
 USER ${USER}
 ENV NODE_ENV=production
 # Ports used by application
