@@ -79,7 +79,7 @@ RUN \
 	fi && \
 	RELEASE_CONCAT=$(echo "${RELEASE}" | tr / -); \
 	curl -s -L https://github.com/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/archive/"${RELEASE}".zip > source.zip && \
-	unzip source.zip -x "*/test/**" "*/sanity/**" "*/extras/**" "*/doc/**" "*/.*" && \
+	unzip source.zip -x "*/.github/**" "*/test/**" "*/sanity/**" "*/extras/**" "*/signatures/**" "*/doc/**" "*/.*" && \
 	rm source.zip && \
 	mv "${GITHUB_REPOSITORY}-${RELEASE_CONCAT}" /opt/fiware-pep-proxy
 
@@ -176,6 +176,7 @@ LABEL "org.opencontainers.image.source"=https://github.com/${GITHUB_ACCOUNT}/${G
 LABEL "org.nodejs.version"=${NODE_VERSION}
 
 COPY --from=builder /opt/fiware-pep-proxy /opt/fiware-pep-proxy
+COPY --from=builder /opt/fiware-pep-proxy/LICENSE /licenses/LICENSE
 WORKDIR /opt/fiware-pep-proxy
 
 # Node by default, use 406 for Alpine, 1001 for UBI,
