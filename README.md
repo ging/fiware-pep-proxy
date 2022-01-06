@@ -69,6 +69,14 @@ config.app_port = '80'; // Port where the HTTP server is running
 sudo npm start
 ```
 
+> **ATTENTION!!!**
+
+> There is an existing security exploit in all versions older than 2.15 of Log4J. Although not using this software
+> currently, the older 7.x.x versions of PEP-Proxy used to use Log4j for logging. Prior to the release 8.0.0, older
+> versions of this software were affected by this exploit as well. Logging was updated to use Debug and Morgan in
+> March 2021. We released a new version 8.0.0 on dockerhub. Also latest is updated already. If still using 7.x.x please
+> update as soon as possible.
+
 ### Docker
 
 We also provide a Docker image to facilitate you the building of this GE.
