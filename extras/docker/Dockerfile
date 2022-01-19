@@ -122,6 +122,10 @@ ARG GITHUB_REPOSITORY
 ARG NODE_VERSION
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "description"="Support for proxy functions within OAuth2-based authentication schemas. Also implements PEP functions within an XACML-based access control schema."
+LABEL "name"="pep-proxy"
+LABEL "summary"="PEP Proxy - Wilma (Distroless)"
+
 LABEL "org.opencontainers.image.authors"=""
 LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
 LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
@@ -166,6 +170,10 @@ ARG USER
 
 
 LABEL "maintainer"="FIWARE Identity Manager Team. DIT-UPM"
+LABEL "description"="Support for proxy functions within OAuth2-based authentication schemas. Also implements PEP functions within an XACML-based access control schema."
+LABEL "name"="pep-proxy"
+LABEL "summary"="PEP Proxy - Wilma"
+
 LABEL "org.opencontainers.image.authors"=""
 LABEL "org.opencontainers.image.documentation"="https://fiware-idm.readthedocs.io/"
 LABEL "org.opencontainers.image.vendor"="Universidad Politécnica de Madrid."
