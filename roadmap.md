@@ -11,38 +11,19 @@ order given. The development team will be doing their best to follow the propose
 in mind that plans to work on a given feature or task may be revised. All information is provided as a general
 guidelines only, and this section may be revised to provide newer information at any time.
 
-## Short term
+## Short and medium term
 
-The following list of features are planned to be addressed in the short term, and incorporated in the next release of
-the product:
+The following list of features are planned to be addressed in the short/medium term, and incorporated in the next releases of
+the GE:
 
--   There are no new features planned for the next release.
-
--   OpenID Connect: Keyrock GE will implement support to OpenID Connect for creating _id_tokens_. Wilma will support
-    these tokens for validating users identity.
-
-## Medium term
-
-The following list of features are planned to be addressed in the medium term, typically within the subsequent
-release(s) generated in the next 9 months after next planned release:
-
--   Unit tests: to be run in CI
+-   Support to multiple PDP
 
 -   Integration with Alastria identity, Hyperledger Indy: for supporting blockchain-based authentication mechanisms.
-
--   Integration with Context Broker Service Path: to support a better integration of authorization mechanisms with
-    Context Broker, requests will take into account the CB service path in HTTP headers.
 
 ## Long term
 
 The following list of features are proposals regarding the longer-term evolution of the product even though development
 of these features has not yet been scheduled for a release in the near future. Please feel free to contact us if you
 wish to get involved in the implementation or influence the roadmap
-
--   Integration with API management tools: in the same way the logic of Wilma is available in API Umbrella, the
-    implementation in other tools such us KONG and/or Proxy42 will be studied.
-
--   COAP compatibility: supporting this protocol as an alternative of HTTP could improve the performance of IoT devices
-    authentication process.
 
 -   Analysis/Improvement Keyrock Production performance
