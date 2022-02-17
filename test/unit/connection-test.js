@@ -38,7 +38,7 @@ const config = {
   public_paths: [],
   authorization: {
     enabled: true,
-    pdp: 'azf',
+    type: 'azf',
     azf: {
       protocol: 'http',
       host: 'authzforce.com',

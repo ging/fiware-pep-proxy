@@ -170,7 +170,7 @@ const config = {
   public_paths: ['/public'],
   authorization: {
     enabled: true,
-    pdp: 'ishare', // idm|iShare|xacml|authzforce|opa|azf
+    type: 'ishare', // idm|iShare|xacml|authzforce|opa|azf
     header: 'fiware-service',
     ishare: {
       protocol: 'http',

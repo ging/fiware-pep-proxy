@@ -113,7 +113,7 @@ const config = {
   public_paths: [],
   authorization: {
     enabled: true,
-    pdp: 'xacml', // idm|iShare|xacml|authzforce|opa|azf
+    type: 'xacml', // idm|iShare|xacml|authzforce|opa|azf
     header: 'fiware-service',
     xacml: {
       protocol: 'http',

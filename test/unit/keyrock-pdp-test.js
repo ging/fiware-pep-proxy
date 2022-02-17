@@ -85,7 +85,7 @@ const config = {
   public_paths: [],
   authorization: {
     enabled: true,
-    pdp: 'idm' // idm|iShare|xacml|authzforce|opa|azf
+    type: 'idm' // idm|iShare|xacml|authzforce|opa|azf
   }
 };
 
