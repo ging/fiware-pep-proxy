@@ -1,20 +1,25 @@
-const config_service = require('../lib/config_service.js');
-config_service.set_config(require('../config.js'), true);
-const config = config_service.get_config();
-const cors = require('cors');
+#!/usr/bin/env node
 
-const fs = require('fs');
-const https = require('https');
-const Root = require('../controllers/root').Root;
-const IDM = require('../lib/idm.js').IDM;
+/*
+ * Copyright 2021 -  Universidad Politécnica de Madrid.
+ *
+ * This file is part of PEP-Proxy
+ *
+ */
+
+const config_service = require('../lib/config_service');
+config_service.set_config(require('../config'), true);
+const config = config_service.get_config();
+const IDM = require('../lib/pdp/keyrock');
+const app = require('../app');
+const Authorize = require('../lib/authorization_functions');
 const errorhandler = require('errorhandler');
 
 config.azf = config.azf || {};
 config.https = config.https || {};
 
-const logger = require('morgan');
-const debug = require('debug')('pep-proxy:app');
-const express = require('express');
+const debug = require('debug')('pep-proxy:www');
+
 const os = require('os');
 const cluster = require('cluster');
 const clusterWorkerSize = os.cpus().length;
@@ -24,88 +29,60 @@ process.on('uncaughtException', function (err) {
 });
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-let port = config.pep_port || 80;
-if (config.https.enabled) {
-  port = config.https.port || 443;
-}
-
-function start_server() {
-  const app = express();
-
-  // Set logs in development
-  if (config.debug) {
-    app.use(logger('dev'));
+function logConfig (idm_config) {
+  if (idm_config) {
+    debug('IDM authorization configuration: ' + config.authorization.pdp);
+    debug(' + Authzforce enabled: ' + idm_config.authzforce);
+    switch (idm_config.level) {
+      case 'payload':
+        debug(' + Authorization rules allowed: HTTP Verb+Resource and Payload');
+        break;
+      case 'advanced':
+        debug(' + Authorization rules allowed: HTTP Verb+Resource and Advanced');
+        break;
+      default:
+        debug(' + Authorization rules allowed: HTTP Verb+Resource');
+        break;
+    }
   }
+};
 
-  app.use(function (req, res, next) {
-    const bodyChunks = [];
-    req.on('data', function (chunk) {
-      bodyChunks.push(chunk);
-    });
 
-    req.on('end', function () {
-      if (bodyChunks.length > 0) {
-        req.body = Buffer.concat(bodyChunks);
-      }
-      next();
-    });
-  });
-
-  app.disable('x-powered-by');
-  app.use(errorhandler({ log: debug }));
-  app.use(cors(config.cors));
-  app.set('port', port);
-
-  for (const p in config.public_paths) {
-    debug('Public paths', config.public_paths[p]);
-    app.all(config.public_paths[p], Root.public);
-  }
-
-  app.all('/*', Root.pep);
-
-  if (config.https.enabled === true) {
-    const options = {
-      key: fs.readFileSync(config.https.key_file),
-      cert: fs.readFileSync(config.https.cert_file)
-    };
-
-    https
-      .createServer(options, function (req, res) {
-        app.handle(req, res);
-      })
-      .listen(app.get('port'));
-  } else {
-    app.listen(app.get('port'));
-  }
-}
-
+/**
+ * Check that the IDM is responding and the PEP is recognized within the IDM
+ * @return an auth token representing the PEP itself to be used in subsequent requests
+ */
 function connect() {
   let retry = 20;
   return new Promise((resolve, reject) => {
-    const connect_with_retry = () => {
-      IDM.authenticate(
-        (token) => {
-          debug('Success authenticating PEP proxy.');
-          resolve(token);
-        },
-        (status, e) => {
-          debug('Error in IDM communication', e);
-          retry--;
-          if (retry === 0) {
-            reject(e);
-          } else {
-            debug('retry after 5 seconds.');
-            //eslint-disable-next-line snakecase/snakecase
-            setTimeout(connect_with_retry, 5000);
-          }
+    const connect_with_retry = async () => {
+      try {
+        await IDM.checkConnectivity();
+        debug('IDM is now available  - requesting PEP authentication');
+
+        IDM.authenticatePEP()
+          .then((response) => {
+            logConfig(response.config);
+            return resolve(response.pepToken);
+          })
+          .catch((error) => {
+            return reject('IDM rejected PEP authentication: ' + error.message);
+          });
+      } catch (e) {
+        debug(e.message);
+        retry--;
+        if (retry === 0) {
+          return reject('IDM is not available. Giving up after 20 attempts');
         }
-      );
+        debug('retry after 5 seconds.');
+        //eslint-disable-next-line snakecase/snakecase
+        setTimeout(connect_with_retry, 5000);
+      }
     };
     connect_with_retry();
   });
 }
 
-debug('Starting PEP proxy in port ' + port + '. IdM authentication ...');
 connect().then(
   (token) => {
     debug('Success authenticating PEP proxy. Proxy Auth-token: ', token);
@@ -115,14 +92,14 @@ connect().then(
           cluster.fork();
         }
       } else {
-        start_server();
+        app.start_server(token, config);
       }
     } else {
-      start_server();
+      app.start_server(token,config);
     }
   },
   (err) => {
-    debug('Error found after [%d] attempts: %s', 20, err);
+    debug(err);
     process.exit(1);
   }
 );

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const config = {};
 
 // Used only if https is disabled
@@ -52,11 +53,15 @@ config.cache_time = 300;
 
 config.authorization = {
   enabled: false,
-  pdp: 'idm', // idm|authzforce
-  azf: {
+  pdp: 'idm', // idm|iShare|xacml|authzforce
+  header: undefined, // NGSILD-Tenant|fiware-service
+  pdp: {
     protocol: 'http',
     host: 'localhost',
     port: 8080,
+    path: '' 
+  },
+  azf: {
     custom_policy: undefined, // use undefined to default policy checks (HTTP verb + path).
   },
 };
@@ -75,5 +80,12 @@ config.public_paths = [];
 
 config.magic_key = undefined;
 config.auth_for_nginx =  false;
+
+config.error_template = `{
+    "type": "{{type}}",
+    "title": "{{title}}",
+    "detail": "{{message}}"
+  }`;
+config.error_content_type = "application/json";
 
 module.exports = config;

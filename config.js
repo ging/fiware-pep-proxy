@@ -8,24 +8,24 @@ config.https = {
   enabled: false,
   cert_file: 'cert/cert.crt',
   key_file: 'cert/key.key',
-  port: 443,
+  port: 443
 };
 
 config.idm = {
   host: 'localhost',
   port: 3005,
-  ssl: false,
+  ssl: false
 };
 
 config.app = {
   host: 'www.fiware.org',
   port: '80',
-  ssl: false, // Use true if the app server listens in https
+  ssl: false // Use true if the app server listens in https
 };
 
 config.organizations = {
   enabled: false,
-  header: 'fiware-service',
+  header: 'fiware-service'
 };
 
 // Credentials obtained when registering PEP Proxy in app_id in Account Portal
@@ -34,9 +34,9 @@ config.pep = {
   username: '',
   password: '',
   token: {
-    secret: '', // Secret must be configured in order validate a jwt
+    secret: '' // Secret must be configured in order validate a jwt
   },
-  trusted_apps: [],
+  trusted_apps: []
 };
 
 // in seconds
@@ -52,18 +52,21 @@ config.cache_time = 300;
 
 config.authorization = {
   enabled: false,
-  pdp: 'idm', // idm|authzforce
+  pdp: 'idm', // idm|iShare|xacml|authzforce|opa|azf
+  header: undefined, // NGSILD-Tenant|fiware-service
   azf: {
+    // iShare|xacml|authzforce|opa|azf
     protocol: 'http',
     host: 'localhost',
     port: 8080,
-    custom_policy: undefined, // use undefined to default policy checks (HTTP verb + path).
-  },
+    path: '',
+    custom_policy: undefined // use undefined to default policy checks (HTTP verb + path).
+  }
 };
 
 config.cors = {
-  origin: "*",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
   optionsSuccessStatus: 204,
   credentials: true
@@ -75,5 +78,12 @@ config.public_paths = [];
 
 config.magic_key = undefined;
 config.auth_for_nginx = false;
+
+config.error_template = `{
+    "type": "{{type}}",
+    "title": "{{title}}",
+    "detail": "{{message}}"
+  }`;
+config.error_content_type = 'application/json';
 
 module.exports = config;
