@@ -78,7 +78,7 @@ const config = {
     enabled: false,
     pdp: 'idm', // idm|iShare|xacml|authzforce|opa|azf
     header: undefined, // NGSILD-Tenant|fiware-service
-    azf: {
+    location: {
       protocol: 'http',
       host: 'localhost',
       port: 8080,

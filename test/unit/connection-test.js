@@ -39,7 +39,7 @@ const config = {
   authorization: {
     enabled: true,
     pdp: 'azf',
-    azf: {
+    location: {
       protocol: 'http',
       host: 'authzforce.com',
       port: 8080,

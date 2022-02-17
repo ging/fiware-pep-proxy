@@ -146,7 +146,7 @@ const config = {
     enabled: true,
     pdp: 'opa', // idm|iShare|xacml|authzforce|opa|azf
     header: 'fiware-service',
-    opa: {
+    location: {
       protocol: 'http',
       host: 'openpolicyagent.com',
       port: 8080,

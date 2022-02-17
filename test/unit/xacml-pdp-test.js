@@ -115,7 +115,7 @@ const config = {
     enabled: true,
     pdp: 'xacml', // idm|iShare|xacml|authzforce|opa|azf
     header: 'fiware-service',
-    xacml: {
+    location: {
       protocol: 'http',
       host: 'xacml.com',
       port: 8080,

@@ -172,7 +172,7 @@ const config = {
     enabled: true,
     pdp: 'ishare', // idm|iShare|xacml|authzforce|opa|azf
     header: 'fiware-service',
-    ishare: {
+    location: {
       protocol: 'http',
       host: 'ishare.org',
       port: 8080
