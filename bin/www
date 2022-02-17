@@ -22,7 +22,7 @@ const debug = require('debug')('pep-proxy:www');
 
 const os = require('os');
 const cluster = require('cluster');
-const clusterWorkerSize = os.cpus().length;
+const clusterWorkerSize = (config.cluster.type === 'manual') ? config.cluster.number : os.cpus().length;
 
 process.on('uncaughtException', function (err) {
   debug('Caught exception: ' + err);

@@ -264,7 +264,7 @@ describe('Authorization: Keyrock PDP', () => {
       contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').times(3).reply(StatusCodes.OK, {});
       idmMock = nock('http://keyrock.com:3000')
         .get('/user?access_token=' + jwt + '&app_id=application_id&action=GET&resource=/restricted')
-        .times(2)
+        .times(1)
         .reply(StatusCodes.OK, keyrock_permit_response);
     });
     it('should access the user action from cache', (done) => {
