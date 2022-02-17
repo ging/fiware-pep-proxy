@@ -68,7 +68,7 @@ const config = {
   public_paths: ['/public'],
   authorization: {
     enabled: false,
-    type: 'idm', // idm|iShare|xacml|authzforce|opa|azf
+    pdp: 'idm', // idm|iShare|xacml|authzforce|opa|azf
     header: undefined, // NGSILD-Tenant|fiware-service
     azf: {
       protocol: 'http',

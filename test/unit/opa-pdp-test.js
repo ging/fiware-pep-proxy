@@ -144,7 +144,7 @@ const config = {
   public_paths: [],
   authorization: {
     enabled: true,
-    type: 'opa', // idm|iShare|xacml|authzforce|opa|azf
+    pdp: 'opa', // idm|iShare|xacml|authzforce|opa|azf
     header: 'fiware-service',
     opa: {
       protocol: 'http',
