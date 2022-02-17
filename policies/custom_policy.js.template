@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* 
 Params
 	roles: Array with the list of roles the user has inside app_id

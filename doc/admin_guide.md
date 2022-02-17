@@ -76,19 +76,31 @@ you have to first register an application. The steps can be found
 [here](https://fiware-idm.readthedocs.io/en/latest/user_and_programmers_guide/application_guide/index.html#register-pep-proxy-and-iot-agents).
 
 You can also configure Pep Proxy to validate authorization in your application
-([levels 2 and 3 of authorization](user_guide.md#level-2-basic-authorization)). If enabled PEP checks permissions in two
-ways:
+([levels 2 and 3 of authorization](user_guide.md#level-2-basic-authorization)). If enabled PEP checks permissions in
+multiple ways:
 
 -   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): only allow basic
     authorization
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute
+    level authorization requests in iShare format.
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute
+    level authorization requests in
+    [XACML 3.0 JSON](https://docs.oasis-open.org/xacml/xacml-json-http/v1.0/xacml-json-http-v1.0.html) format.
+-   With [Keyrock Identity Manager](https://github.com/Fiware/catalogue/tree/master/security#keyrock): payload attribute
+    level authorization requests in [Open Policy Agent](https://www.openpolicyagent.org/) format.
 -   With [Authzforce Authorization PDP](https://github.com/Fiware/catalogue/tree/master/security#authzforce): allow
     basic and advanced authorization. For advanced authorization, you can use custom policy checks by including
     programatic scripts in policies folder. An script template is included there.
 
+The `config.authorization.header` can be passed to Keyrock IDM to reduce permissions to a single tenant and if used
+should correspond to the tenant header (`NGSILD-Tenant` or `fiware-service`) when authorizing a multi-tenant system such
+as FIWARE
+
 ```javascript
 config.authorization = {
     enabled: false,
-    pdp: 'idm', // idm|authzforce
+    pdp: 'idm', // idm|iShare|xacml|authzforce|opa
+    header: undefined,
     azf: {
         protocol: 'http',
         host: 'localhost',
@@ -283,13 +295,18 @@ These are the parameters that can be configured in the global section:
 
 -   **pep_port**: Port to use if HTTPS is disabled
 -   **https**: HTTPS configuration. Disable or leave undefined if you are testing without an HTTPS certificate
+-   **error_template**: A [Handlebars](https://handlebarsjs.com/) template defining the format of an error message
+    payload
+-   **error_content_type**: The content-type header of the error message
 
 ```json
 {
     "enabled": false,
     "cert_file": "cert/cert.crt",
     "key_file": "cert/key.key",
-    "port": 443
+    "port": 443,
+    "error_template" : "{\"type\": \"{{type}}\", \"title\": \"{{title}}\", \"detail\": \"{{message}}\"}",
+    "error_content_type" "application/json"
 }
 ```
 
@@ -415,39 +432,45 @@ with container-based technologies, like Docker, Heroku, etc...
 The following table shows the accepted environment variables, as well as the configuration parameter the variable
 overrides.
 
-| Environment variable                  | Configuration attribute           |
-| :------------------------------------ | :-------------------------------- |
-| PEP_PROXY_PORT                        | `pep_port`                        |
-| PEP_PROXY_HTTPS_ENABLED               | `https`                           |
-| PEP_PROXY_HTTPS_PORT                  | `https.port`                      |
-| PEP_PROXY_IDM_HOST                    | `idm.host`                        |
-| PEP_PROXY_IDM_PORT                    | `idm.port`                        |
-| PEP_PROXY_IDM_SSL_ENABLED             | `idm.ssl`                         |
-| PEP_PROXY_APP_HOST                    | `app.host`                        |
-| PEP_PROXY_APP_PORT                    | `app.port`                        |
-| PEP_PROXY_APP_SSL_ENABLED             | `app.ssl`                         |
-| PEP_PROXY_ORG_ENABLED                 | `organizations.enabled`           |
-| PEP_PROXY_ORG_HEADER                  | `organizations.header`            |
-| PEP_PROXY_APP_ID                      | `pep.app_id`                      |
-| PEP_PROXY_USERNAME                    | `pep.username`                    |
-| PEP_PROXY_PASSWORD                    | `pep.password`                    |
-| PEP_PROXY_TOKEN_SECRET                | `pep.token`                       |
-| PEP_PROXY_TRUSTED_APPS                | `pep.trusted_apps`                |
-| PEP_PROXY_AUTH_ENABLED                | `authorization.enabled`           |
-| PEP_PROXY_PDP                         | `authorization.pdp`               |
-| PEP_PROXY_AZF_PROTOCOL                | `authorization.azf.protocol`      |
-| PEP_PROXY_AZF_HOST                    | `authorization.azf.host`          |
-| PEP_PROXY_AZF_PORT                    | `authorization.azf.port`          |
-| PEP_PROXY_AZF_CUSTOM_POLICY           | `authorization.azf.custom_policy` |
-| PEP_PROXY_PUBLIC_PATHS                | `public_path`                     |
-| PEP_PROXY_CORS_ORIGIN                 | `cors.origin`                     |
-| PEP_PROXY_CORS_METHODS                | `cors.methods`                    |
-| PEP_PROXY_CORS_OPTIONS_SUCCESS_STATUS | `cors.optionsSuccessStatus`       |
-| PEP_PROXY_CORS_ALLOWED_HEADERS        | `cors.allowedHeaders`             |
-| PEP_PROXY_CORS_CREDENTIALS            | `cors.credentials`                |
-| PEP_PROXY_CORS_MAX_AGE                | `cors.maxAge`                     |
-| PEP_PROXY_AUTH_FOR_NGINX              | `config.auth_for_nginx`           |
+| Environment variable                  | Configuration attribute           | Notes                                       |     |
+| :------------------------------------ | :-------------------------------- | ------------------------------------------- | --- |
+| PEP_PROXY_PORT                        | `pep_port`                        |                                             |
+| PEP_PROXY_HTTPS_ENABLED               | `https`                           |                                             |
+| PEP_PROXY_HTTPS_PORT                  | `https.port`                      |                                             |
+| PEP_PROXY_IDM_HOST                    | `idm.host`                        |                                             |
+| PEP_PROXY_IDM_PORT                    | `idm.port`                        |                                             |
+| PEP_PROXY_IDM_SSL_ENABLED             | `idm.ssl`                         |                                             |
+| PEP_PROXY_APP_HOST                    | `app.host`                        |                                             |
+| PEP_PROXY_APP_PORT                    | `app.port`                        |                                             |
+| PEP_PROXY_APP_SSL_ENABLED             | `app.ssl`                         |                                             |
+| PEP_PROXY_ORG_ENABLED                 | `organizations.enabled`           |                                             |
+| PEP_PROXY_ORG_HEADER                  | `organizations.header`            |                                             |
+| PEP_PROXY_APP_ID                      | `pep.app_id`                      |                                             |
+| PEP_PROXY_USERNAME                    | `pep.username`                    |                                             |
+| PEP_PROXY_PASSWORD                    | `pep.password`                    |                                             |
+| PEP_PROXY_TOKEN_SECRET                | `pep.token`                       |                                             |
+| PEP_PROXY_TRUSTED_APPS                | `pep.trusted_apps`                |                                             |
+| PEP_PROXY_AUTH_ENABLED                | `authorization.enabled`           |                                             |
+| PEP_PROXY_PDP                         | `authorization.pdp`               |                                             |
+| PEP_PROXY_PDP_PROTOCOL                | `authorization.pdp.protocol`      |                                             |
+| PEP_PROXY_PDP_HOST                    | `authorization.pdp.host`          |                                             |
+| PEP_PROXY_PDP_PORT                    | `authorization.pdp.port`          |                                             |
+| PEP_PROXY_PDP_PATH                    | `authorization.pdp.path`          |                                             |
+| PEP_PROXY_TENANT_HEADER               | `authorization.header`            |                                             |
+| PEP_PROXY_AZF_PROTOCOL                | `authorization.azf.protocol`      | **deprecated** use `PEP_PROXY_PDP_PROTOCOL` |
+| PEP_PROXY_AZF_HOST                    | `authorization.azf.host`          | **deprecated** use `PEP_PROXY_PDP_HOST`     |
+| PEP_PROXY_AZF_PORT                    | `authorization.azf.port`          | **deprecated** use `PEP_PROXY_PDP_PORT`     |
+| PEP_PROXY_AZF_CUSTOM_POLICY           | `authorization.azf.custom_policy` |                                             |
+| PEP_PROXY_PUBLIC_PATHS                | `public_path`                     |                                             |
+| PEP_PROXY_CORS_ORIGIN                 | `cors.origin`                     |                                             |
+| PEP_PROXY_CORS_METHODS                | `cors.methods`                    |                                             |
+| PEP_PROXY_CORS_OPTIONS_SUCCESS_STATUS | `cors.optionsSuccessStatus`       |                                             |
+| PEP_PROXY_CORS_ALLOWED_HEADERS        | `cors.allowedHeaders`             |                                             |
+| PEP_PROXY_CORS_CREDENTIALS            | `cors.credentials`                |                                             |
+| PEP_PROXY_CORS_MAX_AGE                | `cors.maxAge`                     |                                             |
+| PEP_PROXY_AUTH_FOR_NGINX              | `config.auth_for_nginx`           |                                             |
 | PEP_PROXY_MAGIC_KEY                   | `config.magic_key`                |
+| PEP_PROXY_ERROR_TEMPLATE              | `config.error_template`           |
 
 Note:
 
