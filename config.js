@@ -2,7 +2,7 @@
 const config = {};
 
 // Used only if https is disabled
-config.pep_port = 3001;
+config.pep_port = 3003;
 
 // Set this var to undefined if you don't want the server to listen on HTTPS
 config.https = {
@@ -52,10 +52,10 @@ config.cache_time = 300;
 //  This is only compatible with oauth2 tokens engine
 
 config.authorization = {
-  enabled: false,
+  enabled: true,
   pdp: 'idm', // idm|iShare|xacml|authzforce
   header: undefined, // NGSILD-Tenant|fiware-service
-  pdp: {
+  location: {
     protocol: 'http',
     host: 'localhost',
     port: 8080,

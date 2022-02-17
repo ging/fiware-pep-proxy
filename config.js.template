@@ -55,7 +55,7 @@ config.authorization = {
   enabled: false,
   pdp: 'idm', // idm|iShare|xacml|authzforce
   header: undefined, // NGSILD-Tenant|fiware-service
-  pdp: {
+  location: {
     protocol: 'http',
     host: 'localhost',
     port: 8080,
