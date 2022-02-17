@@ -32,6 +32,7 @@ jobs:
                   node-version: 12.x
             - name: Run Remark Markdown Linter
               run: |
+                  CXXFLAGS="--std=c++14"
                   npm install
                   npm run lint:md
             - name: Run Textlint Markdown Linter
@@ -49,6 +50,7 @@ jobs:
                   node-version: 12.x
             - name: Run EsLint Node.js Linter
               run: |
+                  CXXFLAGS="--std=c++14"
                   npm install
                   npm run lint
 
@@ -60,6 +62,7 @@ jobs:
                 node-version:
                     - 12.x
                     - 14.x
+                    - 16.x
         steps:
             - name: Git checkout
               uses: actions/checkout@v2
@@ -69,6 +72,11 @@ jobs:
                   node-version: "${{ matrix.node-version }}"
             - name: "Unit Tests with Node.js ${{ matrix.node-version }}"
               run: |
+                  docker network create --driver=bridge my-network
+                  docker run -d -h mysql --net=my-network  -p 3306:3306 --name mysql -v $(pwd)/test/mysql-data:/docker-entrypoint-initdb.d/:ro -e MYSQL_ROOT_PASSWORD=test  mysql:5.7
+                  docker run -d --net=my-network -p 3000:3000 --name keyrock -e IDM_DB_USER=root -e IDM_DB_PASS=test -e IDM_DB_HOST=mysql -e IDM_DB_PORT=3306  fiware/idm:8.0.0
+
+                  CXXFLAGS="--std=c++14"
                   npm install
                   npm test
 
@@ -84,6 +92,11 @@ jobs:
               with:
                   node-version: 12.x
             - run: |
+                  docker network create --driver=bridge my-network
+                  docker run -d -h mysql --net=my-network  -p 3306:3306 --name mysql -v $(pwd)/test/mysql-data:/docker-entrypoint-initdb.d/:ro -e MYSQL_ROOT_PASSWORD=test  mysql:5.7
+                  docker run -d --net=my-network -p 3000:3000 --name keyrock -e IDM_DB_USER=root -e IDM_DB_PASS=test -e IDM_DB_HOST=mysql -e IDM_DB_PORT=3306  fiware/idm:8.0.0
+
+                  CXXFLAGS="--std=c++14"
                   npm install
                   npm run test:coverage
             - name: Push to Coveralls
