@@ -53,7 +53,7 @@ config.cache_time = 300;
 
 config.authorization = {
   enabled: false,
-  type: 'idm', // idm|iShare|xacml|authzforce
+  pdp: 'idm', // idm|iShare|xacml|authzforce
   header: undefined, // NGSILD-Tenant|fiware-service
   pdp: {
     protocol: 'http',
