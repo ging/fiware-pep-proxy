@@ -7,11 +7,10 @@
   "bugs": {
     "url": "https://github.com/ging/fiware-pep-proxy/issues"
   },
-  "homepage": "https://fiware-pep-proxy.readthedocs.io/",
+  "homepage": "https://fiware-pep-proxy.readthedocs.io/en/latest/",
   "dependencies": {
-    "debug": "~4.3.3",
     "cors": "^2.8.5",
-    "debug": "~4.1.1",
+    "debug": "^4.3.3",
     "errorhandler": "1.x",
     "escape-html": "1.0.3",
     "express": "4.x",
@@ -59,16 +58,9 @@
     "textlint-rule-terminology": "^2.1.5",
     "textlint-rule-write-good": "^2.0.0"
   },
-  "engines": {
-    "node": ">=12"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ging/fiware-pep-proxy"
-  },
-  "homepage": "https://fiware-pep-proxy.readthedocs.io/en/latest/",
-  "bugs": {
-    "url": "https://github.com/ging/fiware-pep-proxy/issues"
   },
   "contributors": [
     {
