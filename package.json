@@ -79,17 +79,14 @@
     "lint": "eslint . --cache --fix",
     "lint:text": "textlint '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md'",
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
+    "pre-commit": "lint-staged",
     "prettier": "prettier --config .prettierrc.json --write  **/**/*.js **/*.js *.js",
     "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 120 --write --prose-wrap always",
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
     "test": "nyc --reporter=html mocha -- --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit --color true",
     "test:coverage": "nyc --reporter=lcov mocha -- --recursive 'test/**/*.js' --timeout 3000 --ui bdd --exit --color true",
-    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
+    "prepare": "husky install"
   },
   "remarkConfig": {
     "settings": {
