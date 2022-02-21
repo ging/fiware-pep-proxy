@@ -29,13 +29,13 @@
     "node": ">=12"
   },
   "devDependencies": {
-    "coveralls": "^3.1.1",
     "chai": "4.3.4",
+    "coveralls": "^3.1.1",
     "eslint": "^8.6.0",
     "eslint-config-tamia": "^7.2.7",
-    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.0.0",
     "husky": "^7.0.4",
