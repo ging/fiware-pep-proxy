@@ -7,11 +7,10 @@
   "bugs": {
     "url": "https://github.com/ging/fiware-pep-proxy/issues"
   },
-  "homepage": "https://fiware-pep-proxy.readthedocs.io/",
+  "homepage": "https://fiware-pep-proxy.readthedocs.io/en/latest/",
   "dependencies": {
-    "debug": "~4.3.3",
     "cors": "^2.8.5",
-    "debug": "~4.1.1",
+    "debug": "^4.3.3",
     "errorhandler": "1.x",
     "escape-html": "1.0.3",
     "express": "4.x",
@@ -30,13 +29,13 @@
     "node": ">=12"
   },
   "devDependencies": {
-    "coveralls": "^3.1.1",
     "chai": "4.3.4",
+    "coveralls": "^3.1.1",
     "eslint": "^8.6.0",
     "eslint-config-tamia": "^7.2.7",
-    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.0.0",
     "husky": "^7.0.4",
@@ -59,16 +58,9 @@
     "textlint-rule-terminology": "^2.1.5",
     "textlint-rule-write-good": "^2.0.0"
   },
-  "engines": {
-    "node": ">=12"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ging/fiware-pep-proxy"
-  },
-  "homepage": "https://fiware-pep-proxy.readthedocs.io/en/latest/",
-  "bugs": {
-    "url": "https://github.com/ging/fiware-pep-proxy/issues"
   },
   "contributors": [
     {
@@ -87,17 +79,14 @@
     "lint": "eslint . --cache --fix",
     "lint:text": "textlint '*.md' 'doc/*.md' 'doc/**/*.md' 'extras/docker/*.md'",
     "lint:md": "remark -f 'README.md' 'roadmap.md' 'doc' 'extras/docker'",
+    "pre-commit": "lint-staged",
     "prettier": "prettier --config .prettierrc.json --write  **/**/*.js **/*.js *.js",
     "prettier:text": "prettier --parser markdown 'README.md' 'doc/**/*.md' 'extras/docker/*.md'  --tab-width 4 --print-width 120 --write --prose-wrap always",
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
     "test": "nyc --reporter=html mocha -- --recursive 'test/**/*.js' --reporter spec --timeout 3000 --ui bdd --exit --color true",
     "test:coverage": "nyc --reporter=lcov mocha -- --recursive 'test/**/*.js' --timeout 3000 --ui bdd --exit --color true",
-    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
+    "prepare": "husky install"
   },
   "remarkConfig": {
     "settings": {
