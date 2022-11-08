@@ -111,7 +111,7 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 # variable.
 #
 # -  PEP_PROXY_USERNAME
-# -  PEP_PROXY_ASSWORD
+# -  PEP_PROXY_PASSWORD
 # -  PEP_PROXY_TOKEN_SECRET
 #
 ########################################################################################
