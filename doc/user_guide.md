@@ -19,23 +19,23 @@ FIWARE backends.
 
 ## User Guide
 
-The PEP Proxy GE is a backend component, without frontend interface. Therefore there is no need to provide a user guide.
+The PEP Proxy GE is a backend component, without a frontend interface. Therefore there is no need to provide a user guide.
 Please, take into account that this component checks authentication and authorization of users in FIWARE applications.
 To create and manage users and applications and to configure roles and permissions for them, you have to use Identity
 Management GE web interface. Please, check its User Guide in order to know how to proceed.
 
 ### Basic Use Case
 
-The basic use case is an scenario in which you have users of a frontend application that will access resources in a
-backend application. And you want to allow only FIWARE users to access that resources. The steps to setup this
+The basic use case is a scenario in which you have users of a frontend application that will access resources in a
+backend application. And you want to allow only FIWARE users to access that resources. The steps to set up this
 environment are the following:
 
--   Deploy a PEP Proxy on top of your backend service. Now the endpoint of this service is the endpoint of the PEP Proxy
+-   Deploy a PEP Proxy on top of your backend service. Now, the endpoint of this service is the endpoint of the PEP Proxy
     and you have to change the backend to other endpoint (may be in the same server but in other port). The PEP Proxy
     will redirect the requests to the service.
--   Register you application in the IdM.
+-   Register your application in the IdM.
 -   With an OAuth2 library and the credentials obtained in the IdM for the application, implement an OAuth2 mechanism in
-    your application. Thus, your users will be able to login in your application using their FIWARE accouts.
+    your application. Thus, your users will be able to log in to your application using their FIWARE accounts.
 -   When a user logs in into your application, IdM will generate an OAuth2 token that represents it. You have to save
     this OAuth2 token to include it in the requests to your backend service (as an HTTP header).
 -   You have to send all the requests to your backend service to the endpoint in which is deployed the PEP Proxy.
@@ -45,7 +45,7 @@ environment are the following:
 ## Programmer Guide
 
 PEP Proxy GE is designed to perform three levels of security for the backend REST APIs. Requests to proxy should be made
-with a special HTTP Header: X-Auth-Token or with the standar header Authorization: Bearer header. These headers contain
+with a special HTTP Header: X-Auth-Token or with the standard header Authorization: Bearer header. These headers contain
 the OAuth access token obtained from FIWARE IDM GE.
 
 Example of requests:
@@ -69,7 +69,7 @@ configured. The available levels are:
 -   Level 1: Authentication PEP Proxy checks if the token included in the request corresponds to an authenticated user
     in FIWARE.
 -   Level 2: Basic Authorization PEP Proxy checks if the token included in the request corresponds to an authenticated
-    user in FIWARE but also if the roles that the user has allow it to access the resource specified in the request.
+    user in FIWARE but also if the roles that the user has allowed it to access the resource specified in the request.
     This is based in the HTTP verb and the path.
 -   Level 3: Advanced Authorization PEP Proxy checks if the token included in the request corresponds to an
     authenticated user in FIWARE but also other advanced parameters such as the body or the headers of the request.
@@ -100,7 +100,7 @@ If the validation success, PEP Proxy will redirect the request to the backend se
 
 ### Level 2: Basic Authorization
 
-Again the first step is to create a user and an application in FIWARE Account. In this case you have also to configure
+Again, the first step is to create a user and an application in FIWARE Account. In this case you have also to configure
 the roles and permissions for that user in that application. Please, see the User Guide of Identity Management in order
 to know how to proceed.
 
@@ -110,7 +110,7 @@ to know how to proceed.
 <p align="center">Figure 2: Basic Authorization</p>
 
 [Figure 2](#def-fig2) shows the architecture of this configuration. PEP Proxy checks if the access_token included in the
-request corresponds to an authenticated user in FIWARE Account. If the validation success the response includes the user
+request corresponds to an authenticated user in FIWARE Account. If the validation succeeds, the response includes the user
 information for that application. In this information is included the list of roles that the user has in the
 application. And PEP Proxy checks with Authorization PDP GE if the user has the permissions to access the resource of
 the request. This takes into account the HTTP verb and the path of the request.
@@ -129,7 +129,7 @@ that user in that application. Please, see the User Guide of Identity Management
 <p align="center">Figure 3: Advanced Authorization</p>
 
 [Figure 3](#def-fig3) shows the architecture of this configuration. As this case is thought to check advanced parameters
-of the request such as the body or custom headers, it depends on the specific use case. So the programmer should modify
+of the request, such as the body or custom headers, it depends on the specific use case. So the programmer should modify
 the PEP Proxy source code in order to include the specific requirements.
 
 With the desired parameters he has to create a XACML <Request> and send a request to Authorization PDP GE in order to
