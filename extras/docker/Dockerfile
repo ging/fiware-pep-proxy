@@ -28,6 +28,8 @@ ARG USER=node
 # --target=builder
 #
 ######################################################################################## 
+
+# hadolint ignore=DL3006
 FROM ${BUILDER} AS builder
 ARG TARGET
 ARG GITHUB_ACCOUNT
@@ -36,12 +38,12 @@ ARG DOWNLOAD
 ARG SOURCE_BRANCH
 ARG PACKAGE_MANAGER
 
-# hadolint ignore=DL3002
+# hadolint ignore=DL3002,DL3018,DL3002
 USER root
 # Ensure that the chosen package manger is supported by this Dockerfile
 # also ensure that unzip is installed prior to downloading sources
 
-# hadolint ignore=SC2039
+# hadolint ignore=SC2039,DL3008,SC3037,DL3033,DL3018
 RUN \
 	if [ "${PACKAGE_MANAGER}" = "apt"  ]; then \
 		echo -e "\033[0;34mINFO: Using default \"${PACKAGE_MANAGER}\".\033[0m"; \
@@ -64,6 +66,8 @@ RUN \
 #
 # COPY . ${TARGET}/
 #
+
+# hadolint ignore=DL4006
 RUN \
 	if [ "${DOWNLOAD}" = "latest" ] ; \
 	then \
@@ -96,6 +100,7 @@ RUN \
 # as defined below.
 #
 ########################################################################################
+# hadolint ignore=DL3006
 FROM ${BUILDER} AS anon-user
 # hadolint ignore=DL3002
 USER root
@@ -111,11 +116,12 @@ RUN sed -i -r "/^(root|nobody)/!d" /etc/passwd /etc/shadow /etc/group \
 # variable.
 #
 # -  PEP_PROXY_USERNAME
-# -  PEP_PROXY_ASSWORD
+# -  PEP_PROXY_PASSWORD
 # -  PEP_PROXY_TOKEN_SECRET
 #
 ########################################################################################
 
+# hadolint ignore=DL3006
 FROM ${DISTROLESS} AS distroless
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
@@ -162,6 +168,7 @@ HEALTHCHECK  --interval=30s --timeout=3s --start-period=60s \
 #
 ########################################################################################
 
+# hadolint ignore=DL3006
 FROM ${DISTRO} AS slim
 ARG GITHUB_ACCOUNT
 ARG GITHUB_REPOSITORY
