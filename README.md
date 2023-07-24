@@ -2,7 +2,7 @@
 
 [![FIWARE Security](https://nexus.lab.fiware.org/static/badges/chapters/security.svg)](https://www.fiware.org/developers/catalogue/)
 [![License: MIT](https://img.shields.io/github/license/ging/fiware-pep-proxy.svg)](https://opensource.org/licenses/MIT)
-[![Docker badge](https://img.shields.io/docker/pulls/fiware/pep-proxy.svg)](https://hub.docker.com/r/fiware/pep-proxy/)
+[![Docker badge](https://img.shields.io/badge/quay.io-fiware%2Fpep--proxy-grey?logo=red%20hat&labelColor=EE0000)](https://quay.io/repository/fiware/pep-proxy)
 [![Support badge](https://img.shields.io/badge/tag-fiware--wilma-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-wilma)
 <br>
 [![Documentation badge](https://img.shields.io/readthedocs/fiware-pep-proxy.svg)](https://fiware-pep-proxy.readthedocs.io/en/latest/)
@@ -20,7 +20,7 @@ different access levels for your users.
 This project is part of [FIWARE](https://www.fiware.org/). For more information check the FIWARE Catalogue entry for
 [Security](https://github.com/Fiware/catalogue/tree/master/security).
 
-| :books: [Documentation](https://fiware-pep-proxy.readthedocs.io/en/latest/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/wilma) | :whale: [Docker Hub](https://hub.docker.com/r/fiware/pep-proxy/) | :dart: [Roadmap](https://github.com/ging/fiware-pep-proxy/blob/master/roadmap.md) |
+| :books: [Documentation](https://fiware-pep-proxy.readthedocs.io/en/latest/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/security/wilma) | <img style="height:1em" src="https://quay.io/static/img/quay_favicon.png"/> [quay.io](https://quay.io/repository/fiware/pep-proxy)  | :dart: [Roadmap](https://github.com/ging/fiware-pep-proxy/blob/master/roadmap.md) |
 | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 
 
@@ -198,4 +198,4 @@ This project is part of [FIWARE](https://www.fiware.org/) and has been rated as 
 
 Wilma PEP Proxy is licensed under the [MIT](LICENSE) License.
 
-© 2018 - 2022 Universidad Politécnica de Madrid.
+© 2018 - 2023 Universidad Politécnica de Madrid.
