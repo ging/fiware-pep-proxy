@@ -260,4 +260,30 @@ describe('Authentication: Keyrock IDM', () => {
         });
     });
   });
+
+  describe('When a restricted path is requested and headers are returned', () => {
+    beforeEach(() => {
+      contextBrokerMock = nock('http://fiware.org:1026').get('/restricted').reply(
+        StatusCodes.OK,
+        {},
+        {
+          'Content-Type': 'application/ld+json',
+          'NGSILD-Results-Count': 140000
+        }
+      );
+      idmMock = nock('http://keyrock.com:3000')
+        .get('/user?access_token=' + shortToken + '&app_id=application_id')
+        .reply(StatusCodes.OK, keyrock_user_response);
+    });
+    it('should return all headers and set the content-type', (done) => {
+      got.get('restricted', bearer_token).then((response) => {
+        contextBrokerMock.done();
+        idmMock.done();
+        should.equal(response.statusCode, StatusCodes.OK);
+        should.equal(response.headers['ngsild-results-count'], 140000);
+        should.equal(response.headers['content-type'], 'application/ld+json; charset=utf-8');
+        done();
+      });
+    });
+  });
 });
